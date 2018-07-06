@@ -15,7 +15,7 @@ import sys, math
 class BoxBoard(QGraphicsWidget):
 
     # Initialisation
-    def __init__(self, width, height, parent = None):
+    def __init__(self, width, height, parent=None):
         super().__init__(parent)
         self.width = width
         self.height = height
@@ -47,6 +47,33 @@ class BoxBoard(QGraphicsWidget):
 
     def sizeHint(self, which, constraint=None):
         return(QSizeF(self.width+10, self.height+10))
+
+
+class GameBoard(BoxBoard):
+
+    def __init__(self, width, height, parent=None):
+        super().__init__(width, height, parent)
+
+        self.gamegrid = SudokuGrid(self.width, self.height, parent=self)
+        self.numring = NumberRing(parent=self)
+
+        self.gamegrid.update()
+        self.numring.update()
+
+    def show_number_ring(self, x=0, y=0):
+        if not self.gamegrid.selected:
+            self.numring.setPos(x, y)
+            self.numring.setVisible(True)
+            self.gamegrid.selected = True
+        else:
+            self.numring.setVisible(False)
+            self.gamegrid.selected = False
+
+    def select_ring_number(self, val):
+        if val == 'X':
+            val = 0
+        self.gamegrid.replace_cell_number(int(val))
+        self.show_number_ring()
 
 class SudokuGrid(QGraphicsObject):
     # Prepare the signal
@@ -178,8 +205,8 @@ class NumberPainter(QGraphicsItem):
 
 class NumberRing(QGraphicsItem):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent= None):
+        super().__init__(parent = parent)
 
         self.setVisible(False)
         self.radius = 48

@@ -21,7 +21,7 @@ class SudokuWindow(QGraphicsView):
 
         self.setScene(self.scene)
         self.setSceneRect(self.scene.sceneRect())
-        self.gameboard = board.BoxBoard(400, 400)
+        self.gameboard = board.GameBoard(400, 400)
         self.menuboard = board.BoxBoard(400, 50)
         self.gamegrid = board.SudokuGrid(450, 450)
         self.numring = board.NumberRing()
@@ -38,8 +38,8 @@ class SudokuWindow(QGraphicsView):
 
         #self.scene.addItem(self.gameboard)
         self.scene.addItem(self.form)
-        self.scene.addItem(self.gamegrid)
-        self.scene.addItem(self.numring)
+        #self.scene.addItem(self.gamegrid)
+        #self.scene.addItem(self.numring)
         self.setBackgroundBrush(QBrush(Qt.black))
         self.setRenderHint(QPainter.Antialiasing)
         self.setGeometry(0, 0, 600, 600)
