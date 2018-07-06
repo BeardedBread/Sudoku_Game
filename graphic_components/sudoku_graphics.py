@@ -11,6 +11,8 @@ import numpy as np
 
 
 class NumberPainter(QGraphicsItem):
+    # TODO: Use different font to differentiate the status of a cell
+
     def __init__(self, parent, grid):
         super().__init__(parent=parent)
         self.parent = parent
@@ -48,7 +50,8 @@ class NumberPainter(QGraphicsItem):
 
 
 class SudokuGrid(QGraphicsObject):
-    # Prepare the signal
+    # TODO: Add functions to animated the grid lines
+
     buttonClicked = pyqtSignal(float, float)
 
     def __init__(self, width, height, parent=None):
@@ -63,9 +66,6 @@ class SudokuGrid(QGraphicsObject):
         self.thick_pen.setColor(Qt.white)
         self.thick_unit = 5
         self.thick_pen.setWidth(self.thick_unit)
-
-        self.horiz_gridlines = []
-        self.vert_gridlines = []
 
         self.thinlines = []
         self.thicklines = []
@@ -120,6 +120,8 @@ class SudokuGrid(QGraphicsObject):
         painter.setPen(self.selection_pen)
         painter.drawRect(self.selection_box)
 
+        # TODO: Possibly draw the fixed cell here
+
     def hoverMoveEvent(self, event):
         box_w = bound_value(0, int(event.pos().x()/self.cell_width), 8)
         box_h = bound_value(0, int(event.pos().y() / self.cell_height), 8)
@@ -139,6 +141,9 @@ class SudokuGrid(QGraphicsObject):
 
 
 class NumberRing(QGraphicsItem):
+    # TODO: Add functions to animated the ring appearing
+    # TODO: Adjust the positioning of each element
+    # TODO: Make it transparent when mouse is out of range
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)

@@ -70,3 +70,9 @@ class GameBoard(BoxBoard):
             val = 0
         self.gamegrid.replace_cell_number(int(val))
         self.show_number_ring()
+
+
+class MenuBoard(BoxBoard):
+    # TODO: Create the components for the menu: A timer and a difficulty selector
+    def __init__(self, width, height, parent=None):
+        super().__init__(width, height, parent)

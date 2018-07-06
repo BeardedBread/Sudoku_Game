@@ -11,6 +11,7 @@ if __name__ == "__main__":
 else:
     test_dir = './gameplay/test_board.txt'
 
+
 class SudokuSystem:
 
     def __init__(self):
@@ -117,3 +118,11 @@ class SudokuSystem:
 
         for r, c in zip(row, col):
             self.cell_status[r, c] = EMPTY
+
+    def generate_random_board(self):
+        # TODO: Write function to generate a random board
+        pass
+
+    def check_valid_moves(self):
+        # TODO: Write function to return a possible valid numbers for a cell
+        pass
