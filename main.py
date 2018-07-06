@@ -2,7 +2,7 @@ from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt5.Qt import QApplication, QTimer
 from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
-                             QGraphicsItemGroup, QGraphicsPathItem)
+                             QGraphicsItemGroup, QGraphicsWidget, QGraphicsLinearLayout)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPoint, QPointF, Qt, QRectF,QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal)
 import sys, math
@@ -16,18 +16,28 @@ class SudokuWindow(QGraphicsView):
         super().__init__()
 
         # Set up the Scene to manage the GraphicItems
-        self.scene = QGraphicsScene(0, 0, 500, 500, self)
+        self.scene = QGraphicsScene(0, 0, 400, 500, self)
+
+
         self.setScene(self.scene)
         self.setSceneRect(self.scene.sceneRect())
+        self.gameboard = board.BoxBoard(400, 400)
+        self.menuboard = board.BoxBoard(400, 50)
+        self.gamegrid = board.SudokuGrid(450, 450)
+        self.numring = board.NumberRing()
 
+        self.layout = QGraphicsLinearLayout(Qt.Vertical)
+        self.layout.addItem(self.gameboard)
+        self.layout.addItem(self.menuboard)
+        self.form = QGraphicsWidget()
+        self.form.setLayout(self.layout)
+        #self.layout.addItem(self.gamegrid)
         #self.button1 = buttons.animBox(0, 0, 20, 20, 'a')
         #self.scene.addItem(self.button1)
 
-        self.gameboard = board.BoxBoard(450, 450)
-        self.menuboard = board.BoxBoard(400, 100)
-        self.gamegrid = board.SudokuGrid(450, 450)
-        self.numring = board.NumberRing()
-        self.scene.addItem(self.gameboard)
+
+        #self.scene.addItem(self.gameboard)
+        self.scene.addItem(self.form)
         self.scene.addItem(self.gamegrid)
         self.scene.addItem(self.numring)
         self.setBackgroundBrush(QBrush(Qt.black))
@@ -36,7 +46,6 @@ class SudokuWindow(QGraphicsView):
 
         self.gamegrid.buttonClicked.connect(self.show_number_ring)
         self.numring.connect_button_signals(self.select_ring_number)
-        self.gameboard
 
         self.ensureVisible(self.scene.sceneRect(), 50, 50)
         self.fitInView(self.gameboard.boundingRect(), Qt.KeepAspectRatio)

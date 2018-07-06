@@ -1,10 +1,10 @@
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt5.Qt import QApplication, QTimer
-from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,
+from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsWidget, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
                              QGraphicsItemGroup, QGraphicsPathItem)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
-                          QPropertyAnimation, pyqtProperty, pyqtSignal)
+                          QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF)
 from graphic_components import buttons
 from general.extras import bound_value
 from gameplay import sudoku_gameplay as sdk
@@ -12,7 +12,7 @@ import numpy as np
 import sys, math
 
 
-class BoxBoard(QGraphicsObject):
+class BoxBoard(QGraphicsWidget):
 
     # Initialisation
     def __init__(self, width, height, parent = None):
@@ -45,6 +45,8 @@ class BoxBoard(QGraphicsObject):
             if line.length() > 1:
                 painter.drawLine(line)
 
+    def sizeHint(self, which, constraint=None):
+        return(QSizeF(self.width+10, self.height+10))
 
 class SudokuGrid(QGraphicsObject):
     # Prepare the signal
