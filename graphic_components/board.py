@@ -45,6 +45,7 @@ class BoxBoard(QGraphicsObject):
             if line.length() > 1:
                 painter.drawLine(line)
 
+
 class SudokuGrid(QGraphicsObject):
     # Prepare the signal
     buttonClicked = pyqtSignal(float, float)
@@ -53,10 +54,10 @@ class SudokuGrid(QGraphicsObject):
         super().__init__(parent)
         self.width = width
         self.height = height
-
         self.default_pen = QPen()
         self.default_pen.setColor(Qt.white)
         self.default_pen.setWidth(1)
+
         self.thick_pen = QPen()
         self.thick_pen.setColor(Qt.white)
         self.thick_unit = 5
@@ -83,6 +84,7 @@ class SudokuGrid(QGraphicsObject):
                 self.thinlines.append(QLineF(delta_w, 0, delta_w, self.height))
 
         self.sudoku_grid = sdk.SudokuSystem()
+        self.grid_painter = NumberPainter(self, self.sudoku_grid)
 
         self.mouse_w = 0
         self.mouse_h = 0
@@ -97,28 +99,9 @@ class SudokuGrid(QGraphicsObject):
 
         self.selected = False
 
-        self.invalid_pen = QPen()
-        self.invalid_pen.setColor(Qt.lightGray)
-        self.invalid_unit = 8
-        self.invalid_pen.setWidth(self.thick_unit)
-
     def replace_cell_number(self, val):
         self.sudoku_grid.replace_cell_number(self.mouse_h, self.mouse_w, val)
-        self.update()
-
-    def _draw_number_cell(self, w, h, painter):
-        val = self.sudoku_grid.get_cell_number(h, w)
-        if val == 0:
-            val = ''
-        else:
-            if self.sudoku_grid.get_cell_status(h, w) == sdk.VALID:
-                painter.setPen(self.default_pen)
-            else:
-                painter.setPen(self.invalid_pen)
-
-        painter.drawText((w+0.5)*self.cell_width-5,
-                         (h+0.5)*self.cell_height+5,
-                         str(val))
+        self.grid_painter.update()
 
     def boundingRect(self):
         return QRectF(-5, -5, self.width+10, self.height+10)
@@ -128,10 +111,6 @@ class SudokuGrid(QGraphicsObject):
         painter.setPen(self.default_pen)
         for line in self.thinlines:
             painter.drawLine(line)
-
-        for i in range(9):
-            for j in range(9):
-                self._draw_number_cell(i, j, painter)
 
         painter.setPen(self.thick_pen)
         for line in self.thicklines:
@@ -157,12 +136,43 @@ class SudokuGrid(QGraphicsObject):
         if not self.sudoku_grid.get_cell_status(self.mouse_h, self.mouse_w) == sdk.FIXED:
             self.buttonClicked.emit(w, h)
 
-class NumberGrid(QGraphicsItem):
-    def __init__(self, parent):
+
+class NumberPainter(QGraphicsItem):
+    def __init__(self, parent, grid):
         super().__init__(parent=parent)
+        self.parent = parent
+        self.sudoku_grid = grid
+        self.default_pen = QPen()
+        self.default_pen.setColor(Qt.white)
+        self.default_pen.setWidth(1)
+
+        self.invalid_pen = QPen()
+        self.invalid_pen.setColor(Qt.lightGray)
+        self.invalid_unit = 8
+        self.invalid_pen.setWidth(self.invalid_unit)
 
     def paint(self, painter, style, widget=None):
-        pass
+        for i in range(9):
+            for j in range(9):
+                self._draw_number_cell(i, j, painter)
+
+    def boundingRect(self):
+        return QRectF(-5, -5, self.parent.width+10, self.parent.height+10)
+
+    def _draw_number_cell(self, w, h, painter):
+        val = self.sudoku_grid.get_cell_number(h, w)
+        if val == 0:
+            val = ''
+        else:
+            if self.sudoku_grid.get_cell_status(h, w) == sdk.VALID:
+                painter.setPen(self.default_pen)
+            else:
+                painter.setPen(self.invalid_pen)
+
+        painter.drawText((w+0.5)*self.parent.cell_width-5,
+                         (h+0.5)*self.parent.cell_height+5,
+                         str(val))
+
 
 class NumberRing(QGraphicsItem):
 
@@ -199,5 +209,5 @@ class NumberRing(QGraphicsItem):
         for btn in self.cell_buttons:
             btn.buttonClicked.connect(func)
 
-    def mousePressEvent(self, event):
-        print('Yes')
+    #def mousePressEvent(self, event):
+    #    print('Yes')

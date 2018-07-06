@@ -5,11 +5,10 @@ VALID = 1
 INVALID = 2
 FIXED = 3
 
-TESTING = True
+TESTING = False
 if __name__ == "__main__":
     test_dir = './test_board.txt'
 else:
-
     test_dir = './gameplay/test_board.txt'
 
 class SudokuSystem:
