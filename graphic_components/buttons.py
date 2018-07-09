@@ -33,7 +33,7 @@ class animBox(QGraphicsObject):
 
         # Whether the mouse hover over the box
         self.detected = False
-        self.btn_rect = self.boundingRect()
+        self.btn_rect = QRectF(self.x, self.y, self.width, self.height)
         # The 4 lines to construct the box
         self.left = QLineF()
         self.down = QLineF()
@@ -71,7 +71,7 @@ class animBox(QGraphicsObject):
 
     # Reimplemented boundingRect
     def boundingRect(self):
-        return QRectF(self.x, self.y, self.width, self.height)
+        return QRectF(self.x-5, self.y-5, self.width+10, self.height+10)
 
     # Reimplemented paint
     def paint(self, painter, style, widget=None):
@@ -82,7 +82,7 @@ class animBox(QGraphicsObject):
         painter.setPen(self.default_pen)
         painter.fillRect(self.btn_rect, Qt.black)
         painter.drawRect(self.btn_rect)
-        painter.drawText(self.boundingRect(),self.text)
+        painter.drawText(self.btn_rect,self.text)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)

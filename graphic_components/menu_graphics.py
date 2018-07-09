@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF)
 
+from graphic_components import buttons
 
 class TimerDisplayer(QGraphicsWidget):
 
@@ -49,7 +50,15 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.box_pen.setWidth(self.pen_width)
 
 
-        self.timer_box = QRectF(0, 0, self.width, self.height)
+        self.diff_box = QRectF(0, 0, self.width, self.height)
+        self.diff_buttons = []
+        self.difficulty = ['Easy', 'Normal', 'Hard', 'Insane']
+        for i in range(4):
+            btn = buttons.animBox(0, -(self.height + 10) * (i + 1),
+                            self.width, self.height, self.difficulty[i], parent=self)
+            btn.setVisible(False)
+            self.diff_buttons.append(btn)
+
         self.setMinimumSize(QSizeF(self.width, self.height))
         self.setMaximumSize(QSizeF(self.width, self.height))
 
@@ -57,10 +66,20 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.size_policy.setHeightForWidth(True)
         self.setSizePolicy(self.size_policy)
 
+        self.selected = False
+
     def paint(self, painter, style, widget=None):
-        box = self.timer_box
-        #print(self.size().width())
         painter.setPen(self.box_pen)
-        painter.drawRect(box)
-        painter.drawText(box, Qt.AlignCenter, "Normal")
+        painter.drawRect(self.diff_box)
+        painter.drawText(self.diff_box, Qt.AlignCenter, "Normal")
+
+
+    def mousePressEvent(self, event):
+        self.selected = not self.selected
+        for btn in self.diff_buttons:
+            btn.setVisible(self.selected)
+        self.update()
+
+    #def boundingRect(self):
+    #    return QRectF(-20, -(self.height+10)*4 -20, self.width+40, (self.height+20) * 5)
 
