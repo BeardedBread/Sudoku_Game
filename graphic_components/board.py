@@ -87,15 +87,14 @@ class MenuBoard(BoxBoard):
         super().__init__(width, height, parent)
 
         self.layout = QGraphicsLinearLayout(Qt.Horizontal)
-        self.layout.setMaximumWidth(width)
-        self.layout.setMaximumHeight(height)
+        self.layout.setMinimumWidth(width)
+        self.layout.setMinimumWidth(height)
 
+        self.diff_display = menu_grap.DifficultyDisplayer(parent=self)
+        self.layout.addItem(self.diff_display)
         self.timer_display = menu_grap.TimerDisplayer(parent=self)
-        self.timer_display2 = menu_grap.TimerDisplayer(parent=self)
-        self.timer_display3 = menu_grap.TimerDisplayer(parent=self)
         self.layout.addItem(self.timer_display)
-        self.layout.addItem(self.timer_display2)
-        self.layout.addItem(self.timer_display3)
-        self.layout.setSpacing(0)
+        self.layout.setItemSpacing(0, 50)
+        self.layout.setItemSpacing(1, 0)
 
         self.setLayout(self.layout)

@@ -16,7 +16,7 @@ class SudokuWindow(QGraphicsView):
         super().__init__()
 
         # Set up the Scene to manage the GraphicItems
-        self.scene = QGraphicsScene(0, 0, 420, 500, self)
+        self.scene = QGraphicsScene(0, 0, 420, 510, self)
 
         self.setScene(self.scene)
         self.setSceneRect(self.scene.sceneRect())
