@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
-from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsWidget, QGraphicsItem,
+from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
                              QGraphicsItemGroup, QGraphicsPathItem, QGraphicsLinearLayout)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
@@ -16,6 +16,12 @@ class BoxBoard(QGraphicsWidget):
         self.width = width
         self.height = height
         self.circumference = 2*(width+height)
+        self.setMinimumSize(QSizeF(width, height))
+        self.setMaximumSize(QSizeF(width, height))
+
+        self.size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.size_policy.setHeightForWidth(True)
+        self.setSizePolicy(self.size_policy)
 
         # Set up pens for drawing
         self.default_pen = QPen()
@@ -31,8 +37,8 @@ class BoxBoard(QGraphicsWidget):
         self.line_order = [self.up, self.right, self.down, self.left]
 
     # Reimplemented boundingRect
-    def boundingRect(self):
-        return QRectF(-5, -5, self.width+10, self.height+10)
+    #def boundingRect(self):
+    #    return QRectF(-5, -5, self.width+10, self.height+10)
 
     # Reimplemented paint
     def paint(self, painter, style, widget=None):
@@ -41,9 +47,11 @@ class BoxBoard(QGraphicsWidget):
             if line.length() > 1:
                 painter.drawLine(line)
         #painter.drawRect(self.geometry())
+        super().paint(painter, style, widget)
 
-    def sizeHint(self, which, constraint=None):
-        return QSizeF(self.width, self.height)
+    #def sizeHint(self, which, constraint=None):
+    #    super().sizeHint(which, constraint)
+    #    return QSizeF(self.width, self.height)
 
 
 class GameBoard(BoxBoard):

@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
-from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsWidget, QGraphicsItem,
+from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
                              QGraphicsItemGroup, QGraphicsLayoutItem)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
@@ -21,25 +21,17 @@ class TimerDisplayer(QGraphicsWidget):
 
 
         self.timer_box = QRectF(0, 0, self.width, self.height)
-        #self.setGeometry(self.timer_box)
-        #print(self.geometry().width())
+        self.setMinimumSize(QSizeF(self.width, self.height))
+        self.setMaximumSize(QSizeF(self.width, self.height))
+
+        self.size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.size_policy.setHeightForWidth(True)
+        self.setSizePolicy(self.size_policy)
 
     def paint(self, painter, style, widget=None):
-        box = self.geometry()
+        box = self.timer_box
         #print(self.size().width())
         painter.setPen(self.box_pen)
         painter.drawRect(box)
         painter.drawText(box, Qt.AlignCenter, "00:00")
 
-    def boundingRect(self):
-        return QRectF(QPointF(0, 0), self.geometry().size())
-
-    def sizeHint(self, which, constraint=None):
-        return QSizeF(self.width, self.height)
-        #print(self.geometry().size().width(), self.geometry().size().height())
-        #return self.geometry().size()
-
-    def setGeometry(self, rect):
-        self.prepareGeometryChange()
-        QGraphicsLayoutItem.setGeometry(self, rect)
-        self.setPos(rect.topLeft())
