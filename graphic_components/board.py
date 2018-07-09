@@ -66,13 +66,13 @@ class GameBoard(BoxBoard):
         self.numring.connect_button_signals(self.select_ring_number)
 
     def show_number_ring(self, x=0, y=0):
-        if not self.gamegrid.selected:
+        if not self.gamegrid.freeze:
             self.numring.setPos(x, y)
             self.numring.setVisible(True)
-            self.gamegrid.selected = True
+            self.gamegrid.freeze = True
         else:
             self.numring.setVisible(False)
-            self.gamegrid.selected = False
+            self.gamegrid.freeze = False
 
     def select_ring_number(self, val):
         if val == 'X':

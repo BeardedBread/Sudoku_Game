@@ -36,6 +36,7 @@ class TimerDisplayer(QGraphicsWidget):
         painter.drawRect(box)
         painter.drawText(box, Qt.AlignCenter, "00:00")
 
+
 class DifficultyDisplayer(QGraphicsWidget):
 
     def __init__(self, parent=None):

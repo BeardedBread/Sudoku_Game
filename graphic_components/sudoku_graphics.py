@@ -10,17 +10,24 @@ from graphic_components import buttons
 import numpy as np
 
 
-class NumberPainter(QGraphicsItem):
-    # TODO: Use different font to differentiate the status of a cell
+class BaseSudokuItem(QGraphicsObject):
 
-    def __init__(self, parent, grid):
+    def __init__(self, parent):
         super().__init__(parent=parent)
         self.parent = parent
-        self.sudoku_grid = grid
         self.default_pen = QPen()
         self.default_pen.setColor(Qt.white)
         self.default_pen.setWidth(1)
 
+        self.freeze = False
+
+
+class NumberPainter(BaseSudokuItem):
+    # TODO: Use different font to differentiate the status of a cell
+
+    def __init__(self, parent, grid):
+        super().__init__(parent=parent)
+        self.sudoku_grid = grid
         self.invalid_pen = QPen()
         self.invalid_pen.setColor(Qt.lightGray)
         self.invalid_unit = 8
@@ -49,18 +56,14 @@ class NumberPainter(QGraphicsItem):
                          str(val))
 
 
-class SudokuGrid(QGraphicsObject):
+class SudokuGrid(BaseSudokuItem):
     # TODO: Add functions to animated the grid lines
-
     buttonClicked = pyqtSignal(float, float)
 
     def __init__(self, width, height, parent=None):
         super().__init__(parent)
         self.width = width
         self.height = height
-        self.default_pen = QPen()
-        self.default_pen.setColor(Qt.white)
-        self.default_pen.setWidth(1)
 
         self.thick_pen = QPen()
         self.thick_pen.setColor(Qt.white)
@@ -98,7 +101,7 @@ class SudokuGrid(QGraphicsObject):
         self.setAcceptHoverEvents(True)
         self.setAcceptedMouseButtons(Qt.LeftButton)
 
-        self.selected = False
+        self.freeze = False
 
     def replace_cell_number(self, val):
         self.sudoku_grid.replace_cell_number(self.mouse_h, self.mouse_w, val)
@@ -125,7 +128,7 @@ class SudokuGrid(QGraphicsObject):
     def hoverMoveEvent(self, event):
         box_w = bound_value(0, int(event.pos().x()/self.cell_width), 8)
         box_h = bound_value(0, int(event.pos().y() / self.cell_height), 8)
-        if not self.selected:
+        if not self.freeze:
             if box_w != self.mouse_w or box_h != self.mouse_h:
                 self.mouse_w = box_w
                 self.mouse_h = box_h
@@ -140,7 +143,7 @@ class SudokuGrid(QGraphicsObject):
             self.buttonClicked.emit(w, h)
 
 
-class NumberRing(QGraphicsItem):
+class NumberRing(BaseSudokuItem):
     # TODO: Add functions to animated the ring appearing
     # TODO: Adjust the positioning of each element
     # TODO: Make it transparent when mouse is out of range
