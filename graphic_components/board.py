@@ -1,12 +1,12 @@
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsWidget, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
-                             QGraphicsItemGroup, QGraphicsPathItem)
+                             QGraphicsItemGroup, QGraphicsPathItem, QGraphicsLinearLayout)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF)
 
 from graphic_components import sudoku_graphics as sdk_grap
-
+from graphic_components import menu_graphics as menu_grap
 
 class BoxBoard(QGraphicsWidget):
 
@@ -40,9 +40,10 @@ class BoxBoard(QGraphicsWidget):
         for line in self.line_order:
             if line.length() > 1:
                 painter.drawLine(line)
+        #painter.drawRect(self.geometry())
 
     def sizeHint(self, which, constraint=None):
-        return QSizeF(self.width+10, self.height+10)
+        return QSizeF(self.width, self.height)
 
 
 class GameBoard(BoxBoard):
@@ -76,3 +77,17 @@ class MenuBoard(BoxBoard):
     # TODO: Create the components for the menu: A timer and a difficulty selector
     def __init__(self, width, height, parent=None):
         super().__init__(width, height, parent)
+
+        self.layout = QGraphicsLinearLayout(Qt.Horizontal)
+        self.layout.setMaximumWidth(width)
+        self.layout.setMaximumHeight(height)
+
+        self.timer_display = menu_grap.TimerDisplayer(parent=self)
+        self.timer_display2 = menu_grap.TimerDisplayer(parent=self)
+        self.timer_display3 = menu_grap.TimerDisplayer(parent=self)
+        self.layout.addItem(self.timer_display)
+        self.layout.addItem(self.timer_display2)
+        self.layout.addItem(self.timer_display3)
+        self.layout.setSpacing(0)
+
+        self.setLayout(self.layout)

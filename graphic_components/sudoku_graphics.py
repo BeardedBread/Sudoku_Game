@@ -177,6 +177,3 @@ class NumberRing(QGraphicsItem):
     def connect_button_signals(self, func):
         for btn in self.cell_buttons:
             btn.buttonClicked.connect(func)
-
-    #def mousePressEvent(self, event):
-    #    print('Yes')
