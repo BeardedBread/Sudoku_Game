@@ -16,7 +16,7 @@ class SudokuWindow(QGraphicsView):
         super().__init__()
 
         # Set up the Scene to manage the GraphicItems
-        self.scene = QGraphicsScene(0, 0, 420, 510, self)
+        self.scene = QGraphicsScene(0, 0, 500, 600, self)
 
         self.setScene(self.scene)
         self.setSceneRect(self.scene.sceneRect())
@@ -30,8 +30,8 @@ class SudokuWindow(QGraphicsView):
         self.layout = QGraphicsLinearLayout(Qt.Vertical)
         self.layout.addItem(self.gameboard)
         self.layout.addItem(self.menuboard)
-        self.layout.setSpacing(10)
-        self.layout.setContentsMargins(10, 10, 10, 0)
+        self.layout.setSpacing(50)
+        self.layout.setContentsMargins(50, 50, 50, 0)
         self.form.setLayout(self.layout)
 
         self.scene.addItem(self.form)
@@ -40,10 +40,11 @@ class SudokuWindow(QGraphicsView):
         #self.setGeometry(self.scene.sceneRect().toRect())
 
         #self.ensureVisible(self.scene.sceneRect(), 50, 50)
-        self.fitInView(self.form.boundingRect(), Qt.KeepAspectRatio)
+        #self.fitInView(self.form.boundingRect(), Qt.KeepAspectRatio)
+        self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
         self.show()
 
-        #self.menuboard.diff_display.diffClicked.connect(self.freeze_game)
+        self.menuboard.diff_display.notFocus.connect(self.gameboard.game_refocus)
 
     def freeze_game(self, freeze):
         self.menuboard.show_difficulty(freeze)

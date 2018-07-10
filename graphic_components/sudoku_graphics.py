@@ -146,9 +146,6 @@ class SudokuGrid(BaseSudokuItem):
     def focusOutEvent(self, event):
         self.freeze = True
 
-    #def focusInEvent(self, event):
-    #    self.freeze = False
-
 
 class NumberRing(BaseSudokuItem):
     # TODO: Add functions to animated the ring appearing

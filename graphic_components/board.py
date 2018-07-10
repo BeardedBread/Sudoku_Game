@@ -70,7 +70,6 @@ class GameBoard(BoxBoard):
         self.gamegrid.setFocus(Qt.MouseFocusReason)
 
     def show_number_ring(self, x=0, y=0):
-        print('Before', self.gamegrid.hasFocus(), self.numring.hasFocus())
         if not self.gamegrid.freeze:
             self.numring.setPos(x, y)
             self.numring.setVisible(True)
@@ -78,7 +77,6 @@ class GameBoard(BoxBoard):
         else:
             self.gamegrid.freeze = False
             self.gamegrid.setFocus()
-        print('After', self.gamegrid.hasFocus(), self.numring.hasFocus())
 
     def select_ring_number(self, val):
         if val == 'X':
@@ -86,15 +84,9 @@ class GameBoard(BoxBoard):
         self.gamegrid.replace_cell_number(int(val))
         self.show_number_ring()
 
-    #def mousePressEvent(self, event):
-    #    print('clicked')
-    #    extras.print_rect_info(self.boundingRect())
-    #    self.buttonClicked.emit(False)
-
-    def freeze_gameboard(self, state):
-        self.gamegrid.freeze = state
-        self.numring.freeze_buttons(state)
-
+    def game_refocus(self):
+        self.gamegrid.freeze = False
+        self.gamegrid.setFocus()
 
 class MenuBoard(BoxBoard):
     # TODO: Create the components for the menu: A timer and a difficulty selector

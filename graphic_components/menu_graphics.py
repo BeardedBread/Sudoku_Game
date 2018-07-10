@@ -38,7 +38,7 @@ class TimerDisplayer(QGraphicsWidget):
 
 
 class DifficultyDisplayer(QGraphicsWidget):
-    diffClicked = pyqtSignal(bool)
+    notFocus = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -69,6 +69,7 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.setSizePolicy(self.size_policy)
 
         self.selected = False
+        self.setFlag(QGraphicsItem.ItemIsFocusable, True)
 
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
@@ -80,9 +81,16 @@ class DifficultyDisplayer(QGraphicsWidget):
         for btn in self.diff_buttons:
             btn.setVisible(self.selected)
         self.update()
-
-        self.diffClicked.emit(self.selected)
+        if self.selected:
+            self.setFocus()
+        else:
+            self.clearFocus()
 
     #def boundingRect(self):
     #    return QRectF(-20, -(self.height+10)*4 -20, self.width+40, (self.height+20) * 5)
 
+    def focusOutEvent(self, event):
+        self.selected = False
+        for btn in self.diff_buttons:
+            btn.setVisible(False)
+        self.notFocus.emit()
