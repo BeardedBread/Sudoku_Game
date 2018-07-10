@@ -71,14 +71,18 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.setSizePolicy(self.size_policy)
 
         self.selected = False
+        self.focus_changed = False
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
 
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
         painter.drawRect(self.diff_box)
         painter.drawText(self.diff_box, Qt.AlignCenter, "Normal")
+        #painter.drawRect(self.boundingRect())
 
     def mousePressEvent(self, event):
+        #if not self.focus_changed:
+        print('Click')
         self.selected = not self.selected
         for btn in self.diff_buttons:
             btn.setVisible(self.selected)
@@ -86,13 +90,20 @@ class DifficultyDisplayer(QGraphicsWidget):
         if self.selected:
             self.setFocus()
         else:
-            self.clearFocus()
+            print('Out of focus')
+        #    self.focus_changed = False
 
-    #def boundingRect(self):
-    #    return QRectF(-20, -(self.height+10)*4 -20, self.width+40, (self.height+20) * 5)
+    def boundingRect(self):
+        if self.selected:
+            return QRectF(-10, -(self.height+10)*4 -10, self.width+20, (self.height+10) * 4+5)
+        else:
+            return super().boundingRect()
 
     def focusOutEvent(self, event):
+        print("diff focus out")
         self.selected = False
+        self.focus_changed = True
         for btn in self.diff_buttons:
             btn.setVisible(False)
+
         self.notFocus.emit()
