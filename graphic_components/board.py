@@ -133,6 +133,8 @@ class GameBoard(BoxBoard):
 
     def show_grid(self, state):
         self.gamegrid.setVisible(state)
+        if state:
+            self.gamegrid.toggle_anim(True)
 
     def show_playmenu(self, state):
         self.playmenu.setVisible(state)

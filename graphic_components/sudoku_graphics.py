@@ -103,6 +103,34 @@ class SudokuGrid(BaseSudokuItem):
         self.setAcceptedMouseButtons(Qt.LeftButton)
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
 
+        # Length of the box to be drawn
+        self.length = 0
+        # Set up the length to be animated
+        self.anim = QPropertyAnimation(self, b'length')
+        self.anim.setDuration(500)  # Animation speed
+        self.anim.setStartValue(0)
+        for t in range(1, 10):
+            self.anim.setKeyValueAt(t / 10, self.width * t/10)
+        self.anim.setEndValue(self.width)
+
+        self.drawn = False
+        self.anim.finished.connect(self.finish_drawing)
+
+    def finish_drawing(self):
+        print('Grid drawn')
+        if self.length == self.width:
+            self.drawn = True
+
+    # Toggle the animation to be play forward or backward
+    def toggle_anim(self, toggling):
+        print('drawing grid')
+        if toggling:
+            self.anim.setDirection(QAbstractAnimation.Forward)
+        else:
+            self.anim.setDirection(QAbstractAnimation.Backward)
+
+        self.anim.start()
+
     def replace_cell_number(self, val):
         self.sudoku_grid.replace_cell_number(self.mouse_h, self.mouse_w, val)
         self.grid_painter.update()
@@ -120,13 +148,14 @@ class SudokuGrid(BaseSudokuItem):
         for line in self.thicklines:
             painter.drawLine(line)
 
-        painter.setPen(self.selection_pen)
-        painter.drawRect(self.selection_box)
+        if self.drawn:
+            painter.setPen(self.selection_pen)
+            painter.drawRect(self.selection_box)
 
         # TODO: Possibly draw the fixed cell here
 
     def hoverMoveEvent(self, event):
-        if not self.freeze:
+        if not (self.freeze and self.drawn):
             box_w = bound_value(0, int(event.pos().x()/self.cell_width), 8)
             box_h = bound_value(0, int(event.pos().y() / self.cell_height), 8)
             if box_w != self.mouse_w or box_h != self.mouse_h:
@@ -136,7 +165,7 @@ class SudokuGrid(BaseSudokuItem):
                 self.update()
 
     def mousePressEvent(self, event):
-        if not self.freeze:
+        if not (self.freeze and self.drawn):
             w = (self.mouse_w + 0.5) * self.cell_width - 5
             h = (self.mouse_h + 0.5) * self.cell_height + 5
 
@@ -148,6 +177,29 @@ class SudokuGrid(BaseSudokuItem):
     def focusOutEvent(self, event):
         self.freeze = True
 
+    # Defining the length to be drawn as a pyqtProperty
+    @pyqtProperty(float)
+    def length(self):
+        return self._length
+
+    # Determine the length of the four lines to be drawn
+    @length.setter
+    def length(self, value):
+        self._length = value
+
+        for lines in self.thinlines:
+            if lines.x1() == 0:
+                lines.setP2(QPointF(value, lines.y2()))
+            else:
+                lines.setP2(QPointF(lines.x2(), value))
+
+        for lines in self.thicklines:
+            if lines.x1() == 0:
+                lines.setP2(QPointF(value, lines.y2()))
+            else:
+                lines.setP2(QPointF(lines.x2(), value))
+
+        self.update()
 
 class NumberRing(BaseSudokuItem):
     # TODO: Add functions to animated the ring appearing
