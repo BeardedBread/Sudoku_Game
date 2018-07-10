@@ -99,14 +99,17 @@ class GameBoard(BoxBoard):
 
         self.gamegrid = sdk_grap.SudokuGrid(self.width, self.height, parent=self)
         self.numring = sdk_grap.NumberRing(parent=self)
+        self.playmenu = sdk_grap.PlayMenu(parent=self)
         self.show_grid(False)
+        self.show_playmenu(False)
 
         self.gamegrid.buttonClicked.connect(self.show_number_ring)
         self.numring.connect_button_signals(self.select_ring_number)
 
         self.gamegrid.setFocus(Qt.MouseFocusReason)
 
-        self.anim.finished.connect(lambda: self.show_grid(True))
+        self.anim.finished.connect(lambda: self.show_playmenu(True))
+        self.playmenu.buttonClicked.connect(lambda: self.show_grid(True))
         self.toggle_anim(True)
 
     def show_number_ring(self, x=0, y=0):
@@ -130,6 +133,9 @@ class GameBoard(BoxBoard):
 
     def show_grid(self, state):
         self.gamegrid.setVisible(state)
+
+    def show_playmenu(self, state):
+        self.playmenu.setVisible(state)
 
 
 class MenuBoard(BoxBoard):

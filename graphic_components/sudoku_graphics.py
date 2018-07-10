@@ -195,3 +195,24 @@ class NumberRing(BaseSudokuItem):
 
     def focusOutEvent(self, event):
         self.setVisible(False)
+
+
+class PlayMenu(BaseSudokuItem):
+    buttonClicked = pyqtSignal()
+
+    def __init__(self, parent):
+        super().__init__(parent=parent)
+
+        self.rect = self.parent.boundingRect()
+
+    def paint(self, painter, style, widget=None):
+        painter.setPen(self.default_pen)
+        painter.drawRect(self.rect.width()/2, self.rect.height()/2,
+                         100, 100)
+    def boundingRect(self):
+        return QRectF(self.rect.width()/2, self.rect.height()/2,
+                         100, 100)
+
+    def mousePressEvent(self, ev):
+        self.setVisible(False)
+        self.buttonClicked.emit()
