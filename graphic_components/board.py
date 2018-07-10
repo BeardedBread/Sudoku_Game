@@ -67,14 +67,18 @@ class GameBoard(BoxBoard):
         self.gamegrid.buttonClicked.connect(self.show_number_ring)
         self.numring.connect_button_signals(self.select_ring_number)
 
+        self.gamegrid.setFocus(Qt.MouseFocusReason)
+
     def show_number_ring(self, x=0, y=0):
+        print('Before', self.gamegrid.hasFocus(), self.numring.hasFocus())
         if not self.gamegrid.freeze:
             self.numring.setPos(x, y)
             self.numring.setVisible(True)
-            self.gamegrid.freeze = True
+            self.numring.setFocus()
         else:
-            self.numring.setVisible(False)
             self.gamegrid.freeze = False
+            self.gamegrid.setFocus()
+        print('After', self.gamegrid.hasFocus(), self.numring.hasFocus())
 
     def select_ring_number(self, val):
         if val == 'X':

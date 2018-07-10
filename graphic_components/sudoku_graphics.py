@@ -21,7 +21,6 @@ class BaseSudokuItem(QGraphicsObject):
 
         self.freeze = False
 
-
 class NumberPainter(BaseSudokuItem):
     # TODO: Use different font to differentiate the status of a cell
 
@@ -100,8 +99,7 @@ class SudokuGrid(BaseSudokuItem):
 
         self.setAcceptHoverEvents(True)
         self.setAcceptedMouseButtons(Qt.LeftButton)
-
-        self.freeze = False
+        self.setFlag(QGraphicsItem.ItemIsFocusable, True)
 
     def replace_cell_number(self, val):
         self.sudoku_grid.replace_cell_number(self.mouse_h, self.mouse_w, val)
@@ -145,6 +143,12 @@ class SudokuGrid(BaseSudokuItem):
         else:
             self.buttonClicked.emit(0, 0)
 
+    def focusOutEvent(self, event):
+        self.freeze = True
+
+    #def focusInEvent(self, event):
+    #    self.freeze = False
+
 
 class NumberRing(BaseSudokuItem):
     # TODO: Add functions to animated the ring appearing
@@ -172,6 +176,8 @@ class NumberRing(BaseSudokuItem):
 
             self.cell_buttons.append(btn)
 
+        self.setFlag(QGraphicsItem.ItemIsFocusable, True)
+
     def boundingRect(self):
         return QRectF(-5, -5, self.cell_width+self.radius*2+10,
                       self.cell_height + self.radius * 2 + 10)
@@ -187,3 +193,6 @@ class NumberRing(BaseSudokuItem):
     def freeze_buttons(self, state):
         for btn in self.cell_buttons:
             btn.freeze = state
+
+    def focusOutEvent(self, event):
+        self.setVisible(False)
