@@ -38,6 +38,7 @@ class TimerDisplayer(QGraphicsWidget):
 
 
 class DifficultyDisplayer(QGraphicsWidget):
+    diffClicked = pyqtSignal(bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -74,12 +75,13 @@ class DifficultyDisplayer(QGraphicsWidget):
         painter.drawRect(self.diff_box)
         painter.drawText(self.diff_box, Qt.AlignCenter, "Normal")
 
-
     def mousePressEvent(self, event):
         self.selected = not self.selected
         for btn in self.diff_buttons:
             btn.setVisible(self.selected)
         self.update()
+
+        self.diffClicked.emit(self.selected)
 
     #def boundingRect(self):
     #    return QRectF(-20, -(self.height+10)*4 -20, self.width+40, (self.height+20) * 5)

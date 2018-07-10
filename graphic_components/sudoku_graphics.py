@@ -126,9 +126,9 @@ class SudokuGrid(BaseSudokuItem):
         # TODO: Possibly draw the fixed cell here
 
     def hoverMoveEvent(self, event):
-        box_w = bound_value(0, int(event.pos().x()/self.cell_width), 8)
-        box_h = bound_value(0, int(event.pos().y() / self.cell_height), 8)
         if not self.freeze:
+            box_w = bound_value(0, int(event.pos().x()/self.cell_width), 8)
+            box_h = bound_value(0, int(event.pos().y() / self.cell_height), 8)
             if box_w != self.mouse_w or box_h != self.mouse_h:
                 self.mouse_w = box_w
                 self.mouse_h = box_h
@@ -136,11 +136,14 @@ class SudokuGrid(BaseSudokuItem):
                 self.update()
 
     def mousePressEvent(self, event):
-        w = (self.mouse_w + 0.5) * self.cell_width - 5
-        h = (self.mouse_h + 0.5) * self.cell_height + 5
+        if not self.freeze:
+            w = (self.mouse_w + 0.5) * self.cell_width - 5
+            h = (self.mouse_h + 0.5) * self.cell_height + 5
 
-        if not self.sudoku_grid.get_cell_status(self.mouse_h, self.mouse_w) == sdk.FIXED:
-            self.buttonClicked.emit(w, h)
+            if not self.sudoku_grid.get_cell_status(self.mouse_h, self.mouse_w) == sdk.FIXED:
+                self.buttonClicked.emit(w, h)
+        else:
+            self.buttonClicked.emit(0, 0)
 
 
 class NumberRing(BaseSudokuItem):
@@ -180,3 +183,7 @@ class NumberRing(BaseSudokuItem):
     def connect_button_signals(self, func):
         for btn in self.cell_buttons:
             btn.buttonClicked.connect(func)
+            
+    def freeze_buttons(self, state):
+        for btn in self.cell_buttons:
+            btn.freeze = state

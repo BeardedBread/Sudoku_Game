@@ -42,8 +42,14 @@ class SudokuWindow(QGraphicsView):
         #self.ensureVisible(self.scene.sceneRect(), 50, 50)
         self.fitInView(self.form.boundingRect(), Qt.KeepAspectRatio)
         self.show()
-        print(self.menuboard.geometry().height())
-        print(self.gameboard.boundingRect().height())
+
+        self.menuboard.diff_display.diffClicked.connect(self.freeze_game)
+
+    def freeze_game(self, freeze):
+        self.menuboard.show_difficulty(freeze)
+        self.gameboard.freeze_gameboard(freeze)
+
+
 
 if __name__ == "__main__":
     app = 0

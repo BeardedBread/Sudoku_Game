@@ -7,6 +7,7 @@ from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLin
 
 from graphic_components import sudoku_graphics as sdk_grap
 from graphic_components import menu_graphics as menu_grap
+from general import extras
 
 class BoxBoard(QGraphicsWidget):
 
@@ -55,6 +56,7 @@ class BoxBoard(QGraphicsWidget):
 
 
 class GameBoard(BoxBoard):
+    boxClicked = pyqtSignal(bool)
 
     def __init__(self, width, height, parent=None):
         super().__init__(width, height, parent)
@@ -80,6 +82,15 @@ class GameBoard(BoxBoard):
         self.gamegrid.replace_cell_number(int(val))
         self.show_number_ring()
 
+    #def mousePressEvent(self, event):
+    #    print('clicked')
+    #    extras.print_rect_info(self.boundingRect())
+    #    self.buttonClicked.emit(False)
+
+    def freeze_gameboard(self, state):
+        self.gamegrid.freeze = state
+        self.numring.freeze_buttons(state)
+
 
 class MenuBoard(BoxBoard):
     # TODO: Create the components for the menu: A timer and a difficulty selector
@@ -98,3 +109,8 @@ class MenuBoard(BoxBoard):
         self.layout.setItemSpacing(1, 0)
 
         self.setLayout(self.layout)
+
+    def show_difficulty(self, state):
+        print(state)
+        self.diff_display.selected = state
+        self.diff_display.update()
