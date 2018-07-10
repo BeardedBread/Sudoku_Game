@@ -1,3 +1,7 @@
+"""
+This module contains all kinds of animated buttons
+"""
+
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt5.Qt import QApplication, QTimer
 from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,

@@ -1,4 +1,7 @@
-# Put all Sudoku related graphics here
+"""
+This module contains the components that make up the Sudoku Board
+"""
+
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
 from PyQt5.QtCore import (QAbstractAnimation, QPointF, Qt, QRectF, QLineF,
@@ -234,8 +237,6 @@ class NumberRing(BaseSudokuItem):
 
     # Reimplemented paint
     def paint(self, painter, style, widget=None):
-        #painter.setPen(self.default_pen)
-        #painter.drawRect(self.boundingRect())
         pass
 
     def connect_button_signals(self, func):

@@ -1,3 +1,7 @@
+"""
+This module contains the components that make up the menu Board
+"""
+
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,

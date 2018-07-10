@@ -11,22 +11,25 @@ from general import extras
 
 
 class BoxBoard(QGraphicsWidget):
+    """
+    A generic board that draws an animated rectangular border
+    """
 
-    # Initialisation
     def __init__(self, width, height, parent=None):
         super().__init__(parent)
         self.width = width
         self.height = height
         self.half_circumference = width+height
+        self.freeze = False
 
         self.setMinimumSize(QSizeF(width, height))
-        self.setMaximumSize(QSizeF(width, height))
+        #self.setMaximumSize(QSizeF(width, height))
 
         self.size_policy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.size_policy.setHeightForWidth(True)
         self.setSizePolicy(self.size_policy)
 
-        # Set up pens for drawing
+        # Set up a default pen for drawing
         self.default_pen = QPen()
         self.default_pen.setColor(Qt.white)
         self.default_pen.setWidth(5)
@@ -49,8 +52,6 @@ class BoxBoard(QGraphicsWidget):
             self.anim.setKeyValueAt(t / 10, self.half_circumference * t/10)
         self.anim.setEndValue(self.half_circumference)
 
-        self.freeze = False
-
     # Toggle the animation to be play forward or backward
     def toggle_anim(self, toggling):
         if toggling:
@@ -66,7 +67,7 @@ class BoxBoard(QGraphicsWidget):
         for line in self.line_order:
             if line.length() > 1:
                 painter.drawLine(line)
-        super().paint(painter, style, widget)
+        #super().paint(painter, style, widget)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
@@ -92,6 +93,10 @@ class BoxBoard(QGraphicsWidget):
 
 
 class GameBoard(BoxBoard):
+    """
+    The Board in which the main game takes place.
+    It is intended to swap the interface depending on whether the game is ongoing
+    """
     boxClicked = pyqtSignal(bool)
 
     def __init__(self, width, height, parent=None):
@@ -100,6 +105,7 @@ class GameBoard(BoxBoard):
         self.gamegrid = sdk_grap.SudokuGrid(self.width, self.height, parent=self)
         self.numring = sdk_grap.NumberRing(parent=self)
         self.playmenu = sdk_grap.PlayMenu(parent=self)
+
         self.show_grid(False)
         self.show_playmenu(False)
 
@@ -141,7 +147,10 @@ class GameBoard(BoxBoard):
 
 
 class MenuBoard(BoxBoard):
-    # TODO: Create the components for the menu: A timer and a difficulty selector
+    """
+    The Board that contains menu options. Also contains the timer.
+    """
+
     def __init__(self, width, height, parent=None):
         super().__init__(width, height, parent)
 
