@@ -11,8 +11,8 @@ from . import buttons
 class TimerDisplayer(QGraphicsWidget):
 
     def __init__(self, parent=None):
-        super().__init__(parent)
-
+        super().__init__()
+        self.setParent(parent)
         self.width = 100
         self.height = 50
 
@@ -42,7 +42,8 @@ class DifficultyDisplayer(QGraphicsWidget):
     notFocus = pyqtSignal()
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__()
+        self.setParent(parent)
 
         self.width = 100
         self.height = 50

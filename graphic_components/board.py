@@ -43,10 +43,10 @@ class BoxBoard(QGraphicsWidget):
         self.length = 0
         # Set up the length to be animated
         self.anim = QPropertyAnimation(self, b'length')
-        self.anim.setDuration(4000)  # Animation speed
+        self.anim.setDuration(800)  # Animation speed
         self.anim.setStartValue(0)
         for t in range(1, 10):
-            self.anim.setKeyValueAt(t / 10, t / 10)
+            self.anim.setKeyValueAt(t / 10, self.half_circumference * t/10)
         self.anim.setEndValue(self.half_circumference)
 
         self.freeze = False
@@ -99,14 +99,14 @@ class GameBoard(BoxBoard):
 
         self.gamegrid = sdk_grap.SudokuGrid(self.width, self.height, parent=self)
         self.numring = sdk_grap.NumberRing(parent=self)
-        self.show_children(False)
+        self.show_grid(False)
 
         self.gamegrid.buttonClicked.connect(self.show_number_ring)
         self.numring.connect_button_signals(self.select_ring_number)
 
         self.gamegrid.setFocus(Qt.MouseFocusReason)
 
-        self.anim.finished.connect(lambda: self.show_children(True))
+        self.anim.finished.connect(lambda: self.show_grid(True))
         self.toggle_anim(True)
 
     def show_number_ring(self, x=0, y=0):
@@ -147,10 +147,19 @@ class MenuBoard(BoxBoard):
         self.layout.addItem(self.timer_display)
         self.layout.setItemSpacing(0, 50)
         self.layout.setItemSpacing(1, 0)
+        self.layout.setContentsMargins(20,15,20,15)
 
         self.setLayout(self.layout)
+
+        self.show_children(False)
+        self.anim.finished.connect(lambda: self.show_children(True))
+        self.toggle_anim(True)
 
     def show_difficulty(self, state):
         print(state)
         self.diff_display.selected = state
         self.diff_display.update()
+
+    def show_children(self, state):
+        for chd in self.children():
+            chd.setVisible(state)
