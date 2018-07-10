@@ -17,6 +17,7 @@ class animBox(QGraphicsObject):
     # Initialisation
     def __init__(self, x, y, width, height, text, parent=None):
         super().__init__(parent=parent)
+        #self.setParent(parent)
         self.x = x
         self.y = y
         self.width = width
@@ -142,4 +143,5 @@ class animBox(QGraphicsObject):
 
     def mousePressEvent(self, event):
         if ~self.freeze:
+            self.length = 0
             self.buttonClicked.emit(self.text)

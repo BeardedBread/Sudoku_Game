@@ -23,6 +23,7 @@ class BaseSudokuItem(QGraphicsObject):
 
         self.freeze = False
 
+
 class NumberPainter(BaseSudokuItem):
     # TODO: Use different font to differentiate the status of a cell
 
@@ -117,13 +118,11 @@ class SudokuGrid(BaseSudokuItem):
         self.anim.finished.connect(self.finish_drawing)
 
     def finish_drawing(self):
-        print('Grid drawn')
         if self.length == self.width:
             self.drawn = True
 
     # Toggle the animation to be play forward or backward
     def toggle_anim(self, toggling):
-        print('drawing grid')
         if toggling:
             self.anim.setDirection(QAbstractAnimation.Forward)
         else:
@@ -223,27 +222,30 @@ class NumberRing(BaseSudokuItem):
             else:
                 cell_string = str(i)
             btn = buttons.animBox(cell_x, cell_y, self.cell_width,
-                                  self.cell_height, cell_string, self)
+                                  self.cell_height, cell_string, parent=self)
 
             self.cell_buttons.append(btn)
 
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
 
     def boundingRect(self):
-        return QRectF(-5, -5, self.cell_width+self.radius*2+10,
-                      self.cell_height + self.radius * 2 + 10)
+        return QRectF(-5-self.radius-self.cell_width/2, -5-self.radius-self.cell_height/2,
+                      self.cell_width+self.radius*2+10, self.cell_height + self.radius * 2 + 10)
 
     # Reimplemented paint
     def paint(self, painter, style, widget=None):
+        #painter.setPen(self.default_pen)
+        #painter.drawRect(self.boundingRect())
         pass
 
     def connect_button_signals(self, func):
         for btn in self.cell_buttons:
             btn.buttonClicked.connect(func)
+        print('Buttons Connected')
             
-    def freeze_buttons(self, state):
-        for btn in self.cell_buttons:
-            btn.freeze = state
+    #def freeze_buttons(self, state):
+    #    for btn in self.cell_buttons:
+    #        btn.freeze = state
 
     def focusOutEvent(self, event):
         self.setVisible(False)
@@ -261,6 +263,7 @@ class PlayMenu(BaseSudokuItem):
         painter.setPen(self.default_pen)
         painter.drawRect(self.rect.width()/2, self.rect.height()/2,
                          100, 100)
+
     def boundingRect(self):
         return QRectF(self.rect.width()/2, self.rect.height()/2,
                          100, 100)
