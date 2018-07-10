@@ -17,7 +17,8 @@ class BoxBoard(QGraphicsWidget):
         super().__init__(parent)
         self.width = width
         self.height = height
-        self.circumference = 2*(width+height)
+        self.half_circumference = width+height
+
         self.setMinimumSize(QSizeF(width, height))
         self.setMaximumSize(QSizeF(width, height))
 
@@ -33,14 +34,31 @@ class BoxBoard(QGraphicsWidget):
         # The 4 lines to construct the box
         self.left = QLineF(0, 0, 0, self.height)
         self.down = QLineF(0, self.height, self.width, self.height)
-        self.right = QLineF(self.width, 0, self.width, self.height)
-        self.up = QLineF(0, 0, self.width, 0)
+        self.right = QLineF(self.width, self.height, self.width, 0)
+        self.up = QLineF(self.width, 0, 0, 0)
 
         self.line_order = [self.up, self.right, self.down, self.left]
 
-    # Reimplemented boundingRect
-    #def boundingRect(self):
-    #    return QRectF(-5, -5, self.width+10, self.height+10)
+        # Length of the box to be drawn
+        self.length = 0
+        # Set up the length to be animated
+        self.anim = QPropertyAnimation(self, b'length')
+        self.anim.setDuration(4000)  # Animation speed
+        self.anim.setStartValue(0)
+        for t in range(1, 10):
+            self.anim.setKeyValueAt(t / 10, t / 10)
+        self.anim.setEndValue(self.half_circumference)
+
+        self.freeze = False
+
+    # Toggle the animation to be play forward or backward
+    def toggle_anim(self, toggling):
+        if toggling:
+            self.anim.setDirection(QAbstractAnimation.Forward)
+        else:
+            self.anim.setDirection(QAbstractAnimation.Backward)
+
+        self.anim.start()
 
     # Reimplemented paint
     def paint(self, painter, style, widget=None):
@@ -48,12 +66,29 @@ class BoxBoard(QGraphicsWidget):
         for line in self.line_order:
             if line.length() > 1:
                 painter.drawLine(line)
-        #painter.drawRect(self.geometry())
         super().paint(painter, style, widget)
 
-    #def sizeHint(self, which, constraint=None):
-    #    super().sizeHint(which, constraint)
-    #    return QSizeF(self.width, self.height)
+    # Defining the length to be drawn as a pyqtProperty
+    @pyqtProperty(float)
+    def length(self):
+        return self._length
+
+    # Determine the length of the four lines to be drawn
+    @length.setter
+    def length(self, value):
+        self._length = value
+        remaining_length = value
+        if remaining_length >= self.height:
+            length_to_draw = remaining_length - self.height
+            remaining_length -= length_to_draw
+        else:
+            length_to_draw = 0
+
+        self.down.setLine(0, self.height, length_to_draw, self.height)
+        self.up.setLine(self.width, 0, self.width - length_to_draw, 0)
+        self.left.setLine(0, 0, 0, remaining_length)
+        self.right.setLine(self.width, self.height, self.width, self.height - remaining_length)
+        self.update()
 
 
 class GameBoard(BoxBoard):
@@ -64,11 +99,15 @@ class GameBoard(BoxBoard):
 
         self.gamegrid = sdk_grap.SudokuGrid(self.width, self.height, parent=self)
         self.numring = sdk_grap.NumberRing(parent=self)
+        self.show_children(False)
 
         self.gamegrid.buttonClicked.connect(self.show_number_ring)
         self.numring.connect_button_signals(self.select_ring_number)
 
         self.gamegrid.setFocus(Qt.MouseFocusReason)
+
+        self.anim.finished.connect(lambda: self.show_children(True))
+        self.toggle_anim(True)
 
     def show_number_ring(self, x=0, y=0):
         if not self.gamegrid.freeze:
@@ -88,6 +127,9 @@ class GameBoard(BoxBoard):
     def game_refocus(self):
         self.gamegrid.freeze = False
         self.gamegrid.setFocus()
+
+    def show_grid(self, state):
+        self.gamegrid.setVisible(state)
 
 
 class MenuBoard(BoxBoard):

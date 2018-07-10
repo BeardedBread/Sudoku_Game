@@ -23,9 +23,6 @@ class SudokuWindow(QGraphicsView):
         self.gameboard = board.GameBoard(400, 400)
         self.menuboard = board.MenuBoard(400, 80)
 
-        #self.gameboard = board.BoxBoard(400, 400)
-        #self.menuboard = board.BoxBoard(400, 50)
-
         self.form = QGraphicsWidget()
         self.layout = QGraphicsLinearLayout(Qt.Vertical)
         self.layout.addItem(self.gameboard)
@@ -40,7 +37,6 @@ class SudokuWindow(QGraphicsView):
         #self.setGeometry(self.scene.sceneRect().toRect())
 
         #self.ensureVisible(self.scene.sceneRect(), 50, 50)
-        #self.fitInView(self.form.boundingRect(), Qt.KeepAspectRatio)
         self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
         self.show()
 

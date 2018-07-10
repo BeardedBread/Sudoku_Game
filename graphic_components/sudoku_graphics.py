@@ -15,6 +15,7 @@ class BaseSudokuItem(QGraphicsObject):
 
     def __init__(self, parent):
         super().__init__(parent=parent)
+        self.setParent(parent)
         self.parent = parent
         self.default_pen = QPen()
         self.default_pen.setColor(Qt.white)
