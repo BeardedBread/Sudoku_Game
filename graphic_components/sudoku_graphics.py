@@ -6,7 +6,8 @@ from PyQt5.QtCore import (QAbstractAnimation, QPointF, Qt, QRectF, QLineF,
 
 from gameplay import sudoku_gameplay as sdk
 from general.extras import bound_value
-from graphic_components import buttons
+from . import buttons
+
 import numpy as np
 
 

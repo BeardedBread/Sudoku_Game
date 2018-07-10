@@ -3,7 +3,7 @@ from PyQt5.Qt import QApplication, QTimer
 from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
                              QGraphicsItemGroup, QGraphicsPathItem)
-from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF,QLineF,
+from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal)
 import sys, math
 

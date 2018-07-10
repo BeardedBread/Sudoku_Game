@@ -5,9 +5,9 @@ from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,
                              QGraphicsItemGroup, QGraphicsWidget, QGraphicsLinearLayout)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPoint, QPointF, Qt, QRectF,QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal)
-import sys, math
+import sys
 
-from graphic_components import buttons, board
+from graphic_components import board
 
 
 class SudokuWindow(QGraphicsView):
@@ -49,7 +49,6 @@ class SudokuWindow(QGraphicsView):
     def freeze_game(self, freeze):
         self.menuboard.show_difficulty(freeze)
         self.gameboard.freeze_gameboard(freeze)
-
 
 
 if __name__ == "__main__":

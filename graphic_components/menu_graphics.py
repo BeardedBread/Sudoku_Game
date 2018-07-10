@@ -5,7 +5,8 @@ from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF)
 
-from graphic_components import buttons
+from . import buttons
+
 
 class TimerDisplayer(QGraphicsWidget):
 

@@ -5,9 +5,10 @@ from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF)
 
-from graphic_components import sudoku_graphics as sdk_grap
-from graphic_components import menu_graphics as menu_grap
+from . import sudoku_graphics as sdk_grap
+from . import menu_graphics as menu_grap
 from general import extras
+
 
 class BoxBoard(QGraphicsWidget):
 
@@ -87,6 +88,7 @@ class GameBoard(BoxBoard):
     def game_refocus(self):
         self.gamegrid.freeze = False
         self.gamegrid.setFocus()
+
 
 class MenuBoard(BoxBoard):
     # TODO: Create the components for the menu: A timer and a difficulty selector
