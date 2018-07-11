@@ -5,6 +5,9 @@ Credits for Generator: http://zhangroup.aporc.org/images/files/Paper_3485.pdf
 
 """
 import random
+import re
+
+filledcell = re.compile('(?!0)')
 
 def cross(array1, array2):
     """Cross product of elements in A and elements in B."""
@@ -138,35 +141,75 @@ def generate_completed_grid():
     return grid
 
 
-def dig_holes(board, difficulty):
-    # Empty out some cells in a completed board
-    pass
+def generate_dig_sequence(difficulty):
     # TODO: Determine the number of givens and lower bound of given
-
-    # TODO: Determine the sequence of digging
-
-    # TODO: Set all cells as "Can be Dug"
-
-    # TODO: Is there a cell that can be dug?
-
-    # TODO: Select the next cell that "can be dug"and Yield unique solution?
-
-    # TODO: Propagate and Output
-
+    if difficulty <= 1:
+        random_number = list(range(81))
+        while len(random_number) > 0:
+            print(len(random_number))
+            yield random_number.pop(random.randint(0, len(random_number)-1))
+    elif difficulty == 2:
+        current = 0
+        while current < 81:
+            row = int(current / 9)
+            if not row % 2:
+                yield current
+            else:
+                yield (row+1) * 9 - 1 - (current % 9)
+            current += 2
+    elif difficulty == 3:
+        current = 0
+        while current < 81:
+            row = int(current / 9)
+            if not row % 2:
+                yield current
+            else:
+                yield (row+1) * 9 - 1 - (current % 9)
+            current += 1
+    elif difficulty == 4:
+        current = 0
+        while current < 81:
+            yield current
+            current += 1
 
 def generate_sudoku_puzzle(difficulty):
     grid = generate_completed_grid()
 
-    puzzle = dig_holes(board, difficulty)
+    if difficulty == 0:
+        n_givens = random.randint(50, 60)
+        lower_bound = 5
+    elif difficulty == 1:
+        n_givens = random.randint(36, 49)
+        lower_bound = 4
+    elif difficulty == 2:
+        n_givens = random.randint(32, 35)
+        lower_bound = 3
+    elif difficulty == 3:
+        n_givens = random.randint(28, 31)
+        lower_bound = 2
+    elif difficulty == 4:
+        n_givens = random.randint(22, 27)
+        lower_bound = 0
 
-    return puzzle
+    dig_sequence = generate_dig_sequence(difficulty)
+    holes = 0
+
+    while holes<81-n_givens:
+        try:
+            i = next(dig_sequence)
+        except StopIteration:
+            print("Reach end of Sequence")
+            break
+        # TODO: Check if givens at current row and column is at lower bound
+
+        # TODO: Dig the current hole and check for uniqueness
+
+    # TODO: Propagate and Output
+    return grid
 
 
 if __name__ == "__main__":
     #print(generate_completed_grid())
-    success = True
-    for i in range(500):
-        if not parse_grid(generate_completed_grid()):
-            print("failed at test" + str(i))
-            success = False
-    print(success)
+    func = generate_dig_sequence(3)
+    #print(next(func))
+    [print(a) for a in next(func)]
