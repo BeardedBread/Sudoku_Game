@@ -8,10 +8,13 @@ import random
 import re
 import numpy as np
 
-from . import Sudoku_Solver as solver
-#import Sudoku_Solver as solver
+if __name__ == "__main__":
+    import Sudoku_Solver as solver
+else:
+    from . import Sudoku_Solver as solver
 
 filledcell = re.compile('(?!0)')
+
 
 def check_for_nonzeros(seq):
     return len([m.start() for m in filledcell.finditer(seq)])
@@ -44,7 +47,6 @@ def generate_dig_sequence(difficulty):
     if difficulty <= 1:
         random_number = list(range(81))
         while len(random_number) > 0:
-            #print(len(random_number))
             yield random_number.pop(random.randint(0, len(random_number)-1))
     elif difficulty == 2:
         current = 0
@@ -94,7 +96,7 @@ def specify_grid_properties(difficulty):
 
 def grid_to_array(grid):
     assert len(grid) == 81
-    sudoku_array = np.zeros((9,9))
+    sudoku_array = np.zeros((9,9), dtype=np.uint8)
     for i in range(81):
         r = int(i / 9)
         c = i % 9
@@ -102,7 +104,60 @@ def grid_to_array(grid):
 
     return sudoku_array
 
-def generate_sudoku_puzzle(difficulty):
+
+def array_to_grid(sudoku_array):
+    assert sudoku_array.shape == (9,9)
+
+    b = [str(num) for num in sudoku_array.reshape((81,))]
+    return ''.join(b)
+
+
+def propagate_array(sudoku_array):
+    prop_seq = [random.randint(0, 2) for _ in range(random.randint(5, 15))]
+
+    #prop_seq = [0]
+    prev_num = -1
+    prev_bigcol = -1
+    prev_rot = -1
+    swap_choice = ((0, 1), (0, 2), (1, 2))
+    print(prop_seq)
+    for num in prop_seq:
+        if num == 0:
+            rot = random.randint(0, 2)
+            if num == prev_num and rot == 2-prev_rot:
+                rot += random.randint(1, 2)
+                rot %= 3
+            sudoku_array[:] = np.rot90(sudoku_array, k=rot+1)
+            prev_rot = rot
+        elif num == 1:
+            choice = random.randint(0, 2)
+            if num == prev_num:
+                choice += random.randint(1, 2)
+                choice %= 3
+            swap_bigcol = swap_choice[choice]
+
+            for i in range(3):
+                sudoku_array[:, [swap_bigcol[0]*3+i, swap_bigcol[1]*3+i]] \
+                    = sudoku_array[:, [swap_bigcol[1] * 3 + i, swap_bigcol[0] * 3 + i]]
+        else:
+            choice = random.randint(0, 2)
+            bigcol_select = random.randint(0, 2)
+            if num == prev_num and bigcol_select == prev_bigcol:
+                choice += random.randint(1, 2)
+                choice %= 3
+            swap_col = swap_choice[choice]
+
+            sudoku_array[:, [bigcol_select * 3 + swap_col[0], bigcol_select * 3 + swap_col[1]]] \
+                = sudoku_array[:, [bigcol_select * 3 + swap_col[1], bigcol_select * 3 + swap_col[0]]]
+
+            prev_bigcol = bigcol_select
+
+        prev_num = num
+
+    print('Propagate Complete')
+
+
+def generate_sudoku_grid(difficulty):
     grid = generate_completed_grid(11)
     n_givens, lower_bound = specify_grid_properties(difficulty)
     dig_sequence = generate_dig_sequence(difficulty)
@@ -114,7 +169,7 @@ def generate_sudoku_puzzle(difficulty):
         except StopIteration:
             print("Reach end of Sequence")
             break
-        row = i % 9
+        row = int(i / 9)
         if check_for_nonzeros(grid[row:row+9]) > lower_bound:
             current_number = grid[i]
             other_numbers = solver.digits.replace(current_number, '')
@@ -127,13 +182,17 @@ def generate_sudoku_puzzle(difficulty):
             if unique:
                 grid = grid[:i] + '0' + grid[i+1:]
                 holes += 1
-    # TODO: Propagate and Output
+
     return grid
 
+def generate_sudoku_puzzle(difficulty):
+    grid = generate_sudoku_grid(difficulty)
+    print('Givens: ', check_for_nonzeros(grid))
+    sudoku_array = grid_to_array(grid)
+    propagate_array(sudoku_array)
+
+    return sudoku_array
 
 if __name__ == "__main__":
-    puzzle = generate_sudoku_puzzle(2)
-    print(check_for_nonzeros(puzzle))
-
-    solver.display_grid(puzzle)
-    solver.display(solver.solve(solver.parse_grid(puzzle)))
+    a = generate_sudoku_puzzle(4)
+    print(a)
