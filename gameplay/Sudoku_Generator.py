@@ -169,8 +169,10 @@ def generate_sudoku_grid(difficulty):
         except StopIteration:
             print("Reach end of Sequence")
             break
-        row = int(i / 9)
-        if check_for_nonzeros(grid[row:row+9]) > lower_bound:
+        row = int(i / 9) * 9
+        col = i % 9
+        if check_for_nonzeros(grid[row:row+9]) > lower_bound and\
+                check_for_nonzeros(grid[col::9]) > lower_bound:
             current_number = grid[i]
             other_numbers = solver.digits.replace(current_number, '')
             unique = True
@@ -194,5 +196,5 @@ def generate_sudoku_puzzle(difficulty):
     return sudoku_array
 
 if __name__ == "__main__":
-    a = generate_sudoku_puzzle(4)
+    a = generate_sudoku_puzzle(3)
     print(a)
