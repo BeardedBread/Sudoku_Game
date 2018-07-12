@@ -52,20 +52,16 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.width = 100
         self.height = 50
 
+        self.diff_menu = DifficultyMenu(self)
+        self.diff_menu.setY(-self.diff_menu.height)
+        self.diff_menu.setVisible(False)
+
         self.box_pen = QPen()
         self.box_pen.setColor(Qt.white)
         self.pen_width = 3
         self.box_pen.setWidth(self.pen_width)
 
-
         self.diff_box = QRectF(0, 0, self.width, self.height)
-        self.diff_buttons = []
-        self.difficulty = ['Easy', 'Normal', 'Hard', 'Insane']
-        for i in range(4):
-            btn = buttons.animBox(0, -(self.height + 10) * (i + 1),
-                            self.width, self.height, self.difficulty[i], parent=self)
-            btn.setVisible(False)
-            self.diff_buttons.append(btn)
 
         self.setMinimumSize(QSizeF(self.width, self.height))
         self.setMaximumSize(QSizeF(self.width, self.height))
@@ -74,43 +70,64 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.size_policy.setHeightForWidth(True)
         self.setSizePolicy(self.size_policy)
 
-        self.selected = False
-        self.focus_changed = False
+        self.setAcceptedMouseButtons(Qt.LeftButton)
+        self.setFocusPolicy(Qt.ClickFocus)
+
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
+
+        self.diff_menu.menuClicked.connect(self.selected_difficulty)
 
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
         painter.drawRect(self.diff_box)
         painter.drawText(self.diff_box, Qt.AlignCenter, "Normal")
-        #painter.drawRect(self.boundingRect())
+        painter.drawRect(self.boundingRect())
 
     def mousePressEvent(self, event):
-        #if not self.focus_changed:
-        print('Click')
-        if not self.selected:
-            self.selected = True
-            for btn in self.diff_buttons:
-                btn.setVisible(self.selected)
-            self.update()
+        print('Beep')
+        if not self.diff_menu.isVisible():
             self.setFocus()
-            #    self.focus_changed = False
-
-    def boundingRect(self):
-        if self.selected:
-            return QRectF(-10, -(self.height+10)*4 -10, self.width+20, (self.height+10) * 4+5)
+            self.diff_menu.setVisible(True)
         else:
-            return super().boundingRect()
-
-    def focusOutEvent(self, event):
-        print("diff focus out")
-        self.selected = False
-        #self.focus_changed = True
-        #for btn in self.diff_buttons:
-        #    btn.setVisible(False)
-
-        self.notFocus.emit()
+            self.diff_menu.setVisible(False)
+            self.notFocus.emit()
 
     def connect_buttons_signal(self, func):
+        self.diff_menu.connect_buttons_signal(func)
         print('Diff buttons connected')
+
+    def selected_difficulty(self):
+        self.diff_menu.setVisible(False)
+        self.notFocus.emit()
+
+    def focusOutEvent(self, event):
+        print('Menu lose focus')
+        self.notFocus.emit()
+
+
+class DifficultyMenu(QGraphicsWidget):
+
+    menuClicked = pyqtSignal()
+
+    def __init__(self, parent):
+        super().__init__(parent=parent)
+
+        self.diff_buttons = []
+        self.difficulty = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
+        self.btn_height = 50
+        self.btn_width = 100
+        self.height = (self.btn_height + 10) * 5
+        self.width = self.btn_width
+
+        for i in range(5):
+            btn = buttons.animBox(0, (self.btn_height + 10) * i,
+                                  self.btn_width, self.btn_height, self.difficulty[i], parent=self)
+            self.diff_buttons.append(btn)
+
+    def connect_buttons_signal(self, func):
         for btn in self.diff_buttons:
             btn.buttonClicked.connect(func)
+            btn.buttonClicked.connect(self.clicked_on)
+
+    def clicked_on(self):
+        self.menuClicked.emit()

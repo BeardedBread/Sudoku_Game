@@ -89,7 +89,7 @@ class animBox(QGraphicsObject):
         painter.setPen(self.default_pen)
         painter.fillRect(self.btn_rect, Qt.black)
         painter.drawRect(self.btn_rect)
-        painter.drawText(self.btn_rect,self.text)
+        painter.drawText(self.btn_rect, Qt.AlignCenter, self.text)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
