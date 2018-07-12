@@ -13,11 +13,11 @@ if __name__ == "__main__":
 else:
     from . import Sudoku_Solver as solver
 
-filledcell = re.compile('(?!0)')
+givenregex = re.compile('(?!0)')
 
 
-def check_for_nonzeros(seq):
-    return len([m.start() for m in filledcell.finditer(seq)])
+def check_for_givens(seq):
+    return len([m.start() for m in givenregex.finditer(seq)])-1
 
 
 def generate_completed_grid(n):
@@ -112,8 +112,8 @@ def array_to_grid(sudoku_array):
     return ''.join(b)
 
 
-def propagate_array(sudoku_array):
-    prop_seq = [random.randint(0, 2) for _ in range(random.randint(5, 15))]
+def propagate_array(sudoku_array, N):
+    prop_seq = [random.randint(0, 2) for _ in range(N)]
 
     #prop_seq = [0]
     prev_num = -1
@@ -171,8 +171,8 @@ def generate_sudoku_grid(difficulty):
             break
         row = int(i / 9) * 9
         col = i % 9
-        if check_for_nonzeros(grid[row:row+9]) > lower_bound and\
-                check_for_nonzeros(grid[col::9]) > lower_bound:
+        if check_for_givens(grid[row:row+9]) > lower_bound and\
+                check_for_givens(grid[col::9]) > lower_bound:
             current_number = grid[i]
             other_numbers = solver.digits.replace(current_number, '')
             unique = True
@@ -189,9 +189,9 @@ def generate_sudoku_grid(difficulty):
 
 def generate_sudoku_puzzle(difficulty):
     grid = generate_sudoku_grid(difficulty)
-    print('Givens: ', check_for_nonzeros(grid))
+    print('Givens: ', check_for_givens(grid))
     sudoku_array = grid_to_array(grid)
-    propagate_array(sudoku_array)
+    propagate_array(sudoku_array, 18)
 
     return sudoku_array
 
