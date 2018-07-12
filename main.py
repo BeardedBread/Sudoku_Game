@@ -46,7 +46,7 @@ class SudokuWindow(QGraphicsView):
 
         # Cross-Board signal connections
         self.menuboard.diff_display.notFocus.connect(self.gameboard.game_refocus)
-
+        self.menuboard.diff_display.connect_buttons_signal(self.gameboard.new_game)
 
 if __name__ == "__main__":
     app = 0

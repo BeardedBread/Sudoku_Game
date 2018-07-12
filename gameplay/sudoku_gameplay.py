@@ -1,4 +1,5 @@
 import numpy as np
+from . import Sudoku_Generator as sdk_gen
 
 EMPTY = 0
 VALID = 1
@@ -28,7 +29,7 @@ class SudokuSystem:
             self.generate_test_board()
 
     def clear_grid(self):
-        self.number_grid = 0
+        self.number_grid[:] = 0
         self.cell_status = EMPTY
         for i in range(9):
             for j in range(9):
@@ -121,7 +122,9 @@ class SudokuSystem:
 
     def generate_random_board(self):
         # TODO: Write function to generate a random board
-        pass
+        self.clear_grid()
+        self.number_grid[:] = sdk_gen.grid_to_array(sdk_gen.generate_sudoku_puzzle(2))
+        self.cell_status = self.number_grid > 0 * FIXED
 
     def check_valid_moves(self):
         # TODO: Write function to return a possible valid numbers for a cell

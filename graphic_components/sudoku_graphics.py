@@ -133,6 +133,10 @@ class SudokuGrid(BaseSudokuItem):
 
         self.anim.start()
 
+    def generate_new_grid(self):
+        self.sudoku_grid.generate_random_board()
+        self.update()
+
     def replace_cell_number(self, val):
         self.sudoku_grid.replace_cell_number(self.mouse_h, self.mouse_w, val)
         self.grid_painter.update()

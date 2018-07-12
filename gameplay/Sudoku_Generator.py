@@ -6,9 +6,10 @@ Credits for Generator: http://zhangroup.aporc.org/images/files/Paper_3485.pdf
 """
 import random
 import re
+import numpy as np
 
-#from . import Sudoku_Solver as solver
-import Sudoku_Solver as solver
+from . import Sudoku_Solver as solver
+#import Sudoku_Solver as solver
 
 filledcell = re.compile('(?!0)')
 
@@ -47,12 +48,13 @@ def generate_dig_sequence(difficulty):
             yield random_number.pop(random.randint(0, len(random_number)-1))
     elif difficulty == 2:
         current = 0
-        while current < 81:
-            row = int(current / 9)
+        while current < 162:
+            actual = current % 81
+            row = int(actual / 9)
             if not row % 2:
-                yield current
+                yield actual
             else:
-                yield (row+1) * 9 - 1 - (current % 9)
+                yield (row+1) * 9 - 1 - (actual % 9) % 81
             current += 2
     elif difficulty == 3:
         current = 0
@@ -68,6 +70,7 @@ def generate_dig_sequence(difficulty):
         while current < 81:
             yield current
             current += 1
+
 
 def specify_grid_properties(difficulty):
     if difficulty == 0:
@@ -89,9 +92,19 @@ def specify_grid_properties(difficulty):
     return n_givens, lower_bound
 
 
+def grid_to_array(grid):
+    assert len(grid) == 81
+    sudoku_array = np.zeros((9,9))
+    for i in range(81):
+        r = int(i / 9)
+        c = i % 9
+        sudoku_array[r, c] = int(grid[i])
+
+    return sudoku_array
+
 def generate_sudoku_puzzle(difficulty):
     grid = generate_completed_grid(11)
-    n_givens, lower_bound = specify_grid_properties()
+    n_givens, lower_bound = specify_grid_properties(difficulty)
     dig_sequence = generate_dig_sequence(difficulty)
     holes = 0
 
@@ -119,7 +132,7 @@ def generate_sudoku_puzzle(difficulty):
 
 
 if __name__ == "__main__":
-    puzzle = generate_sudoku_puzzle(4)
+    puzzle = generate_sudoku_puzzle(2)
     print(check_for_nonzeros(puzzle))
 
     solver.display_grid(puzzle)

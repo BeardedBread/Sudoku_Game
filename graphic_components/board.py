@@ -145,6 +145,10 @@ class GameBoard(BoxBoard):
     def show_playmenu(self, state):
         self.playmenu.setVisible(state)
 
+    def new_game(self):
+        print('new game selected')
+        self.gamegrid.generate_new_grid()
+
 
 class MenuBoard(BoxBoard):
     """

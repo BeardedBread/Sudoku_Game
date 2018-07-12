@@ -87,15 +87,13 @@ class DifficultyDisplayer(QGraphicsWidget):
     def mousePressEvent(self, event):
         #if not self.focus_changed:
         print('Click')
-        self.selected = not self.selected
-        for btn in self.diff_buttons:
-            btn.setVisible(self.selected)
-        self.update()
-        if self.selected:
+        if not self.selected:
+            self.selected = True
+            for btn in self.diff_buttons:
+                btn.setVisible(self.selected)
+            self.update()
             self.setFocus()
-        else:
-            print('Out of focus')
-        #    self.focus_changed = False
+            #    self.focus_changed = False
 
     def boundingRect(self):
         if self.selected:
@@ -106,8 +104,13 @@ class DifficultyDisplayer(QGraphicsWidget):
     def focusOutEvent(self, event):
         print("diff focus out")
         self.selected = False
-        self.focus_changed = True
-        for btn in self.diff_buttons:
-            btn.setVisible(False)
+        #self.focus_changed = True
+        #for btn in self.diff_buttons:
+        #    btn.setVisible(False)
 
         self.notFocus.emit()
+
+    def connect_buttons_signal(self, func):
+        print('Diff buttons connected')
+        for btn in self.diff_buttons:
+            btn.buttonClicked.connect(func)
