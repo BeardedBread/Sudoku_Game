@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
+from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont, QTransform, QWheelEvent
 from PyQt5.Qt import QApplication, QTimer
 from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
@@ -47,6 +47,11 @@ class SudokuWindow(QGraphicsView):
         # Cross-Board signal connections
         self.menuboard.diff_display.notFocus.connect(self.gameboard.game_refocus)
         self.menuboard.diff_display.connect_buttons_signal(self.gameboard.new_game)
+
+    def resizeEvent(self, event):
+        self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
+        super().resizeEvent(event)
+
 
 if __name__ == "__main__":
     app = 0
