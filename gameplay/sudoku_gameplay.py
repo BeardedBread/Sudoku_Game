@@ -30,7 +30,7 @@ class SudokuSystem:
 
     def clear_grid(self):
         self.number_grid[:] = 0
-        self.cell_status = EMPTY
+        self.cell_status[:] = FIXED
         for i in range(9):
             for j in range(9):
                 while self.offending_cells[i][j]:
@@ -121,11 +121,9 @@ class SudokuSystem:
             self.cell_status[r, c] = EMPTY
 
     def generate_random_board(self):
-        # TODO: Write function to generate a random board
         self.clear_grid()
         self.number_grid[:] = sdk_gen.generate_sudoku_puzzle(2)
-        self.cell_status = self.number_grid > 0 * FIXED
+        row, col = np.where(self.number_grid == 0)
 
-    def check_valid_moves(self):
-        # TODO: Write function to return a possible valid numbers for a cell
-        pass
+        for r, c in zip(row, col):
+            self.cell_status[r, c] = EMPTY

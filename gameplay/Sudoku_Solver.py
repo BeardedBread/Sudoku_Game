@@ -1,3 +1,8 @@
+# TODO: Rewrite this to use array instead?
+"""
+Module to solve any Sudoku Board
+Credits for Solver : http://norvig.com/sudoku.html
+"""
 def cross(array1, array2):
     """Cross product of elements in A and elements in B."""
     return [a+b for a in array1 for b in array2]

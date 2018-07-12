@@ -1,8 +1,6 @@
 """
 Module that generates a valid Sudoku Puzzle
-Credits for Solver : http://norvig.com/sudoku.html
 Credits for Generator: http://zhangroup.aporc.org/images/files/Paper_3485.pdf
-
 """
 import random
 import re
@@ -13,11 +11,11 @@ if __name__ == "__main__":
 else:
     from . import Sudoku_Solver as solver
 
-givenregex = re.compile('(?!0)')
+given_regex = re.compile('(?!0)')
 
 
 def check_for_givens(seq):
-    return len([m.start() for m in givenregex.finditer(seq)])-1
+    return len([m.start() for m in given_regex.finditer(seq)])-1
 
 
 def generate_completed_grid(n):
@@ -26,7 +24,6 @@ def generate_completed_grid(n):
     values = solver.parse_grid('0' * 81)
     valid_assignments = 0
     while valid_assignments < n:
-        # display(values)
         cell_to_assign = solver.squares[random.randint(0, 80)]
         valid_values = values[cell_to_assign]
         if len(valid_values):
@@ -43,7 +40,6 @@ def generate_completed_grid(n):
 
 
 def generate_dig_sequence(difficulty):
-    # TODO: Determine the number of givens and lower bound of given
     if difficulty <= 1:
         random_number = list(range(81))
         while len(random_number) > 0:
@@ -187,6 +183,7 @@ def generate_sudoku_grid(difficulty):
 
     return grid
 
+
 def generate_sudoku_puzzle(difficulty):
     grid = generate_sudoku_grid(difficulty)
     print('Givens: ', check_for_givens(grid))
@@ -194,6 +191,7 @@ def generate_sudoku_puzzle(difficulty):
     propagate_array(sudoku_array, 18)
 
     return sudoku_array
+
 
 if __name__ == "__main__":
     a = generate_sudoku_puzzle(3)
