@@ -66,7 +66,7 @@ class animBox(QGraphicsObject):
             self.setAcceptedMouseButtons(Qt.NoButton)
             self.setAcceptHoverEvents(False)
         else:
-            self.setAcceptedMouseButtons(Qt.NoButton)
+            self.setAcceptedMouseButtons(Qt.LeftButton)
             self.setAcceptHoverEvents(True)
 
     # Toggle the animation to be play forward or backward

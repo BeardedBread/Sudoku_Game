@@ -288,7 +288,6 @@ class NumberRing(BaseSudokuItem):
 
     def focusOutEvent(self, event):
         self.toggle_anim(False)
-        #self.setVisible(False)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
