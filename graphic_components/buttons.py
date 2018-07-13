@@ -47,9 +47,7 @@ class animBox(QGraphicsObject):
 
         self.line_order = [self.up, self.right, self.down, self.left]
 
-        self.setAcceptHoverEvents(True)
-        #self.hoverEnter.connect(lambda: self.toggle_anim(True))
-        #self.hoverExit.connect(lambda: self.toggle_anim(False))
+        self.set_freeze(False)
 
         # Length of the box to be drawn
         self.length = 0
@@ -152,6 +150,5 @@ class animBox(QGraphicsObject):
         super().hoverLeaveEvent(event)
 
     def mousePressEvent(self, event):
-        #if ~self.freeze:
         self.length = 0
         self.buttonClicked.emit(self.text)
