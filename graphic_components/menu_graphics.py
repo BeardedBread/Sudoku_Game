@@ -11,6 +11,7 @@ from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLin
 
 from . import buttons
 
+DIFFICULTIES = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
 
 class TimerDisplayer(QGraphicsWidget):
 
@@ -113,7 +114,7 @@ class DifficultyMenu(QGraphicsWidget):
         super().__init__(parent=parent)
 
         self.diff_buttons = []
-        self.difficulty = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
+        #self.difficulty = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
         self.btn_height = height
         self.btn_width = width
         self.height = (self.btn_height + 10) * 5
@@ -121,14 +122,9 @@ class DifficultyMenu(QGraphicsWidget):
 
         for i in range(5):
             btn = buttons.animBox(0, (self.btn_height + 10) * i,
-                                  self.btn_width, self.btn_height, self.difficulty[i], parent=self)
+                                  self.btn_width, self.btn_height, DIFFICULTIES[i], parent=self)
             btn.buttonClicked.connect(self.clicked_on)
             self.diff_buttons.append(btn)
-
-    #def connect_buttons_signal(self, func):
-    #    for btn in self.diff_buttons:
-            #btn.buttonClicked.connect(func)
-    #        btn.buttonClicked.connect(self.clicked_on)
 
     def clicked_on(self, string):
         self.menuClicked.emit(string)

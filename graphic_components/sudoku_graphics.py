@@ -134,8 +134,8 @@ class SudokuGrid(BaseSudokuItem):
 
         self.anim.start()
 
-    def generate_new_grid(self):
-        self.sudoku_grid.generate_random_board()
+    def generate_new_grid(self, difficulty):
+        self.sudoku_grid.generate_random_board(difficulty)
         self.update()
 
     def replace_cell_number(self, val):
@@ -258,7 +258,7 @@ class NumberRing(BaseSudokuItem):
 
 
 class PlayMenu(BaseSudokuItem):
-    buttonClicked = pyqtSignal()
+    buttonClicked = pyqtSignal(str)
 
     def __init__(self, parent):
         super().__init__(parent=parent)
@@ -276,6 +276,6 @@ class PlayMenu(BaseSudokuItem):
     def boundingRect(self):
         return self.diff_select.boundingRect()
 
-    def difficulty_selected(self):
+    def difficulty_selected(self, string):
         self.setVisible(False)
-        self.buttonClicked.emit()
+        self.buttonClicked.emit(string)

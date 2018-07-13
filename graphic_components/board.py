@@ -115,7 +115,7 @@ class GameBoard(BoxBoard):
         self.gamegrid.setFocus(Qt.MouseFocusReason)
 
         self.anim.finished.connect(lambda: self.show_playmenu(True))
-        self.playmenu.buttonClicked.connect(lambda: self.show_grid(True))
+        self.playmenu.buttonClicked.connect(self.new_game)
         self.toggle_anim(True)
 
     def show_number_ring(self, x=0, y=0):
@@ -138,16 +138,18 @@ class GameBoard(BoxBoard):
         self.gamegrid.setFocus()
 
     def show_grid(self, state):
-        self.gamegrid.setVisible(state)
-        if state:
-            self.gamegrid.toggle_anim(True)
+        if state ^ self.gamegrid.isVisible():
+            self.gamegrid.setVisible(state)
+            if state:
+                self.gamegrid.toggle_anim(True)
 
     def show_playmenu(self, state):
         self.playmenu.setVisible(state)
 
-    def new_game(self):
+    def new_game(self, string):
         print('new game selected')
-        self.gamegrid.generate_new_grid()
+        self.gamegrid.generate_new_grid(menu_grap.DIFFICULTIES.index(string))
+        self.show_grid(True)
 
 
 class MenuBoard(BoxBoard):
@@ -173,7 +175,7 @@ class MenuBoard(BoxBoard):
         self.setLayout(self.layout)
 
         self.show_children(False)
-        self.anim.finished.connect(lambda: self.show_children(True))
+        #self.anim.finished.connect(lambda: self.show_children(True))
         self.toggle_anim(True)
 
     def show_difficulty(self, state):

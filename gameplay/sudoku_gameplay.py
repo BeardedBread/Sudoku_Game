@@ -120,9 +120,9 @@ class SudokuSystem:
         for r, c in zip(row, col):
             self.cell_status[r, c] = EMPTY
 
-    def generate_random_board(self):
+    def generate_random_board(self, difficulty):
         self.clear_grid()
-        self.number_grid[:] = sdk_gen.generate_sudoku_puzzle(2)
+        self.number_grid[:] = sdk_gen.generate_sudoku_puzzle(difficulty)
         row, col = np.where(self.number_grid == 0)
 
         for r, c in zip(row, col):
