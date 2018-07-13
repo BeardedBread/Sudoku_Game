@@ -24,6 +24,7 @@ class BaseSudokuItem(QGraphicsObject):
         self.default_pen = QPen()
         self.default_pen.setColor(Qt.white)
         self.default_pen.setWidth(1)
+        self.default_font = QFont("Helvetica", pointSize=14)
 
         self.freeze = False
 
@@ -34,10 +35,14 @@ class NumberPainter(BaseSudokuItem):
     def __init__(self, parent, grid):
         super().__init__(parent=parent)
         self.sudoku_grid = grid
+
         self.invalid_pen = QPen()
         self.invalid_pen.setColor(Qt.lightGray)
-        self.invalid_unit = 8
-        self.invalid_pen.setWidth(self.invalid_unit)
+        self.invalid_font = QFont("Helvetica", pointSize=12, italic=True)
+
+        self.fixed_pen = QPen()
+        self.fixed_pen.setColor(Qt.white)
+        self.fixed_font = QFont("Helvetica", pointSize=14, weight=QFont.Bold)
 
     def paint(self, painter, style, widget=None):
         for i in range(9):
@@ -52,14 +57,19 @@ class NumberPainter(BaseSudokuItem):
         if val == 0:
             val = ''
         else:
-            if self.sudoku_grid.get_cell_status(h, w) == sdk.VALID:
+            status = self.sudoku_grid.get_cell_status(h, w)
+            if status == sdk.VALID:
                 painter.setPen(self.default_pen)
+                painter.setFont(self.default_font)
+            elif status == sdk.FIXED:
+                painter.setPen(self.fixed_pen)
+                painter.setFont(self.fixed_font)
             else:
                 painter.setPen(self.invalid_pen)
+                painter.setFont(self.invalid_font)
 
-        painter.drawText((w+0.5)*self.parent.cell_width-5,
-                         (h+0.5)*self.parent.cell_height+5,
-                         str(val))
+        painter.drawText(QRectF(w*self.parent.cell_width, h*self.parent.cell_height,
+                                self.parent.cell_width, self.parent.cell_height), Qt.AlignCenter, str(val))
 
 
 class SudokuGrid(BaseSudokuItem):
