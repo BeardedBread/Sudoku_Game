@@ -124,6 +124,7 @@ class GameBoard(BoxBoard):
             self.numring.setPos(x, y)
             self.numring.setVisible(True)
             self.numring.setFocus()
+            self.numring.toggle_anim(True)
         else:
             self.gamegrid.freeze = False
             self.gamegrid.setFocus()

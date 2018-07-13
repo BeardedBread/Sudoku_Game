@@ -169,8 +169,6 @@ class SudokuGrid(BaseSudokuItem):
             painter.setPen(self.selection_pen)
             painter.drawRect(self.selection_box)
 
-        # TODO: Possibly draw the fixed cell here
-
     def hoverMoveEvent(self, event):
         if not (self.freeze and self.drawn):
             box_w = bound_value(0, int(event.pos().x()/self.cell_width), 8)
@@ -227,24 +225,49 @@ class NumberRing(BaseSudokuItem):
         super().__init__(parent=parent)
 
         self.setVisible(False)
-        self.radius = 48
         self.cell_width = 24
         self.cell_height = 24
 
         self.cell_buttons = []
         for i in range(10):
-            cell_x = self.radius * np.sin(np.deg2rad(360/10*i)) - self.cell_width/2
-            cell_y = - self.radius * np.cos(np.deg2rad(360 / 10 * i)) - self.cell_height/2
             if i == 0:
                 cell_string = 'X'
             else:
                 cell_string = str(i)
-            btn = buttons.animBox(cell_x, cell_y, self.cell_width,
+            btn = buttons.animBox(0, 0, self.cell_width,
                                   self.cell_height, cell_string, parent=self)
-
             self.cell_buttons.append(btn)
 
+        self.radius = 54
+        # Set up the radius to be animated
+        self.anim = QPropertyAnimation(self, b'radius')
+        self.anim.setDuration(100)  # Animation speed
+        self.anim.setStartValue(0)
+        for t in range(1, 10):
+            self.anim.setKeyValueAt(t / 10, self.radius * t / 10)
+        self.anim.setEndValue(self.radius)
+        self.anim.finished.connect(self.finish_animation)
+
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
+
+        self.freeze_buttons(True)
+
+    def finish_animation(self):
+        if self.radius == 0:
+            self.setVisible(False)
+            self.freeze_buttons(True)
+        else:
+            self.freeze_buttons(False)
+
+    # Toggle the animation to be play forward or backward
+    def toggle_anim(self, toggling):
+        self.freeze_buttons(True)
+        if toggling:
+            self.anim.setDirection(QAbstractAnimation.Forward)
+        else:
+            self.anim.setDirection(QAbstractAnimation.Backward)
+
+        self.anim.start()
 
     def boundingRect(self):
         return QRectF(-5-self.radius-self.cell_width/2, -5-self.radius-self.cell_height/2,
@@ -259,12 +282,32 @@ class NumberRing(BaseSudokuItem):
             btn.buttonClicked.connect(func)
         print('Buttons Connected')
             
-    #def freeze_buttons(self, state):
-    #    for btn in self.cell_buttons:
-    #        btn.freeze = state
+    def freeze_buttons(self, freeze):
+        for btn in self.cell_buttons:
+            btn.set_freeze(freeze)
 
     def focusOutEvent(self, event):
-        self.setVisible(False)
+        self.toggle_anim(False)
+        #self.setVisible(False)
+
+    # Defining the length to be drawn as a pyqtProperty
+    @pyqtProperty(float)
+    def radius(self):
+        return self._radius
+
+    # Determine the length of the four lines to be drawn
+    @radius.setter
+    def radius(self, value):
+        self._radius = value
+
+        for i, btn in enumerate(self.cell_buttons):
+            cell_x = value * np.sin(np.deg2rad(360/10*i)) - self.cell_width/2
+            cell_y = - value * np.cos(np.deg2rad(360 / 10 * i)) - self.cell_height/2
+
+            btn.setX(cell_x)
+            btn.setY(cell_y)
+
+        self.update()
 
 
 class PlayMenu(BaseSudokuItem):
