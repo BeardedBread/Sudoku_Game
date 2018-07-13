@@ -98,6 +98,7 @@ class GameBoard(BoxBoard):
     It is intended to swap the interface depending on whether the game is ongoing
     """
     boxClicked = pyqtSignal(bool)
+    newGameSelected = pyqtSignal(str)
 
     def __init__(self, width, height, parent=None):
         super().__init__(width, height, parent)
@@ -150,6 +151,7 @@ class GameBoard(BoxBoard):
         print('new game selected')
         self.gamegrid.generate_new_grid(menu_grap.DIFFICULTIES.index(string))
         self.show_grid(True)
+        self.newGameSelected.emit(string)
 
 
 class MenuBoard(BoxBoard):
@@ -179,10 +181,12 @@ class MenuBoard(BoxBoard):
         self.toggle_anim(True)
 
     def show_difficulty(self, state):
-        print(state)
         self.diff_display.selected = state
         self.diff_display.update()
 
     def show_children(self, state):
         for chd in self.children():
             chd.setVisible(state)
+
+    def set_difficulty_text(self, string):
+        self.diff_display.set_text(string)

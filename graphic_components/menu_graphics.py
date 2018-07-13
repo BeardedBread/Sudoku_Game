@@ -37,7 +37,6 @@ class TimerDisplayer(QGraphicsWidget):
 
     def paint(self, painter, style, widget=None):
         box = self.timer_box
-        #print(self.size().width())
         painter.setPen(self.box_pen)
         painter.drawRect(box)
         painter.drawText(box, Qt.AlignCenter, "00:00")
@@ -56,6 +55,8 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.diff_menu = DifficultyMenu(self.width, self.height, self)
         self.diff_menu.setY(-self.diff_menu.height)
         self.diff_menu.setVisible(False)
+
+        self.text = "None"
 
         self.box_pen = QPen()
         self.box_pen.setColor(Qt.white)
@@ -81,7 +82,7 @@ class DifficultyDisplayer(QGraphicsWidget):
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
         painter.drawRect(self.diff_box)
-        painter.drawText(self.diff_box, Qt.AlignCenter, "Normal")
+        painter.drawText(self.diff_box, Qt.AlignCenter, self.text)
         painter.drawRect(self.boundingRect())
 
     def mousePressEvent(self, event):
@@ -97,9 +98,14 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.diff_menu.menuClicked.connect(func)
         print('Diff buttons connected')
 
-    def selected_difficulty(self):
+    def selected_difficulty(self, string):
         self.diff_menu.setVisible(False)
+        self.set_text(string)
         self.notFocus.emit()
+
+    def set_text(self, string):
+        self.text = string
+        self.update()
 
     def focusOutEvent(self, event):
         print('Menu lose focus')

@@ -45,6 +45,8 @@ class SudokuWindow(QGraphicsView):
         self.show()
 
         # Cross-Board signal connections
+        self.gameboard.newGameSelected.connect(lambda: self.menuboard.show_children(True))
+        self.gameboard.newGameSelected.connect(self.menuboard.set_difficulty_text)
         self.menuboard.diff_display.notFocus.connect(self.gameboard.game_refocus)
         self.menuboard.diff_display.connect_buttons_signal(self.gameboard.new_game)
 
