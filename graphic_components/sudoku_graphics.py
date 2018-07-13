@@ -10,6 +10,7 @@ from PyQt5.QtCore import (QAbstractAnimation, QPointF, Qt, QRectF, QLineF,
 from gameplay import sudoku_gameplay as sdk
 from general.extras import bound_value
 from . import buttons
+from . import menu_graphics as menu_grap
 
 import numpy as np
 
@@ -264,15 +265,17 @@ class PlayMenu(BaseSudokuItem):
 
         self.rect = self.parent.boundingRect()
 
+        self.diff_select = menu_grap.DifficultyMenu(self.rect.width()/2, self.rect.height()/8, self)
+        self.diff_select.setX(self.rect.width()/4)
+        self.diff_select.setY((self.rect.height() - self.diff_select.height)/2)
+        self.diff_select.menuClicked.connect(self.difficulty_selected)
+
     def paint(self, painter, style, widget=None):
-        painter.setPen(self.default_pen)
-        painter.drawRect(self.rect.width()/2, self.rect.height()/2,
-                         100, 100)
+        pass
 
     def boundingRect(self):
-        return QRectF(self.rect.width()/2, self.rect.height()/2,
-                         100, 100)
+        return self.diff_select.boundingRect()
 
-    def mousePressEvent(self, ev):
+    def difficulty_selected(self):
         self.setVisible(False)
         self.buttonClicked.emit()

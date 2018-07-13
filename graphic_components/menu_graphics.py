@@ -52,7 +52,7 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.width = 100
         self.height = 50
 
-        self.diff_menu = DifficultyMenu(self)
+        self.diff_menu = DifficultyMenu(self.width, self.height, self)
         self.diff_menu.setY(-self.diff_menu.height)
         self.diff_menu.setVisible(False)
 
@@ -93,7 +93,7 @@ class DifficultyDisplayer(QGraphicsWidget):
             self.notFocus.emit()
 
     def connect_buttons_signal(self, func):
-        self.diff_menu.connect_buttons_signal(func)
+        self.diff_menu.menuClicked.connect(func)
         print('Diff buttons connected')
 
     def selected_difficulty(self):
@@ -107,27 +107,28 @@ class DifficultyDisplayer(QGraphicsWidget):
 
 class DifficultyMenu(QGraphicsWidget):
 
-    menuClicked = pyqtSignal()
+    menuClicked = pyqtSignal(str)
 
-    def __init__(self, parent):
+    def __init__(self, width, height, parent=None):
         super().__init__(parent=parent)
 
         self.diff_buttons = []
         self.difficulty = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
-        self.btn_height = 50
-        self.btn_width = 100
+        self.btn_height = height
+        self.btn_width = width
         self.height = (self.btn_height + 10) * 5
         self.width = self.btn_width
 
         for i in range(5):
             btn = buttons.animBox(0, (self.btn_height + 10) * i,
                                   self.btn_width, self.btn_height, self.difficulty[i], parent=self)
+            btn.buttonClicked.connect(self.clicked_on)
             self.diff_buttons.append(btn)
 
-    def connect_buttons_signal(self, func):
-        for btn in self.diff_buttons:
-            btn.buttonClicked.connect(func)
-            btn.buttonClicked.connect(self.clicked_on)
+    #def connect_buttons_signal(self, func):
+    #    for btn in self.diff_buttons:
+            #btn.buttonClicked.connect(func)
+    #        btn.buttonClicked.connect(self.clicked_on)
 
-    def clicked_on(self):
-        self.menuClicked.emit()
+    def clicked_on(self, string):
+        self.menuClicked.emit(string)
