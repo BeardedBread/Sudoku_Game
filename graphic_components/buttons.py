@@ -61,13 +61,13 @@ class animBox(QGraphicsObject):
             self.anim.setKeyValueAt(t / 10, self.logistic_func(t / 10))
         self.anim.setEndValue(self.circumference)
 
-        self.freeze = False
-
     def set_freeze(self, freeze):
-        self.freeze = freeze
-        self.setAcceptHoverEvents(~freeze)
         if freeze:
-            self.length = 0
+            self.setAcceptedMouseButtons(Qt.NoButton)
+            self.setAcceptHoverEvents(False)
+        else:
+            self.setAcceptedMouseButtons(Qt.NoButton)
+            self.setAcceptHoverEvents(True)
 
     # Toggle the animation to be play forward or backward
     def toggle_anim(self, toggling):
@@ -138,21 +138,20 @@ class animBox(QGraphicsObject):
 
     # Reimplemented hoverEvents to detect the mouse and toggle the animation
     def hoverEnterEvent(self, event):
-        if ~self.detected and ~self.freeze:
-            print('lol')
+        if ~self.detected:
             self.hoverEnter.emit()
             self.detected = True
             self.toggle_anim(True)
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
-        if self.detected and ~self.freeze:
+        if self.detected:
             self.hoverExit.emit()
             self.detected = False
             self.toggle_anim(False)
         super().hoverLeaveEvent(event)
 
     def mousePressEvent(self, event):
-        if ~self.freeze:
-            self.length = 0
-            self.buttonClicked.emit(self.text)
+        #if ~self.freeze:
+        self.length = 0
+        self.buttonClicked.emit(self.text)
