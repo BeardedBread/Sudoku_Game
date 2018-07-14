@@ -74,12 +74,10 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.setSizePolicy(self.size_policy)
 
         self.setAcceptedMouseButtons(Qt.LeftButton)
-        self.setFocusPolicy(Qt.ClickFocus)
-
-        self.setFlag(QGraphicsItem.ItemIsFocusable, True)
 
         self.diff_menu.menuClicked.connect(self.selected_difficulty)
         self.diff_menu.menuClicked.connect(self.difficultySelected.emit)
+        self.diff_menu.loseFocus.connect(self.notFocus.emit)
 
 
     def paint(self, painter, style, widget=None):
@@ -89,9 +87,8 @@ class DifficultyDisplayer(QGraphicsWidget):
         painter.drawRect(self.boundingRect())
 
     def mousePressEvent(self, event):
-        print('Beep')
         if not self.diff_menu.isVisible():
-            self.setFocus()
+            self.diff_menu.setFocus()
             self.diff_menu.setVisible(True)
         else:
             self.diff_menu.setVisible(False)
@@ -106,11 +103,6 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.text = string
         self.update()
 
-    def focusOutEvent(self, event):
-        print('Menu lose focus')
-        self.notFocus.emit()
-        #self.diff_menu.setVisible(False)
-
     def boundingRect(self):
         return QRectF(0, 0, self.width, self.height)
 
@@ -118,9 +110,11 @@ class DifficultyDisplayer(QGraphicsWidget):
 class DifficultyMenu(QGraphicsWidget):
 
     menuClicked = pyqtSignal(str)
+    loseFocus = pyqtSignal()
 
     def __init__(self, width, height, parent=None):
         super().__init__(parent=parent)
+        self.setParent(parent)
 
         self.diff_buttons = []
         self.btn_height = height
@@ -134,8 +128,18 @@ class DifficultyMenu(QGraphicsWidget):
             btn.buttonClicked.connect(self.clicked_on)
             self.diff_buttons.append(btn)
 
+        self.setFlag(QGraphicsItem.ItemIsFocusable, True)
+        self.setFocusPolicy(Qt.ClickFocus)
+
+
     def boundingRect(self):
         return QRectF(0, 0, self.width, self.height)
 
     def clicked_on(self, string):
+        print('click!!')
         self.menuClicked.emit(string)
+
+    def focusOutEvent(self, event):
+        if not any(btn.isUnderMouse() for btn in self.diff_buttons) and not self.parent().isUnderMouse():
+            self.loseFocus.emit()
+            self.setVisible(False)
