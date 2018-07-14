@@ -13,6 +13,7 @@ from . import buttons
 
 DIFFICULTIES = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
 
+
 class TimerDisplayer(QGraphicsWidget):
 
     def __init__(self, parent=None):
@@ -25,7 +26,6 @@ class TimerDisplayer(QGraphicsWidget):
         self.box_pen.setColor(Qt.white)
         self.pen_width = 3
         self.box_pen.setWidth(self.pen_width)
-
 
         self.timer_box = QRectF(0, 0, self.width, self.height)
         self.setMinimumSize(QSizeF(self.width, self.height))
@@ -79,7 +79,6 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.diff_menu.menuClicked.connect(self.difficultySelected.emit)
         self.diff_menu.loseFocus.connect(self.notFocus.emit)
 
-
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
         painter.drawRect(self.diff_box)
@@ -131,12 +130,10 @@ class DifficultyMenu(QGraphicsWidget):
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
         self.setFocusPolicy(Qt.ClickFocus)
 
-
     def boundingRect(self):
         return QRectF(0, 0, self.width, self.height)
 
     def clicked_on(self, string):
-        print('click!!')
         self.menuClicked.emit(string)
 
     def focusOutEvent(self, event):

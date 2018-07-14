@@ -178,7 +178,6 @@ class MenuBoard(BoxBoard):
         self.setLayout(self.layout)
 
         self.show_children(False)
-        #self.anim.finished.connect(lambda: self.show_children(True))
         self.toggle_anim(True)
 
     def show_difficulty(self, state):

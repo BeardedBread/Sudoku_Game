@@ -39,8 +39,6 @@ class SudokuWindow(QGraphicsView):
         # Setting the view
         self.setBackgroundBrush(QBrush(Qt.black))
         self.setRenderHint(QPainter.Antialiasing)
-        #self.setGeometry(self.scene.sceneRect().toRect())
-        #self.ensureVisible(self.scene.sceneRect(), 50, 50)
         self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
         self.show()
 
