@@ -44,6 +44,7 @@ class TimerDisplayer(QGraphicsWidget):
 
 class DifficultyDisplayer(QGraphicsWidget):
     notFocus = pyqtSignal()
+    difficultySelected = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super().__init__()
@@ -78,6 +79,8 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
 
         self.diff_menu.menuClicked.connect(self.selected_difficulty)
+        self.diff_menu.menuClicked.connect(self.difficultySelected.emit)
+
 
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
@@ -94,10 +97,6 @@ class DifficultyDisplayer(QGraphicsWidget):
             self.diff_menu.setVisible(False)
             self.notFocus.emit()
 
-    def connect_buttons_signal(self, func):
-        self.diff_menu.menuClicked.connect(func)
-        print('Diff buttons connected')
-
     def selected_difficulty(self, string):
         self.diff_menu.setVisible(False)
         self.set_text(string)
@@ -110,6 +109,10 @@ class DifficultyDisplayer(QGraphicsWidget):
     def focusOutEvent(self, event):
         print('Menu lose focus')
         self.notFocus.emit()
+        #self.diff_menu.setVisible(False)
+
+    def boundingRect(self):
+        return QRectF(0, 0, self.width, self.height)
 
 
 class DifficultyMenu(QGraphicsWidget):
@@ -120,7 +123,6 @@ class DifficultyMenu(QGraphicsWidget):
         super().__init__(parent=parent)
 
         self.diff_buttons = []
-        #self.difficulty = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
         self.btn_height = height
         self.btn_width = width
         self.height = (self.btn_height + 10) * 5
@@ -131,6 +133,9 @@ class DifficultyMenu(QGraphicsWidget):
                                   self.btn_width, self.btn_height, DIFFICULTIES[i], parent=self)
             btn.buttonClicked.connect(self.clicked_on)
             self.diff_buttons.append(btn)
+
+    def boundingRect(self):
+        return QRectF(0, 0, self.width, self.height)
 
     def clicked_on(self, string):
         self.menuClicked.emit(string)

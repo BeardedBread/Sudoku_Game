@@ -48,7 +48,7 @@ class SudokuWindow(QGraphicsView):
         self.gameboard.newGameSelected.connect(lambda: self.menuboard.show_children(True))
         self.gameboard.newGameSelected.connect(self.menuboard.set_difficulty_text)
         self.menuboard.diff_display.notFocus.connect(self.gameboard.game_refocus)
-        self.menuboard.diff_display.connect_buttons_signal(self.gameboard.new_game)
+        self.menuboard.diff_display.difficultySelected.connect(self.gameboard.new_game)
 
     def resizeEvent(self, event):
         self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
