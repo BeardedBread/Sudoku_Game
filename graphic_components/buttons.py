@@ -10,6 +10,12 @@ from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal)
 import sys, math
+from general import extras
+
+
+import random
+
+RANDOMCHAR = "~!@#$%^&*()_+`-=[]\{}|;:'<>,./?\""
 
 
 class animBox(QGraphicsObject):
@@ -58,6 +64,7 @@ class animBox(QGraphicsObject):
         for t in range(1, 10):
             self.anim.setKeyValueAt(t / 10, self.logistic_func(t / 10))
         self.anim.setEndValue(self.circumference)
+        self.animText = AnimatedText(self.text, parent=self)
 
     def set_freeze(self, freeze):
         if freeze:
@@ -93,7 +100,7 @@ class animBox(QGraphicsObject):
         painter.setPen(self.default_pen)
         painter.fillRect(self.btn_rect, Qt.black)
         painter.drawRect(self.btn_rect)
-        painter.drawText(self.btn_rect, Qt.AlignCenter, self.text)
+        #painter.drawText(self.btn_rect, Qt.AlignCenter, self.shown_text)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
@@ -152,3 +159,69 @@ class animBox(QGraphicsObject):
     def mousePressEvent(self, event):
         self.length = 0
         self.buttonClicked.emit(self.text)
+
+
+class AnimatedText(QGraphicsObject):
+
+    def __init__(self, text, parent=None):
+        super().__init__(parent=parent)
+        self.parent = parent
+        self.actual_text = text
+        self.shown_text = ''
+        self.delay = 3
+
+        # Set up pens for drawing
+        self.default_pen = QPen()
+        self.default_pen.setColor(Qt.white)
+
+        self.randomchar_list = [c for c in RANDOMCHAR]
+        self.shown_length = 0
+
+        # Set up the length to be animated
+        self.anim = QPropertyAnimation(self, b'shown_length')
+        self.anim.setDuration(len(self.actual_text) * 100)  # Animation speed
+        self.anim.setStartValue(0)
+        for t in range(1, 10):
+            self.anim.setKeyValueAt(t / 10, (len(self.actual_text) + self.delay) * t/10)
+        self.anim.setEndValue(len(self.actual_text) + self.delay)
+        self.visibleChanged.connect(self.show_text)
+
+    def show_text(self):
+        if self.isVisible():
+            self.toggle_anim(True)
+        else:
+            self.shown_length = 0
+
+    # Toggle the animation to be play forward or backward
+    def toggle_anim(self, toggling):
+        if toggling:
+            self.anim.setDirection(QAbstractAnimation.Forward)
+        else:
+            self.anim.setDirection(QAbstractAnimation.Backward)
+
+        self.anim.start()
+
+    def boundingRect(self):
+        return self.parent.boundingRect()
+
+    def paint(self, painter, style, widget=None):
+        painter.setPen(self.default_pen)
+        painter.drawText(self.parent.boundingRect(), Qt.AlignCenter, self.shown_text)
+
+    # Defining the length to be drawn as a pyqtProperty
+    @pyqtProperty(int)
+    def shown_length(self):
+        return self._shown_length
+
+    # Determine the length of the four lines to be drawn
+    @shown_length.setter
+    def shown_length(self, value):
+        self._shown_length = value
+        text_length = extras.bound_value(0, value-self.delay, len(self.actual_text))
+        text = self.actual_text[:text_length]
+        random.shuffle(self.randomchar_list)
+        #for c in self.randomchar_list[:min(value, 3)]:
+        text += ''.join(self.randomchar_list[:min(value, 3)])
+
+        self.shown_text = text[:min(self.shown_length, len(self.actual_text))]
+        self.update()
