@@ -9,10 +9,9 @@ from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,
                              QGraphicsItemGroup, QGraphicsPathItem)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal)
-import sys, math
 from general import extras
-
-
+import sys
+import math
 import random
 
 RANDOMCHAR = "~!@#$%^&*()_+`-=[]\{}|;:'<>,./?\""
@@ -27,7 +26,6 @@ class animBox(QGraphicsObject):
     # Initialisation
     def __init__(self, x, y, width, height, text, parent=None):
         super().__init__(parent=parent)
-        #self.setParent(parent)
         self.x = x
         self.y = y
         self.width = width
@@ -100,7 +98,6 @@ class animBox(QGraphicsObject):
         painter.setPen(self.default_pen)
         painter.fillRect(self.btn_rect, Qt.black)
         painter.drawRect(self.btn_rect)
-        #painter.drawText(self.btn_rect, Qt.AlignCenter, self.shown_text)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
@@ -179,7 +176,7 @@ class AnimatedText(QGraphicsObject):
 
         # Set up the length to be animated
         self.anim = QPropertyAnimation(self, b'shown_length')
-        self.anim.setDuration(len(self.actual_text) * 100)  # Animation speed
+        self.anim.setDuration(len(self.actual_text) * 50)  # Animation speed
         self.anim.setStartValue(0)
         for t in range(1, 10):
             self.anim.setKeyValueAt(t / 10, (len(self.actual_text) + self.delay) * t/10)
@@ -220,7 +217,6 @@ class AnimatedText(QGraphicsObject):
         text_length = extras.bound_value(0, value-self.delay, len(self.actual_text))
         text = self.actual_text[:text_length]
         random.shuffle(self.randomchar_list)
-        #for c in self.randomchar_list[:min(value, 3)]:
         text += ''.join(self.randomchar_list[:min(value, 3)])
 
         self.shown_text = text[:min(self.shown_length, len(self.actual_text))]
