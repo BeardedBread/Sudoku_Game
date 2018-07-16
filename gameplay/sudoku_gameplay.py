@@ -37,10 +37,10 @@ class SudokuSystem:
                     self.offending_cells[i][j].pop()
 
     def replace_cell_number(self, row, col, val):
+        prev_val = self.number_grid[row, col]
         self.number_grid[row, col] = int(val)
-        if not val == 0:
-            self.invalid_cell_check(row, col)
-        else:
+        self.invalid_cell_check(row, col, prev_val)
+        if val == 0:
             self.change_cell_status(row, col, EMPTY)
 
     def get_cell_number(self, row, col):
@@ -59,18 +59,10 @@ class SudokuSystem:
         else:
             return False
 
-    def invalid_cell_check(self, row, col):
+    def invalid_cell_check(self, row, col, prev_num):
         val_check = self.number_grid[row, col]
 
-        row_check = np.where(self.number_grid[row, :] == val_check)[0]
-        col_check = np.where(self.number_grid[:, col] == val_check)[0]
-        local_grid_row = int(row / 3) * 3
-        local_grid_col = int(col / 3) * 3
-        local_grid_check_row, local_grid_check_col = np.where(
-            self.number_grid[local_grid_row:local_grid_row + 3, local_grid_col:local_grid_col + 3] == val_check)
-
-        if len(row_check) == 1 and len(col_check) == 1 and len(local_grid_check_row) == 1:
-            self.cell_status[row, col] = VALID
+        if not prev_num == val_check or val_check == 0:
             while self.offending_cells[row][col]:
                 r, c = self.offending_cells[row][col].pop()
                 try:
@@ -79,31 +71,42 @@ class SudokuSystem:
                     print('No such cell found')
                 if not self.offending_cells[r][c]:
                     self.change_cell_status(r, c, VALID)
-            print('Completion?', self.completion_check())
 
-        else:
-            self.cell_status[row, col] = INVALID
-            bad_cells = []
-            if not len(row_check) == 1:
-                for c in row_check:
-                    if not c == col:
-                        bad_cells.append((row, c))
-                        self.offending_cells[row][c].append((row, col))
-                        self.change_cell_status(row, c, INVALID)
-            if not len(col_check) == 1:
-                for r in col_check:
-                    if not r == row:
-                        bad_cells.append((r, col))
-                        self.offending_cells[r][col].append((row, col))
-                        self.change_cell_status(r, col, INVALID)
-            if not len(local_grid_check_row) == 1:
-                for r, c in zip(local_grid_check_row + local_grid_row, local_grid_check_col + local_grid_col):
-                    if not (c == col or r == row):
-                        bad_cells.append((r, c))
-                        self.offending_cells[r][c].append((row, col))
-                        self.change_cell_status(r, c, INVALID)
+        if not val_check == 0:
 
-            self.offending_cells[row][col] = bad_cells
+            row_check = np.where(self.number_grid[row, :] == val_check)[0]
+            col_check = np.where(self.number_grid[:, col] == val_check)[0]
+            local_grid_row = int(row / 3) * 3
+            local_grid_col = int(col / 3) * 3
+            local_grid_check_row, local_grid_check_col = np.where(
+                self.number_grid[local_grid_row:local_grid_row + 3, local_grid_col:local_grid_col + 3] == val_check)
+
+            if len(row_check) == 1 and len(col_check) == 1 and len(local_grid_check_row) == 1:
+                self.cell_status[row, col] = VALID
+                print('Completion?', self.completion_check())
+            else:
+                self.cell_status[row, col] = INVALID
+                bad_cells = []
+                if not len(row_check) == 1:
+                    for c in row_check:
+                        if not c == col:
+                            bad_cells.append((row, c))
+                            self.offending_cells[row][c].append((row, col))
+                            self.change_cell_status(row, c, INVALID)
+                if not len(col_check) == 1:
+                    for r in col_check:
+                        if not r == row:
+                            bad_cells.append((r, col))
+                            self.offending_cells[r][col].append((row, col))
+                            self.change_cell_status(r, col, INVALID)
+                if not len(local_grid_check_row) == 1:
+                    for r, c in zip(local_grid_check_row + local_grid_row, local_grid_check_col + local_grid_col):
+                        if not (c == col or r == row):
+                            bad_cells.append((r, c))
+                            self.offending_cells[r][c].append((row, col))
+                            self.change_cell_status(r, c, INVALID)
+
+                self.offending_cells[row][col] = bad_cells
 
     def generate_test_board(self):
         with open(test_dir, 'r') as f:
