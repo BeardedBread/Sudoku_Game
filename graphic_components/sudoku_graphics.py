@@ -75,6 +75,7 @@ class NumberPainter(BaseSudokuItem):
 class SudokuGrid(BaseSudokuItem):
     # TODO: Add functions to animated the grid lines
     buttonClicked = pyqtSignal(float, float)
+    finishDrawing = pyqtSignal()
 
     def __init__(self, width, height, parent=None):
         super().__init__(parent)
@@ -134,6 +135,7 @@ class SudokuGrid(BaseSudokuItem):
     def finish_drawing(self):
         if self.length == self.width:
             self.drawn = True
+            self.finishDrawing.emit()
 
     # Toggle the animation to be play forward or backward
     def toggle_anim(self, toggling):

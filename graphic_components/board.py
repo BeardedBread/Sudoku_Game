@@ -99,6 +99,7 @@ class GameBoard(BoxBoard):
     """
     boxClicked = pyqtSignal(bool)
     newGameSelected = pyqtSignal(str)
+    gridDrawn = pyqtSignal()
 
     def __init__(self, width, height, parent=None):
         super().__init__(width, height, parent)
@@ -117,6 +118,7 @@ class GameBoard(BoxBoard):
 
         self.anim.finished.connect(lambda: self.show_playmenu(True))
         self.playmenu.buttonClicked.connect(self.new_game)
+        self.gamegrid.finishDrawing.connect(self.gridDrawn.emit)
         self.toggle_anim(True)
 
     def show_number_ring(self, x=0, y=0):
@@ -187,6 +189,7 @@ class MenuBoard(BoxBoard):
     def show_children(self, state):
         for chd in self.children():
             chd.setVisible(state)
+        self.timer_display.reset_time()
 
     def set_difficulty_text(self, string):
         self.diff_display.set_text(string)
