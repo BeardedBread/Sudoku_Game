@@ -190,3 +190,4 @@ class MenuBoard(BoxBoard):
 
     def set_difficulty_text(self, string):
         self.diff_display.set_text(string)
+        self.timer_display.reset_time()

@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
                              QGraphicsItemGroup, QGraphicsLayoutItem)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
-                          QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF)
+                          QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF, QTimer)
 
 from . import buttons
 
@@ -35,11 +35,28 @@ class TimerDisplayer(QGraphicsWidget):
         self.size_policy.setHeightForWidth(True)
         self.setSizePolicy(self.size_policy)
 
+        self.atenth_seconds = 0
+        self.timer = QTimer()
+        self.timer.setInterval(100)
+        self.timer.timeout.connect(self.increase_time)
+        self.timer.start()
+
+    def increase_time(self):
+        self.atenth_seconds += 1
+        self.update()
+
+    def reset_time(self):
+        self.atenth_seconds = 0
+        self.timer.start()
+
     def paint(self, painter, style, widget=None):
         box = self.timer_box
         painter.setPen(self.box_pen)
         painter.drawRect(box)
-        painter.drawText(box, Qt.AlignCenter, "00:00")
+        painter.drawText(box, Qt.AlignCenter,
+                         "{:02d}:{:02d}.{:1d}".format(int(self.atenth_seconds/600),
+                                                      int(self.atenth_seconds/10) % 60,
+                                                      self.atenth_seconds % 10))
 
 
 class DifficultyDisplayer(QGraphicsWidget):
