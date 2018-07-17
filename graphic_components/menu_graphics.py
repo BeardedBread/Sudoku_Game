@@ -5,11 +5,17 @@ This module contains the components that make up the menu Board
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
-                             QGraphicsItemGroup, QGraphicsLayoutItem)
+                             QGraphicsLinearLayout, QGraphicsLayoutItem, QGraphicsScene, QGraphicsView,)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF, QTimer)
+from PyQt5.Qt import QApplication
 
-from . import buttons
+import sys
+if __name__ == "__main__":
+    import buttons
+else:
+    from . import buttons
+
 
 DIFFICULTIES = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
 
@@ -157,3 +163,70 @@ class DifficultyMenu(QGraphicsWidget):
         if not any(btn.isUnderMouse() for btn in self.diff_buttons) and not self.parent().isUnderMouse():
             self.loseFocus.emit()
             self.setVisible(False)
+
+
+class HighScoreDisplayer(QGraphicsObject):
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+
+        self.size = 25
+        self.icon_size = 25
+        self.board_size = 250
+
+        self.box_pen = QPen()
+        self.box_pen.setColor(Qt.white)
+        self.pen_width = 3
+        self.box_pen.setWidth(self.pen_width)
+
+        self.btn1 = QRectF(-220, -220, 50, 50)
+        self.btn2 = QRectF(-150, -220, 50, 50)
+
+        self.setAcceptHoverEvents(True)
+
+        self.selected = False
+
+    def boundingRect(self):
+        return QRectF(-self.size, -self.size, self.size, self.size)
+
+    def paint(self, painter, style, widget=None):
+        painter.setPen(self.box_pen)
+        painter.drawRect(self.boundingRect())
+        if self.selected:
+            painter.drawRect(self.btn1)
+            painter.drawRect(self.btn2)
+
+    def hoverEnterEvent(self, ev):
+        if not self.selected:
+            self.selected = True
+            self.prepareGeometryChange()
+            self.size = self.board_size
+
+    def hoverLeaveEvent(self, ev):
+        self.selected = False
+        self.prepareGeometryChange()
+        self.size = self.icon_size
+
+if __name__ == "__main__":
+    app = 0
+    app = QApplication(sys.argv)
+
+    # Set up the Scene to manage the GraphicItems
+    view = QGraphicsView()
+    scene = QGraphicsScene(0, 0, 500, 600)
+    view.setScene(scene)
+    view.setSceneRect(scene.sceneRect())
+
+    # Add the Boards to the form with a vertical layout
+    highscore = HighScoreDisplayer()
+    highscore.setX(400)
+    highscore.setY(400)
+    scene.addItem(highscore)
+
+    # Setting the view
+    view.setBackgroundBrush(QBrush(Qt.black))
+    view.setRenderHint(QPainter.Antialiasing)
+    view.fitInView(scene.sceneRect(), Qt.KeepAspectRatio)
+    view.show()
+
+    sys.exit(app.exec_())
