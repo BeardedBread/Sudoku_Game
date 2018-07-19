@@ -165,17 +165,20 @@ class MenuBoard(BoxBoard):
     def __init__(self, width, height, parent=None):
         super().__init__(width, height, parent)
 
+        self.margin = 10
+        self.spacing = 20
+        w_spacing = (self.width - 2*self.margin) /3
+
         self.diff_display = menu_grap.DifficultyDisplayer(parent=self)
-        self.diff_display.setX(5)
+        self.diff_display.setX(self.margin)
         self.diff_display.setY(self.geometry().height()/2-self.diff_display.height/2)
         self.timer_display = menu_grap.TimerDisplayer(parent=self)
         self.timer_display.setParent(self)
-        self.timer_display.setX(self.geometry().width()/2)
+        self.timer_display.setX(self.margin + w_spacing + self.spacing)
         self.timer_display.setY(self.geometry().height()/2-self.timer_display.height/2)
         self.score_display = menu_grap.HighScoreDisplayer(parent=self)
-        self.score_display.setX(self.geometry().width()-5)
-        self.score_display.setY(self.geometry().height()/2)
-
+        self.score_display.setX(self.width - self.margin)
+        self.score_display.setY(self.height - self.margin)
 
         self.show_children(False)
         self.toggle_anim(True)

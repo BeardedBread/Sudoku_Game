@@ -197,6 +197,9 @@ class HighScoreDisplayer(QGraphicsObject):
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
         painter.drawRect(self.boundingRect())
+        if not self.selected:
+            painter.fillRect(-self.icon_size/4, -self.icon_size/4,
+                             -self.icon_size/2, -self.icon_size/2, Qt.white)
 
     def hoverEnterEvent(self, ev):
         if not self.selected:

@@ -183,8 +183,8 @@ class SudokuGrid(BaseSudokuItem):
 
     def mousePressEvent(self, event):
         if not (self.freeze and self.drawn):
-            w = (self.mouse_w + 0.5) * self.cell_width - 5
-            h = (self.mouse_h + 0.5) * self.cell_height + 5
+            w = (self.mouse_w + 0.5) * self.cell_width
+            h = (self.mouse_h + 0.5) * self.cell_height
 
             if not self.sudoku_grid.get_cell_status(self.mouse_h, self.mouse_w) == sdk.FIXED:
                 self.buttonClicked.emit(w, h)

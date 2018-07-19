@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
-from PyQt5.QtWidgets import (QWidget, QLineEdit, QHBoxLayout, QGridLayout, QVBoxLayout,
+from PyQt5.QtWidgets import (QWidget, QLineEdit, QHBoxLayout, QGridLayout, QVBoxLayout, QSizePolicy,
                              QPushButton, QLabel)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF, QTimer)
@@ -24,6 +24,7 @@ class HighScoreBoard(QWidget):
         self.current_difficulty = hs.DIFFICULTIES[1]
         self.layout = QVBoxLayout(self)
         self.layout.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(QLabel('Score Board', self, alignment=Qt.AlignCenter))
         self.diff_switch = DifficultySwitch()
         self.layout.addLayout(self.diff_switch)
         self.score_grid = ScoreGrid()
@@ -67,13 +68,16 @@ class DifficultySwitch(QHBoxLayout):
         self.max_length = max(len(diff) for diff in hs.DIFFICULTIES)
         self.full_text = ''.join(d.center(self.max_length) for d in circular_text[::-1])
         left_btn = QPushButton('<')
+        left_btn.setFixedSize(20, 20)
         self.difficulty_display = QLabel('Normal')
         self.difficulty_display.setAlignment(Qt.AlignCenter)
         right_btn = QPushButton('>')
+        right_btn.setFixedSize(20, 20)
 
         self.addWidget(left_btn)
         self.addWidget(self.difficulty_display)
         self.addWidget(right_btn)
+        self.layout().setStretch(1, 2)
 
         self.shift_direction = FORWARD
         self.show_pos = self.max_length * len(hs.DIFFICULTIES)
