@@ -36,13 +36,16 @@ class HighScoreBoard(QWidget):
 
 
 class DifficultySwitch(QHBoxLayout):
+    difficultySelected = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
 
+        circular_text = hs.DIFFICULTIES.copy()
+        circular_text.insert(0, hs.DIFFICULTIES[-1])
+        circular_text.append(hs.DIFFICULTIES[0])
         self.max_length = max(len(diff) for diff in hs.DIFFICULTIES)
-        self.full_text = ''.join(d.center(self.max_length) for d in hs.DIFFICULTIES)
-
+        self.full_text = ''.join(d.center(self.max_length) for d in circular_text)
         left_btn = QPushButton('<')
         self.difficulty_display = QLabel('Normal')
         self.difficulty_display.setAlignment(Qt.AlignCenter)
@@ -55,45 +58,41 @@ class DifficultySwitch(QHBoxLayout):
         self.show_pos = 0
         self.reach_end = True
         self.anim = QPropertyAnimation(self, b'show_pos')
-        self.anim.setDuration((len(hs.DIFFICULTIES) - 1) * self.max_length * 20)
-        self.anim.setStartValue(0)
-        self.anim.setEndValue((len(hs.DIFFICULTIES) - 1) * self.max_length)
+        self.anim.setDuration(((len(hs.DIFFICULTIES) + 1) * self.max_length + 2) * 20)
+        self.anim.setStartValue(-2)
+        self.anim.setEndValue((len(hs.DIFFICULTIES) + 2) * self.max_length + 1)
         left_btn.clicked.connect(lambda: self.shift_difficulty(QAbstractAnimation.Backward))
         right_btn.clicked.connect(lambda: self.shift_difficulty(QAbstractAnimation.Forward))
         self.anim.valueChanged.connect(self.pause_anim)
+        self.anim.start()
 
     @pyqtProperty(int)
     def show_pos(self):
         """
         int : The value for the animation
 
-        When the value is set, the text to be printed is generated accordingly.
-        It determines whether actual text is to be printed, and retains the
-        paragraphs when printing garbage.
+        When the value is set, the text to be shown is selected from the full text.
         """
         return self._shown_length
 
     @show_pos.setter
     def show_pos(self, value):
         self._shown_length = value
-        self.difficulty_display.setText(self.full_text[value:value+9])
+        self.difficulty_display.setText(self.full_text[value:value+self.max_length])
 
     def shift_difficulty(self, direction):
         if not self.anim.state() == QAbstractAnimation.Running:
-            if (direction == QAbstractAnimation.Forward and self.show_pos < self.anim.endValue()) \
-             or (direction == QAbstractAnimation.Backward and self.show_pos > self.anim.startValue()):
-                self.anim.setDirection(direction)
-                if self.anim.state() == QAbstractAnimation.Paused:
-                    self.anim.resume()
-                else:
-                    self.anim.start()
+            self.anim.setDirection(direction)
+            self.anim.resume()
 
     def pause_anim(self, value):
+        if value == (len(hs.DIFFICULTIES)+1) * self.max_length:
+            self.show_pos = self.max_length
+        elif value == 0:
+            self.show_pos = len(hs.DIFFICULTIES) * self.max_length
         if value % 9 == 0:
-            if value == self.anim.endValue() or value == self.anim.endValue():
-                self.reach_end = True
-            else:
-                self.anim.pause()
+            self.anim.pause()
+            self.difficultySelected.emit(self.difficulty_display.text())
 
 
 class ScoreGrid(QGridLayout):
