@@ -8,13 +8,15 @@ import sys
 
 class HighScoreBoard(QWidget):
 
-    def __init__(self):
+    def __init__(self, width, height):
         super().__init__()
 
         self.layout = QVBoxLayout(self)
         self.layout.addLayout(DifficultySwitch())
         self.layout.addLayout(ScoreGrid())
         self.layout.addWidget(NameInput())
+
+        self.setFixedSize(width, height)
 
 
 class DifficultySwitch(QHBoxLayout):

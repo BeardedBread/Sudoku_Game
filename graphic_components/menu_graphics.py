@@ -4,7 +4,7 @@ This module contains the components that make up the menu Board
 
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
-                             QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject, QWidget,
+                             QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject, QGraphicsProxyWidget,
                              QGraphicsLinearLayout, QGraphicsLayoutItem, QGraphicsScene, QGraphicsView,)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF, QTimer)
@@ -13,8 +13,10 @@ from PyQt5.Qt import QApplication
 import sys
 if __name__ == "__main__":
     import buttons
+    import scoreboard as scb
 else:
     from . import buttons
+    from . import scoreboard as scb
 
 
 DIFFICULTIES = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
@@ -179,8 +181,11 @@ class HighScoreDisplayer(QGraphicsObject):
         self.pen_width = 3
         self.box_pen.setWidth(self.pen_width)
 
-        self.btn1 = QRectF(-220, -220, 50, 50)
-        self.btn2 = QRectF(-150, -220, 50, 50)
+        self.widget_proxy = QGraphicsProxyWidget(parent=self)
+        self.scoreboard_widget = scb.HighScoreBoard(self.board_size, self.board_size)
+        self.widget_proxy.setWidget(self.scoreboard_widget)
+        self.widget_proxy.setPos(-self.board_size, -self.board_size)
+        self.scoreboard_widget.setVisible(False)
 
         self.setAcceptHoverEvents(True)
 
@@ -192,18 +197,18 @@ class HighScoreDisplayer(QGraphicsObject):
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
         painter.drawRect(self.boundingRect())
-        if self.selected:
-            painter.drawRect(self.btn1)
-            painter.drawRect(self.btn2)
+        #if self.selected:
+        #    painter.drawRect(self.btn1)
+        #    painter.drawRect(self.btn2)
 
     def hoverEnterEvent(self, ev):
         if not self.selected:
-            self.selected = True
+            self.scoreboard_widget.setVisible(True)
             self.prepareGeometryChange()
             self.size = self.board_size
 
     def hoverLeaveEvent(self, ev):
-        self.selected = False
+        self.scoreboard_widget.setVisible(False)
         self.prepareGeometryChange()
         self.size = self.icon_size
 
