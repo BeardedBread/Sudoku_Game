@@ -38,6 +38,8 @@ class HighScoreBoard(QWidget):
                             color: rgb(255, 255, 255); 
                             """)
 
+        self.name_input.setVisible(False)
+
         self.diff_switch.difficultySelected.connect(self.change_score_board)
         self.name_input.nameReceived.connect(self.set_score)
         self.score_grid.scoreUpdate.connect(self.diff_switch.go_to_difficulty)
@@ -176,12 +178,15 @@ class NameInput(QWidget):
         self.layout.addWidget(self.name_input)
         self.name_input.returnPressed.connect(self.receive_name_input)
 
+        self.name_input.setStyleSheet("""
+            border: 2px solid gray;
+        """)
+
     def receive_name_input(self):
         print(self.name_input.text().strip(' '))
         name = self.name_input.text().strip(' ')
         if name:
             self.nameReceived.emit(name)
-            print('name sent')
 
 
 class AnimatedLabel(QLabel):
