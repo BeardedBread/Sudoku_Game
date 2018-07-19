@@ -12,8 +12,8 @@ if not __name__ == "__main__":
 
 from general import highscore as hs
 
-BACKWARD = -1
-FORWARD = 1
+BACKWARD = 1
+FORWARD = -1
 
 class HighScoreBoard(QWidget):
 
@@ -54,6 +54,7 @@ class HighScoreBoard(QWidget):
     def set_score(self, name):
         self.score_grid.set_highscore(self.current_difficulty, name, self.final_time)
 
+
 class DifficultySwitch(QHBoxLayout):
     difficultySelected = pyqtSignal(str)
 
@@ -64,7 +65,7 @@ class DifficultySwitch(QHBoxLayout):
         circular_text.insert(0, hs.DIFFICULTIES[-1])
         circular_text.append(hs.DIFFICULTIES[0])
         self.max_length = max(len(diff) for diff in hs.DIFFICULTIES)
-        self.full_text = ''.join(d.center(self.max_length) for d in circular_text)
+        self.full_text = ''.join(d.center(self.max_length) for d in circular_text[::-1])
         left_btn = QPushButton('<')
         self.difficulty_display = QLabel('Normal')
         self.difficulty_display.setAlignment(Qt.AlignCenter)
@@ -75,8 +76,8 @@ class DifficultySwitch(QHBoxLayout):
         self.addWidget(right_btn)
 
         self.shift_direction = FORWARD
-        self.show_pos = self.max_length
-        self.next_pos = self.max_length
+        self.show_pos = self.max_length * len(hs.DIFFICULTIES)
+        self.next_pos = self.max_length * len(hs.DIFFICULTIES)
         self.timer = QTimer(self)
         self.timer.setInterval(20)
         self.timer.timeout.connect(self.shift_pos)

@@ -165,19 +165,17 @@ class MenuBoard(BoxBoard):
     def __init__(self, width, height, parent=None):
         super().__init__(width, height, parent)
 
-        self.layout = QGraphicsLinearLayout(Qt.Horizontal)
-        self.layout.setMinimumWidth(width)
-        self.layout.setMinimumWidth(height)
-
         self.diff_display = menu_grap.DifficultyDisplayer(parent=self)
-        self.layout.addItem(self.diff_display)
+        self.diff_display.setX(5)
+        self.diff_display.setY(self.geometry().height()/2-self.diff_display.height/2)
         self.timer_display = menu_grap.TimerDisplayer(parent=self)
-        self.layout.addItem(self.timer_display)
-        self.layout.setItemSpacing(0, 50)
-        self.layout.setItemSpacing(1, 0)
-        self.layout.setContentsMargins(20,15,20,15)
+        self.timer_display.setParent(self)
+        self.timer_display.setX(self.geometry().width()/2)
+        self.timer_display.setY(self.geometry().height()/2-self.timer_display.height/2)
+        self.score_display = menu_grap.HighScoreDisplayer(parent=self)
+        self.score_display.setX(self.geometry().width()-5)
+        self.score_display.setY(self.geometry().height()/2)
 
-        self.setLayout(self.layout)
 
         self.show_children(False)
         self.toggle_anim(True)
@@ -187,8 +185,8 @@ class MenuBoard(BoxBoard):
         self.diff_display.update()
 
     def show_children(self, state):
-        for chd in self.children():
-            chd.setVisible(state)
+        self.timer_display.setVisible(state)
+        self.diff_display.setVisible(state)
         self.timer_display.reset_time()
 
     def set_difficulty_text(self, string):

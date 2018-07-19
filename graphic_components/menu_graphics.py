@@ -25,8 +25,8 @@ DIFFICULTIES = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
 class TimerDisplayer(QGraphicsWidget):
 
     def __init__(self, parent=None):
-        super().__init__()
-        self.setParent(parent)
+        super().__init__(parent=parent)
+        #self.setParent(parent)
         self.width = 100
         self.height = 50
 
@@ -72,8 +72,8 @@ class DifficultyDisplayer(QGraphicsWidget):
     difficultySelected = pyqtSignal(str)
 
     def __init__(self, parent=None):
-        super().__init__()
-        self.setParent(parent)
+        super().__init__(parent=parent)
+        #self.setParent(parent)
 
         self.width = 100
         self.height = 50
