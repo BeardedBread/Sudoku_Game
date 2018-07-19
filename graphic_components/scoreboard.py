@@ -22,7 +22,8 @@ class HighScoreBoard(QWidget):
 
         self.layout = QVBoxLayout(self)
         self.layout.setAlignment(Qt.AlignCenter)
-        self.layout.addLayout(DifficultySwitch())
+        self.diff_switch = DifficultySwitch()
+        self.layout.addLayout(self.diff_switch)
         self.score_grid = ScoreGrid()
         self.layout.addLayout(self.score_grid)
         self.layout.addWidget(NameInput())
@@ -34,8 +35,14 @@ class HighScoreBoard(QWidget):
                             color: rgb(255, 255, 255); 
                             """)
 
+        self.diff_switch.difficultySelected.connect(self.change_score_board)
+
+    def change_score_board(self, difficulty):
+        self.score_grid.replace_scores(difficulty)
+
     def show_scores(self, toggle):
-        self.score_grid.show_score_info(toggle)
+        if self.isVisible():
+            self.score_grid.show_score_info(toggle)
 
 
 class DifficultySwitch(QHBoxLayout):
@@ -93,12 +100,17 @@ class DifficultySwitch(QHBoxLayout):
             self.show_pos = len(hs.DIFFICULTIES) * self.max_length
         if self.show_pos % 9 == 0:
             self.timer.stop()
+            self.difficultySelected.emit(self.difficulty_display.text().strip(' '))
 
 
 class ScoreGrid(QGridLayout):
 
     def __init__(self):
         super().__init__()
+        try:
+            self.highscore_list = hs.read_highscore_file("/home/eyt21/PycharmProjects/sudoku/general/highscore.txt")
+        except Exception as e:
+            print('Cannot open file', e)
 
         for i in range(5):
             label = QLabel(str(i+1)+'.')
@@ -115,9 +127,17 @@ class ScoreGrid(QGridLayout):
             self.animated_labels.append(label1)
             self.animated_labels.append(label2)
 
+        self.replace_scores(hs.DIFFICULTIES[0])
+
     def show_score_info(self, toggle):
         for label in self.animated_labels:
             label.toggle_anim(toggle)
+
+    def replace_scores(self, difficulty):
+        scores = self.highscore_list[difficulty]
+        for i in range(len(scores)):
+            self.animated_labels[2*i].replace_text(scores[i]['name'])
+            self.animated_labels[2*i+1].replace_text(scores[i]['time'])
 
 
 class NameInput(QWidget):

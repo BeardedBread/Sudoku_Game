@@ -12,7 +12,8 @@ def read_highscore_file(file):
             info = {}
             placing_info = line.split(',')
             info['name'] = placing_info[0]
-            info['time'] = int(placing_info[1])
+            time = int(placing_info[1])
+            info['time'] = "{:02d}:{:02d}.{:1d}".format(int(time / 600), int(time / 10) % 60, time % 10)
             diff_list.append(info)
         highscore_list[diff] = diff_list
 
