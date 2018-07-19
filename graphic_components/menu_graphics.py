@@ -197,18 +197,17 @@ class HighScoreDisplayer(QGraphicsObject):
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
         painter.drawRect(self.boundingRect())
-        #if self.selected:
-        #    painter.drawRect(self.btn1)
-        #    painter.drawRect(self.btn2)
 
     def hoverEnterEvent(self, ev):
         if not self.selected:
             self.scoreboard_widget.setVisible(True)
+            self.scoreboard_widget.show_scores(True)
             self.prepareGeometryChange()
             self.size = self.board_size
 
     def hoverLeaveEvent(self, ev):
         self.scoreboard_widget.setVisible(False)
+        self.scoreboard_widget.show_scores(False)
         self.prepareGeometryChange()
         self.size = self.icon_size
 
