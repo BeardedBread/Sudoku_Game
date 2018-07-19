@@ -20,13 +20,16 @@ class HighScoreBoard(QWidget):
     def __init__(self, width, height):
         super().__init__()
 
+        self.final_time = "00:10:00"
+        self.current_difficulty = hs.DIFFICULTIES[1]
         self.layout = QVBoxLayout(self)
         self.layout.setAlignment(Qt.AlignCenter)
         self.diff_switch = DifficultySwitch()
         self.layout.addLayout(self.diff_switch)
         self.score_grid = ScoreGrid()
         self.layout.addLayout(self.score_grid)
-        self.layout.addWidget(NameInput())
+        self.name_input = NameInput()
+        self.layout.addWidget(self.name_input)
 
         self.setFixedSize(width, height)
 
@@ -36,6 +39,8 @@ class HighScoreBoard(QWidget):
                             """)
 
         self.diff_switch.difficultySelected.connect(self.change_score_board)
+        self.name_input.nameReceived.connect(self.set_score)
+        self.score_grid.scoreUpdate.connect(self.diff_switch.go_to_difficulty)
 
     def change_score_board(self, difficulty):
         self.score_grid.replace_scores(difficulty)
@@ -44,6 +49,8 @@ class HighScoreBoard(QWidget):
         if self.isVisible():
             self.score_grid.show_score_info(toggle)
 
+    def set_score(self, name):
+        self.score_grid.set_highscore(self.current_difficulty, name, self.final_time)
 
 class DifficultySwitch(QHBoxLayout):
     difficultySelected = pyqtSignal(str)
@@ -67,6 +74,7 @@ class DifficultySwitch(QHBoxLayout):
 
         self.shift_direction = FORWARD
         self.show_pos = self.max_length
+        self.next_pos = self.max_length
         self.timer = QTimer(self)
         self.timer.setInterval(20)
         self.timer.timeout.connect(self.shift_pos)
@@ -90,20 +98,30 @@ class DifficultySwitch(QHBoxLayout):
     def shift_difficulty(self, direction):
         if not self.timer.isActive():
             self.shift_direction = direction
+            self.next_pos = self.circular_value(self.next_pos + direction * self.max_length)
             self.timer.start()
 
+    def go_to_difficulty(self, difficulty):
+        pos = (hs.DIFFICULTIES.index(difficulty) + 1) * self.max_length
+        self.show_pos = pos
+        self.next_pos = pos
+
     def shift_pos(self):
-        self.show_pos += self.shift_direction
-        if self.show_pos == (len(hs.DIFFICULTIES)+1) * self.max_length:
-            self.show_pos = self.max_length
-        elif self.show_pos == 0:
-            self.show_pos = len(hs.DIFFICULTIES) * self.max_length
-        if self.show_pos % 9 == 0:
+        self.show_pos = self.circular_value(self.show_pos + self.shift_direction)
+        if self.show_pos == self.next_pos:
             self.timer.stop()
             self.difficultySelected.emit(self.difficulty_display.text().strip(' '))
 
+    def circular_value(self, value):
+        if value == (len(hs.DIFFICULTIES)+1) * self.max_length:
+            value = self.max_length
+        elif value == 0:
+            value = len(hs.DIFFICULTIES) * self.max_length
+        return value
+
 
 class ScoreGrid(QGridLayout):
+    scoreUpdate = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -139,8 +157,13 @@ class ScoreGrid(QGridLayout):
             self.animated_labels[2*i].replace_text(scores[i]['name'])
             self.animated_labels[2*i+1].replace_text(scores[i]['time'])
 
+    def set_highscore(self, difficulty, name, time):
+        hs.replace_placing(self.highscore_list, difficulty, name, time)
+        self.replace_scores(difficulty)
+        self.scoreUpdate.emit(difficulty)
 
 class NameInput(QWidget):
+    nameReceived = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -151,6 +174,14 @@ class NameInput(QWidget):
 
         self.name_input = QLineEdit(self)
         self.layout.addWidget(self.name_input)
+        self.name_input.returnPressed.connect(self.receive_name_input)
+
+    def receive_name_input(self):
+        print(self.name_input.text().strip(' '))
+        name = self.name_input.text().strip(' ')
+        if name:
+            self.nameReceived.emit(name)
+            print('name sent')
 
 
 class AnimatedLabel(QLabel):

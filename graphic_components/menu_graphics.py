@@ -62,7 +62,7 @@ class TimerDisplayer(QGraphicsWidget):
         painter.setPen(self.box_pen)
         painter.drawRect(box)
         painter.drawText(box, Qt.AlignCenter,
-                         "{:02d}:{:02d}.{:1d}".format(int(self.atenth_seconds/600),
+                         "{:02d}:{:02d}:{:1d}".format(int(self.atenth_seconds/600),
                                                       int(self.atenth_seconds/10) % 60,
                                                       self.atenth_seconds % 10))
 

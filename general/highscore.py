@@ -1,6 +1,19 @@
 DIFFICULTIES = ['Very Easy', 'Easy', 'Medium', 'Hard', 'Insane']
 
 
+def generate_highscore_file(file):
+    with open(file, 'w') as f:
+        for i in range(5):
+            names = []
+            times = []
+            for j, name in enumerate('ABCDE'):
+                names.append(name*(i+1))
+                times.append('{:02d}:00:0'.format((j+1)*(i+1)))
+            info = [','.join([name, time]) for name, time in zip(names, times)]
+            f.write('\n'.join(info))
+            if not i == 4:
+                f.write('\n---\n')
+
 def read_highscore_file(file):
     with open(file, 'r') as f:
         file_data = f.read()
@@ -12,8 +25,7 @@ def read_highscore_file(file):
             info = {}
             placing_info = line.split(',')
             info['name'] = placing_info[0]
-            time = int(placing_info[1])
-            info['time'] = "{:02d}:{:02d}.{:1d}".format(int(time / 600), int(time / 10) % 60, time % 10)
+            info['time'] = placing_info[1]
             diff_list.append(info)
         highscore_list[diff] = diff_list
 
@@ -23,7 +35,7 @@ def read_highscore_file(file):
 def write_highscore_file(file, data):
     with open(file, 'w') as f:
         for diff in DIFFICULTIES:
-            info = [','.join([placing_info['name'], str(placing_info['time'])]) for placing_info in data[diff]]
+            info = [','.join([placing_info['name'], placing_info['time']]) for placing_info in data[diff]]
             f.write('\n'.join(info))
             if not diff == DIFFICULTIES[-1]:
                 f.write('\n---\n')
@@ -49,6 +61,7 @@ def check_ranking(data, difficulty, name, time):
 
 
 if __name__ == "__main__":
-    score = read_highscore_file("./highscore.txt")
-    replace_placing(score, DIFFICULTIES[2], 'abcv', 12345)
-    write_highscore_file("./new_highscore.txt", score)
+    #score = read_highscore_file("./highscore.txt")
+    #replace_placing(score, DIFFICULTIES[2], 'abcv', 12345)
+    #write_highscore_file("./new_highscore.txt", score)
+    generate_highscore_file("./highscore.txt")
