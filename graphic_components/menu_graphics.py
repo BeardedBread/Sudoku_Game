@@ -4,7 +4,7 @@ This module contains the components that make up the menu Board
 
 from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
-                             QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
+                             QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject, QWidget,
                              QGraphicsLinearLayout, QGraphicsLayoutItem, QGraphicsScene, QGraphicsView,)
 from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF, QTimer)
@@ -206,6 +206,7 @@ class HighScoreDisplayer(QGraphicsObject):
         self.selected = False
         self.prepareGeometryChange()
         self.size = self.icon_size
+
 
 if __name__ == "__main__":
     app = 0
