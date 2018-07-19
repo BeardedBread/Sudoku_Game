@@ -12,6 +12,9 @@ if not __name__ == "__main__":
 
 from general import highscore as hs
 
+BACKWARD = -1
+FORWARD = 1
+
 class HighScoreBoard(QWidget):
 
     def __init__(self, width, height):
@@ -55,16 +58,13 @@ class DifficultySwitch(QHBoxLayout):
         self.addWidget(self.difficulty_display)
         self.addWidget(right_btn)
 
-        self.show_pos = 0
-        self.reach_end = True
-        self.anim = QPropertyAnimation(self, b'show_pos')
-        self.anim.setDuration(((len(hs.DIFFICULTIES) + 1) * self.max_length + 2) * 20)
-        self.anim.setStartValue(-2)
-        self.anim.setEndValue((len(hs.DIFFICULTIES) + 2) * self.max_length + 1)
-        left_btn.clicked.connect(lambda: self.shift_difficulty(QAbstractAnimation.Backward))
-        right_btn.clicked.connect(lambda: self.shift_difficulty(QAbstractAnimation.Forward))
-        self.anim.valueChanged.connect(self.pause_anim)
-        self.anim.start()
+        self.shift_direction = FORWARD
+        self.show_pos = self.max_length
+        self.timer = QTimer(self)
+        self.timer.setInterval(20)
+        self.timer.timeout.connect(self.shift_pos)
+        left_btn.clicked.connect(lambda: self.shift_difficulty(BACKWARD))
+        right_btn.clicked.connect(lambda: self.shift_difficulty(FORWARD))
 
     @pyqtProperty(int)
     def show_pos(self):
@@ -81,18 +81,18 @@ class DifficultySwitch(QHBoxLayout):
         self.difficulty_display.setText(self.full_text[value:value+self.max_length])
 
     def shift_difficulty(self, direction):
-        if not self.anim.state() == QAbstractAnimation.Running:
-            self.anim.setDirection(direction)
-            self.anim.resume()
+        if not self.timer.isActive():
+            self.shift_direction = direction
+            self.timer.start()
 
-    def pause_anim(self, value):
-        if value == (len(hs.DIFFICULTIES)+1) * self.max_length:
+    def shift_pos(self):
+        self.show_pos += self.shift_direction
+        if self.show_pos == (len(hs.DIFFICULTIES)+1) * self.max_length:
             self.show_pos = self.max_length
-        elif value == 0:
+        elif self.show_pos == 0:
             self.show_pos = len(hs.DIFFICULTIES) * self.max_length
-        if value % 9 == 0:
-            self.anim.pause()
-            self.difficultySelected.emit(self.difficulty_display.text())
+        if self.show_pos % 9 == 0:
+            self.timer.stop()
 
 
 class ScoreGrid(QGridLayout):
