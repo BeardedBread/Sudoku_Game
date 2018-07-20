@@ -1,10 +1,7 @@
-from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont, QTransform, QWheelEvent
-from PyQt5.Qt import QApplication, QTimer
-from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,
-                             QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
-                             QGraphicsItemGroup, QGraphicsWidget, QGraphicsLinearLayout)
-from PyQt5.QtCore import (QAbstractAnimation, QObject, QPoint, QPointF, Qt, QRectF,QLineF,
-                          QPropertyAnimation, pyqtProperty, pyqtSignal)
+from PyQt5.QtGui import QPainter, QBrush
+from PyQt5.Qt import QApplication
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsWidget, QGraphicsLinearLayout
+from PyQt5.QtCore import Qt
 import sys
 
 from graphic_components import board

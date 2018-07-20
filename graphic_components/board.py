@@ -1,13 +1,10 @@
-from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
-from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
-                             QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
-                             QGraphicsItemGroup, QGraphicsPathItem, QGraphicsLinearLayout)
-from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
-                          QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF)
+from PyQt5.QtGui import QPen
+from PyQt5.QtWidgets import QSizePolicy, QGraphicsWidget
+from PyQt5.QtCore import (QAbstractAnimation, Qt, QLineF, QPropertyAnimation, pyqtProperty,
+                          pyqtSignal, QSizeF)
 
 from . import sudoku_graphics as sdk_grap
 from . import menu_graphics as menu_grap
-from general import extras
 
 
 class BoxBoard(QGraphicsWidget):
@@ -67,7 +64,6 @@ class BoxBoard(QGraphicsWidget):
         for line in self.line_order:
             if line.length() > 1:
                 painter.drawLine(line)
-        #super().paint(painter, style, widget)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)

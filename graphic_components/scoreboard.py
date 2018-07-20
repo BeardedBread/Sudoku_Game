@@ -1,14 +1,15 @@
-from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
-from PyQt5.QtWidgets import (QWidget, QLineEdit, QHBoxLayout, QGridLayout, QVBoxLayout, QSizePolicy,
-                             QPushButton, QLabel)
-from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
-                          QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF, QTimer)
-from PyQt5.Qt import QApplication
-import sys
 import random
+import sys
+
+from PyQt5.Qt import QApplication
+from PyQt5.QtCore import (QAbstractAnimation, Qt, QPropertyAnimation, pyqtProperty, pyqtSignal, QTimer)
+from PyQt5.QtWidgets import (QWidget, QLineEdit, QHBoxLayout, QGridLayout, QVBoxLayout, QPushButton, QLabel)
 
 if not __name__ == "__main__":
     sys.path.append("~/PycharmProjects/sudoku")
+    hs_file = "/home/eyt21/PycharmProjects/sudoku/general/highscore.txt"
+else:
+    hs_file = "./sudoku/general/highscore.txt"
 
 from general import highscore as hs
 
@@ -150,7 +151,7 @@ class ScoreGrid(QGridLayout):
     def __init__(self):
         super().__init__()
         try:
-            self.highscore_list = hs.read_highscore_file("/home/eyt21/PycharmProjects/sudoku/general/highscore.txt")
+            self.highscore_list = hs.read_highscore_file(hs_file)
         except Exception as e:
             print('Cannot open file', e)
 

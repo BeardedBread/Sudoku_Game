@@ -2,15 +2,15 @@
 This module contains the components that make up the menu Board
 """
 
-from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
-from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
-                             QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject, QGraphicsProxyWidget,
-                             QGraphicsLinearLayout, QGraphicsLayoutItem, QGraphicsScene, QGraphicsView,)
-from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
-                          QPropertyAnimation, pyqtProperty, pyqtSignal, QSizeF, QTimer)
-from PyQt5.Qt import QApplication
-
 import sys
+
+from PyQt5.Qt import QApplication
+from PyQt5.QtCore import (Qt, QRectF, pyqtSignal, QSizeF, QTimer)
+from PyQt5.QtGui import QPainter, QBrush, QPen
+from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
+                             QGraphicsObject, QGraphicsProxyWidget,
+                             QGraphicsScene, QGraphicsView, )
+
 if __name__ == "__main__":
     import buttons
     import scoreboard as scb

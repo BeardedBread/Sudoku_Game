@@ -2,17 +2,15 @@
 This module contains all kinds of animated buttons
 """
 
-from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
-from PyQt5.Qt import QApplication, QTimer
-from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QGraphicsItem,
-                             QGraphicsLineItem, QGraphicsRectItem, QGraphicsObject,
-                             QGraphicsItemGroup, QGraphicsPathItem)
-from PyQt5.QtCore import (QAbstractAnimation, QObject, QPointF, Qt, QRectF, QLineF,
-                          QPropertyAnimation, pyqtProperty, pyqtSignal)
-from general import extras
-import sys
 import math
 import random
+
+from PyQt5.QtCore import (QAbstractAnimation, Qt, QRectF, QLineF,
+                          QPropertyAnimation, pyqtProperty, pyqtSignal)
+from PyQt5.QtGui import QPen
+from PyQt5.QtWidgets import (QGraphicsObject)
+
+from general import extras
 
 RANDOMCHAR = "~!@#$%^&*()_+`-=[]\{}|;:'<>,./?\""
 

@@ -2,17 +2,16 @@
 This module contains the components that make up the Sudoku Board
 """
 
-from PyQt5.QtGui import QPainter, QBrush, QPen, QColor, QFont
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
+import numpy as np
 from PyQt5.QtCore import (QAbstractAnimation, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal)
+from PyQt5.QtGui import QPen, QFont
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
 
 from gameplay import sudoku_gameplay as sdk
 from general.extras import bound_value
 from . import buttons
 from . import menu_graphics as menu_grap
-
-import numpy as np
 
 
 class BaseSudokuItem(QGraphicsObject):
