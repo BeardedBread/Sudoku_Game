@@ -104,6 +104,12 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.diff_menu.menuClicked.connect(self.difficultySelected.emit)
         self.diff_menu.loseFocus.connect(self.notFocus.emit)
 
+    def set_disabled(self, state):
+        if state:
+            self.setAcceptedMouseButtons(Qt.NoButton)
+        else:
+            self.setAcceptedMouseButtons(Qt.LeftButton)
+
     def paint(self, painter, style, widget=None):
         painter.setPen(self.box_pen)
         painter.drawRect(self.diff_box)
@@ -191,6 +197,18 @@ class HighScoreDisplayer(QGraphicsObject):
 
         self.selected = False
 
+    def set_disabled(self, state):
+        self.setAcceptHoverEvents(state)
+
+    def show_board(self, state):
+        self.scoreboard_widget.setVisible(state)
+        self.scoreboard_widget.show_scores(state)
+        self.prepareGeometryChange()
+        if state:
+            self.size = self.board_size
+        else:
+            self.size = self.icon_size
+
     def boundingRect(self):
         return QRectF(-self.size, -self.size, self.size, self.size)
 
@@ -202,17 +220,10 @@ class HighScoreDisplayer(QGraphicsObject):
                              -self.icon_size/2, -self.icon_size/2, Qt.white)
 
     def hoverEnterEvent(self, ev):
-        if not self.selected:
-            self.scoreboard_widget.setVisible(True)
-            self.scoreboard_widget.show_scores(True)
-            self.prepareGeometryChange()
-            self.size = self.board_size
+        self.show_board(True)
 
     def hoverLeaveEvent(self, ev):
-        self.scoreboard_widget.setVisible(False)
-        self.scoreboard_widget.show_scores(False)
-        self.prepareGeometryChange()
-        self.size = self.icon_size
+        self.show_board(False)
 
 
 if __name__ == "__main__":

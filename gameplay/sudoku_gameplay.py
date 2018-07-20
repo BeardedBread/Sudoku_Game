@@ -55,6 +55,7 @@ class SudokuSystem:
 
     def completion_check(self):
         if np.all(np.logical_or(self.cell_status == VALID, self.cell_status == FIXED)):
+            self.cell_status[:] = FIXED
             return True
         else:
             return False
@@ -83,7 +84,6 @@ class SudokuSystem:
 
             if len(row_check) == 1 and len(col_check) == 1 and len(local_grid_check_row) == 1:
                 self.cell_status[row, col] = VALID
-                print('Completion?', self.completion_check())
             else:
                 self.cell_status[row, col] = INVALID
                 bad_cells = []

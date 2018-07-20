@@ -76,6 +76,7 @@ class SudokuGrid(BaseSudokuItem):
     # TODO: Add functions to animated the grid lines
     buttonClicked = pyqtSignal(float, float)
     finishDrawing = pyqtSignal()
+    puzzleFinished = pyqtSignal()
 
     def __init__(self, width, height, parent=None):
         super().__init__(parent)
@@ -153,6 +154,8 @@ class SudokuGrid(BaseSudokuItem):
     def replace_cell_number(self, val):
         self.sudoku_grid.replace_cell_number(self.mouse_h, self.mouse_w, val)
         self.grid_painter.update()
+        if self.sudoku_grid.completion_check():
+            self.puzzleFinished.emit()
 
     def boundingRect(self):
         return QRectF(-5, -5, self.width+10, self.height+10)
