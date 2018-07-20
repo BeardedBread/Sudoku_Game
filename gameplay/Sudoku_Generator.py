@@ -1,3 +1,5 @@
+# TODO: Generator currently does not produce unique puzzle, requires rewrite possibly
+
 """
 Module that generates a valid Sudoku Puzzle
 Credits for Generator: http://zhangroup.aporc.org/images/files/Paper_3485.pdf

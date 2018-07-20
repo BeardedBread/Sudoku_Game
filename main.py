@@ -1,3 +1,6 @@
+# TODO: Add a scribble function
+# TODO: Add keyboard support
+
 from PyQt5.QtGui import QPainter, QBrush
 from PyQt5.Qt import QApplication
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsWidget, QGraphicsLinearLayout
