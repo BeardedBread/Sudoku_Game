@@ -1,6 +1,5 @@
-import os
 import numpy as np
-from . import Sudoku_Generator as sdk_gen
+from . import Sudoku_Generator as SdkGen
 
 EMPTY = 0
 VALID = 1
@@ -131,7 +130,7 @@ class SudokuSystem:
 
     def generate_random_board(self, difficulty):
         self.clear_grid()
-        self.number_grid[:] = sdk_gen.generate_sudoku_puzzle(difficulty)
+        self.number_grid[:] = SdkGen.generate_sudoku_puzzle(difficulty)
         row, col = np.where(self.number_grid == 0)
 
         for r, c in zip(row, col):

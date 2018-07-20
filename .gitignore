@@ -3,3 +3,4 @@ demos/
 .idea/
 */__pycache__/*
 *.pyc
+*/highscore.txt

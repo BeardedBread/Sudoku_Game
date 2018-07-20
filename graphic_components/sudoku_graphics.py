@@ -221,6 +221,7 @@ class SudokuGrid(BaseSudokuItem):
 
         self.update()
 
+
 class NumberRing(BaseSudokuItem):
     # TODO: Add functions to animated the ring appearing
     # TODO: Adjust the positioning of each element
@@ -239,7 +240,7 @@ class NumberRing(BaseSudokuItem):
                 cell_string = 'X'
             else:
                 cell_string = str(i)
-            btn = buttons.animBox(0, 0, self.cell_width,
+            btn = buttons.AnimBox(0, 0, self.cell_width,
                                   self.cell_height, cell_string, parent=self)
             self.cell_buttons.append(btn)
 

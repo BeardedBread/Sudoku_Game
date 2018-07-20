@@ -14,6 +14,7 @@ def generate_highscore_file(file):
             if not i == 4:
                 f.write('\n---\n')
 
+
 def read_highscore_file(file):
     with open(file, 'r') as f:
         file_data = f.read()

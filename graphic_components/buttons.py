@@ -15,7 +15,7 @@ from general import extras
 RANDOMCHAR = "~!@#$%^&*()_+`-=[]\{}|;:'<>,./?\""
 
 
-class animBox(QGraphicsObject):
+class AnimBox(QGraphicsObject):
     # Prepare the signal
     hoverEnter = pyqtSignal()
     hoverExit = pyqtSignal()

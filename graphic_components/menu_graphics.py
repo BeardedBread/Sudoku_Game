@@ -158,7 +158,7 @@ class DifficultyMenu(QGraphicsWidget):
         self.width = self.btn_width
 
         for i in range(5):
-            btn = buttons.animBox(0, (self.btn_height + 10) * i,
+            btn = buttons.AnimBox(0, (self.btn_height + 10) * i,
                                   self.btn_width, self.btn_height, DIFFICULTIES[i], parent=self)
             btn.buttonClicked.connect(self.clicked_on)
             self.diff_buttons.append(btn)
@@ -199,7 +199,6 @@ class HighScoreDisplayer(QGraphicsObject):
         self.scoreboard_widget.setVisible(False)
 
         self.setAcceptHoverEvents(True)
-        #self.show_board(True)
         self.selected = False
 
     def set_disabled(self, state):
