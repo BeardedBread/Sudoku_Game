@@ -1,17 +1,23 @@
 import random
 import sys
+import os
 
 from PyQt5.Qt import QApplication
 from PyQt5.QtCore import (QAbstractAnimation, Qt, QPropertyAnimation, pyqtProperty, pyqtSignal, QTimer)
 from PyQt5.QtWidgets import (QWidget, QLineEdit, QHBoxLayout, QGridLayout, QVBoxLayout, QPushButton, QLabel)
 
 if not __name__ == "__main__":
-    sys.path.append("~/PycharmProjects/sudoku")
-    hs_file = "/home/eyt21/PycharmProjects/sudoku/general/highscore.txt"
+    current_dir = os.getcwd()
+    sys.path.append(current_dir)
+    hs_file = current_dir + "/general/highscore.txt"
 else:
     hs_file = "./sudoku/general/highscore.txt"
 
 from general import highscore as hs
+
+if not os.path.exists(hs_file):
+    print('Missing High Score file. Generating one. ')
+    hs.generate_highscore_file(hs_file)
 
 BACKWARD = 1
 FORWARD = -1

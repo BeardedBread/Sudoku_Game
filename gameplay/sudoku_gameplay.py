@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from . import Sudoku_Generator as sdk_gen
 
@@ -108,20 +109,25 @@ class SudokuSystem:
 
                 self.offending_cells[row][col] = bad_cells
 
-    def generate_test_board(self):
-        with open(test_dir, 'r') as f:
-            lines = f.readlines()
+    def generate_test_board(self, difficulty):
+        try:
+            with open(test_dir, 'r') as f:
+                lines = f.readlines()
 
-        values = []
-        for line in lines:
-            values.append([int(val) for val in line.strip('\n').split(',')])
+            values = []
+            for line in lines:
+                values.append([int(val) for val in line.strip('\n').split(',')])
 
-        self.number_grid[:] = values
-        self.cell_status[:] = FIXED
-        row, col = np.where(self.number_grid == 0)
+            self.number_grid[:] = values
+            self.cell_status[:] = FIXED
+            row, col = np.where(self.number_grid == 0)
 
-        for r, c in zip(row, col):
-            self.cell_status[r, c] = EMPTY
+            for r, c in zip(row, col):
+                self.cell_status[r, c] = EMPTY
+        except Exception as e:
+            print(e)
+            print('Something went wrong loading the test file. Generating a random board instead')
+            self.generate_random_board(difficulty)
 
     def generate_random_board(self, difficulty):
         self.clear_grid()
