@@ -182,6 +182,8 @@ class MenuBoard(BoxBoard):
         self.score_display.setX(self.width - self.margin)
         self.score_display.setY(self.height - self.margin)
 
+        self.score_display.scoreboard_widget.highScoreSet.connect(self.return_to_normal)
+
         self.show_children(False)
         self.toggle_anim(True)
 
@@ -198,5 +200,15 @@ class MenuBoard(BoxBoard):
         self.diff_display.set_text(string)
         self.timer_display.reset_time()
 
-    def stop_timer(self):
+    def finish_the_game(self):
         self.timer_display.timer.stop()
+        diff = self.diff_display.text
+        time = self.timer_display.get_time()
+        if self.score_display.scoreboard_widget.check_ranking(diff, time):
+            self.diff_display.set_disabled(True)
+            self.score_display.set_disabled(True)
+            self.score_display.show_board(True)
+
+    def return_to_normal(self):
+        self.diff_display.set_disabled(False)
+        self.score_display.set_disabled(False)

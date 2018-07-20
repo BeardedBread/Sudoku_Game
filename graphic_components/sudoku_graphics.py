@@ -149,6 +149,7 @@ class SudokuGrid(BaseSudokuItem):
 
     def generate_new_grid(self, difficulty):
         self.sudoku_grid.generate_random_board(difficulty)
+        #self.sudoku_grid.generate_test_board()
         self.update()
 
     def replace_cell_number(self, val):

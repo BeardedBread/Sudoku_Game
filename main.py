@@ -45,7 +45,7 @@ class SudokuWindow(QGraphicsView):
         # Cross-Board signal connections
         self.gameboard.gridDrawn.connect(lambda: self.menuboard.show_children(True))
         self.gameboard.newGameSelected.connect(self.menuboard.set_difficulty_text)
-        self.gameboard.sudokuDone.connect(self.menuboard.stop_timer)
+        self.gameboard.sudokuDone.connect(self.menuboard.finish_the_game)
         self.menuboard.diff_display.notFocus.connect(self.gameboard.game_refocus)
         self.menuboard.diff_display.difficultySelected.connect(self.gameboard.new_game)
 

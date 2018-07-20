@@ -1,4 +1,4 @@
-DIFFICULTIES = ['Very Easy', 'Easy', 'Medium', 'Hard', 'Insane']
+DIFFICULTIES = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
 
 
 def generate_highscore_file(file):
@@ -49,13 +49,11 @@ def replace_placing(data, difficulty, name, time):
             break
 
 
-def check_ranking(data, difficulty, name, time):
+def check_ranking(data, difficulty, time):
     rank = -1
     for rnk, info in enumerate(data[difficulty]):
         if time < info['time']:
-            info['name'] = name
-            info['time'] = time
-            rank = -1
+            rank = rnk
             break
     return rank
 

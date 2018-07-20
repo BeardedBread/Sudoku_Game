@@ -15,7 +15,9 @@ from general import highscore as hs
 BACKWARD = 1
 FORWARD = -1
 
+
 class HighScoreBoard(QWidget):
+    highScoreSet = pyqtSignal()
 
     def __init__(self, width, height):
         super().__init__()
@@ -54,6 +56,21 @@ class HighScoreBoard(QWidget):
 
     def set_score(self, name):
         self.score_grid.set_highscore(self.current_difficulty, name, self.final_time)
+        self.name_input.setVisible(False)
+        self.highScoreSet.emit()
+
+    def check_ranking(self, difficulty, time):
+        self.current_difficulty = difficulty
+        self.final_time = time
+        rank = self.score_grid.get_rank(difficulty, time)
+        if rank >= 0:
+            self.diff_switch.go_to_difficulty(difficulty)
+            self.score_grid.replace_scores(difficulty)
+            self.name_input.setVisible(True)
+            self.name_input.rank_label.setText(str(rank+1))
+            self.name_input.time_display.setText(time)
+            return True
+        return False
 
 
 class DifficultySwitch(QHBoxLayout):
@@ -109,7 +126,7 @@ class DifficultySwitch(QHBoxLayout):
             self.timer.start()
 
     def go_to_difficulty(self, difficulty):
-        pos = (hs.DIFFICULTIES.index(difficulty) + 1) * self.max_length
+        pos = (hs.DIFFICULTIES[::-1].index(difficulty) + 1) * self.max_length
         self.show_pos = pos
         self.next_pos = pos
 
@@ -169,6 +186,10 @@ class ScoreGrid(QGridLayout):
         self.replace_scores(difficulty)
         self.scoreUpdate.emit(difficulty)
 
+    def get_rank(self, difficulty, time):
+        return hs.check_ranking(self.highscore_list, difficulty, time)
+
+
 class NameInput(QWidget):
     nameReceived = pyqtSignal(str)
 
@@ -177,10 +198,14 @@ class NameInput(QWidget):
 
         self.layout = QHBoxLayout(self)
 
-        self.layout.addWidget(QLabel('Name'))
+        self.rank_label = QLabel('-')
+        self.layout.addWidget(self.rank_label)
 
         self.name_input = QLineEdit(self)
         self.layout.addWidget(self.name_input)
+
+        self.time_display = QLabel('-:-:-')
+        self.layout.addWidget(self.time_display)
         self.name_input.returnPressed.connect(self.receive_name_input)
 
         self.name_input.setStyleSheet("""

@@ -57,6 +57,11 @@ class TimerDisplayer(QGraphicsWidget):
         self.atenth_seconds = 0
         self.timer.start()
 
+    def get_time(self):
+        return "{:02d}:{:02d}:{:1d}".format(int(self.atenth_seconds/600),
+                                            int(self.atenth_seconds/10) % 60,
+                                            self.atenth_seconds % 10)
+
     def paint(self, painter, style, widget=None):
         box = self.timer_box
         painter.setPen(self.box_pen)
@@ -194,11 +199,11 @@ class HighScoreDisplayer(QGraphicsObject):
         self.scoreboard_widget.setVisible(False)
 
         self.setAcceptHoverEvents(True)
-
+        #self.show_board(True)
         self.selected = False
 
     def set_disabled(self, state):
-        self.setAcceptHoverEvents(state)
+        self.setAcceptHoverEvents(not state)
 
     def show_board(self, state):
         self.scoreboard_widget.setVisible(state)
