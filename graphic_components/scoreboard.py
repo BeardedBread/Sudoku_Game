@@ -190,6 +190,7 @@ class ScoreGrid(QGridLayout):
 
     def set_highscore(self, difficulty, name, time):
         hs.replace_placing(self.highscore_list, difficulty, name, time)
+        hs.write_highscore_file(hs_file, self.highscore_list)
         self.replace_scores(difficulty)
         self.scoreUpdate.emit(difficulty)
 
@@ -209,6 +210,7 @@ class NameInput(QWidget):
         self.layout.addWidget(self.rank_label)
 
         self.name_input = QLineEdit(self)
+        self.name_input.setMaxLength(13)
         self.layout.addWidget(self.name_input)
 
         self.time_display = QLabel('-:-:-')
@@ -216,7 +218,7 @@ class NameInput(QWidget):
         self.name_input.returnPressed.connect(self.receive_name_input)
 
         self.name_input.setStyleSheet("""
-            border: 2px solid gray;
+            border-top: 1px solid white;
         """)
 
     def receive_name_input(self):

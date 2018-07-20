@@ -42,10 +42,10 @@ def write_highscore_file(file, data):
 
 
 def replace_placing(data, difficulty, name, time):
-    for info in data[difficulty]:
+    for i, info in enumerate(data[difficulty]):
         if time < info['time']:
-            info['name'] = name
-            info['time'] = time
+            data[difficulty].insert(i, {'name': name, 'time': time})
+            data[difficulty].pop(-1)
             break
 
 
