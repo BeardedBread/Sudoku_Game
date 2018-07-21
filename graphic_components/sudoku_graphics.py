@@ -127,6 +127,8 @@ class SudokuGrid(BaseSudokuItem):
         self.selection_pen.setWidth(self.selection_unit)
         self.selection_box = QRectF(0, 0, self.cell_width, self.cell_height)
 
+        self.setAcceptHoverEvents(True)
+        self.setAcceptedMouseButtons(Qt.LeftButton)
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
         self.set_disabled(False)
 
@@ -193,7 +195,7 @@ class SudokuGrid(BaseSudokuItem):
             painter.drawRect(self.selection_box)
 
     def hoverMoveEvent(self, event):
-        if self.drawn:
+        if not (self.freeze and self.drawn):
             box_w = bound_value(0, int(event.pos().x()/self.cell_width), 8)
             box_h = bound_value(0, int(event.pos().y() / self.cell_height), 8)
             if box_w != self.mouse_w or box_h != self.mouse_h:
@@ -242,8 +244,11 @@ class SudokuGrid(BaseSudokuItem):
 
 
 class NumberRing(BaseSudokuItem):
+    # TODO: Add functions to animated the ring appearing
+    # TODO: Adjust the positioning of each element
     # TODO: Make it transparent when mouse is out of range
     loseFocus = pyqtSignal()
+    keyPressed = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -351,6 +356,15 @@ class NumberRing(BaseSudokuItem):
             btn.setY(cell_y)
 
         self.update()
+
+    def keyPressEvent(self, event):
+        txt = event.text()
+        if not txt == '' and txt in 'x123456789':
+            if txt == 'x':
+                txt = 'X'
+            print('keypress:', txt)
+            self.keyPressed.emit(txt)
+            self.clearFocus()
 
 
 class PlayMenu(BaseSudokuItem):

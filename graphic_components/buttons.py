@@ -152,7 +152,7 @@ class AnimBox(QGraphicsObject):
         super().hoverLeaveEvent(event)
 
     def mousePressEvent(self, event):
-        self.length = 0
+        self.toggle_anim(False)
         self.buttonClicked.emit(self.text)
 
 
