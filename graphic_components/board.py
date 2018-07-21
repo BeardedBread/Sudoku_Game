@@ -109,7 +109,6 @@ class GameBoard(BoxBoard):
         self.show_playmenu(False)
 
         self.gamegrid.buttonClicked.connect(self.show_number_ring)
-        #self.numring.connect_button_signals(self.select_ring_number)
         self.numring.keyPressed.connect(self.select_ring_number)
 
         self.gamegrid.setFocus(Qt.MouseFocusReason)
@@ -152,7 +151,6 @@ class GameBoard(BoxBoard):
         self.playmenu.setVisible(state)
 
     def new_game(self, string):
-        print('new game selected')
         self.gamegrid.generate_new_grid(menu_grap.DIFFICULTIES.index(string))
         self.show_grid(True)
         self.newGameSelected.emit(string)
@@ -160,8 +158,8 @@ class GameBoard(BoxBoard):
     def paint(self, painter, style, widget=None):
         super().paint(painter, style, widget)
 
-        painter.drawText(QRectF(0, self.height+15,self.width,15), Qt.AlignCenter,
-                         "Hold M to mark numbers in a cell")
+        painter.drawText(QRectF(0, self.height+15, self.width, 15), Qt.AlignCenter,
+                         "Hold M to scribble down numbers in a cell")
 
 
 class MenuBoard(BoxBoard):

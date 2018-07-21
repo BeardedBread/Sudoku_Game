@@ -5,13 +5,15 @@ This module contains the components that make up the Sudoku Board
 import numpy as np
 from PyQt5.QtCore import (QAbstractAnimation, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal)
-from PyQt5.QtGui import QPen, QFont, QKeyEvent
+from PyQt5.QtGui import QPen, QFont
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
 
 from gameplay import sudoku_gameplay as sdk
 from general.extras import bound_value
 from . import buttons
 from . import menu_graphics as menu_grap
+
+SCRIBBLE_KEY = Qt.Key_M
 
 
 class BaseSudokuItem(QGraphicsObject):
@@ -84,7 +86,6 @@ class NumberPainter(BaseSudokuItem):
 
 
 class SudokuGrid(BaseSudokuItem):
-    # TODO: Add functions to animated the grid lines
     buttonClicked = pyqtSignal(float, float, bool)
     finishDrawing = pyqtSignal()
     puzzleFinished = pyqtSignal()
@@ -231,12 +232,12 @@ class SudokuGrid(BaseSudokuItem):
 
     def keyPressEvent(self, event):
         if not event.isAutoRepeat():
-            if (event.key() == Qt.Key_M) and not self.scribbling:
+            if (event.key() == SCRIBBLE_KEY) and not self.scribbling:
                 self.scribbling = True
 
     def keyReleaseEvent(self, event):
         if not event.isAutoRepeat():
-            if event.key() == Qt.Key_M and self.scribbling:
+            if event.key() == SCRIBBLE_KEY and self.scribbling:
                 self.scribbling = False
 
     # Defining the length to be drawn as a pyqtProperty
@@ -265,8 +266,6 @@ class SudokuGrid(BaseSudokuItem):
 
 
 class NumberRing(BaseSudokuItem):
-    # TODO: Add functions to animated the ring appearing
-    # TODO: Adjust the positioning of each element
     # TODO: Make it transparent when mouse is out of range
     loseFocus = pyqtSignal()
     keyPressed = pyqtSignal(str, bool)
@@ -287,7 +286,6 @@ class NumberRing(BaseSudokuItem):
             btn = buttons.AnimBox(0, 0, self.cell_width,
                                   self.cell_height, cell_string, parent=self)
             btn.buttonClicked.connect(self.send_button_press)
-            #btn.buttonClicked.connect(self.close_menu)
             self.cell_buttons.append(btn)
 
         self.radius = 54
@@ -357,9 +355,7 @@ class NumberRing(BaseSudokuItem):
 
     def keyPressEvent(self, event):
         if not event.isAutoRepeat():
-            print('Pressed:', event.key())
-            if (event.key() == Qt.Key_M) and not self.scribbling:
-                print('Scribbling On')
+            if (event.key() == SCRIBBLE_KEY) and not self.scribbling:
                 self.scribbling = True
             if event.key() == 88:
                 txt = 'X'
@@ -369,16 +365,13 @@ class NumberRing(BaseSudokuItem):
                 txt = ''
 
             if txt:
-                print('keypress:', txt)
                 self.keyPressed.emit(txt, self.scribbling)
                 if not self.scribbling:
                     self.clearFocus()
 
     def keyReleaseEvent(self, event):
         if not event.isAutoRepeat():
-            print('Released:', event.key())
-            if event.key() == Qt.Key_M and self.scribbling:
-                print('Scribbling Off')
+            if event.key() == SCRIBBLE_KEY and self.scribbling:
                 self.scribbling = False
 
     # Defining the length to be drawn as a pyqtProperty
@@ -415,7 +408,9 @@ class PlayMenu(BaseSudokuItem):
         self.diff_select.menuClicked.connect(self.difficulty_selected)
 
     def paint(self, painter, style, widget=None):
-        pass
+        painter.setPen(self.default_pen)
+        painter.setFont(self.default_font)
+        painter.drawText(self.rect, Qt.AlignHCenter, 'Select A Difficulty')
 
     def boundingRect(self):
         return self.diff_select.boundingRect()

@@ -26,9 +26,6 @@ class SudokuSystem:
                 row.append([])
             self.offending_cells.append(row)
 
-        if TESTING:
-            self.generate_test_board()
-
     def clear_grid(self):
         self.number_grid[:] = 0
         self.cell_status[:] = FIXED
