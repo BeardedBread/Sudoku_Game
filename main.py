@@ -1,5 +1,6 @@
-# TODO: Add a scribble function
-# TODO: Add keyboard support
+"""
+This is the main module to be run. Contains the program itself.
+"""
 
 from PyQt5.QtGui import QPainter, QBrush
 from PyQt5.Qt import QApplication
@@ -12,8 +13,7 @@ from graphic_components import board
 
 class SudokuWindow(QGraphicsView):
     """
-    The main window that shows the graphical components.
-    Contains the Sudoku Board and the Menu Board.
+    The main window that shows the Sudoku Board and the Menu Board.
     """
 
     def __init__(self):
@@ -50,6 +50,9 @@ class SudokuWindow(QGraphicsView):
         self.menuboard.diff_display.difficultySelected.connect(self.gameboard.new_game)
 
     def resizeEvent(self, event):
+        """
+        Reimplemented from QGraphicsView. Resize and maintain the board aspect ratio.
+        """
         self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
         super().resizeEvent(event)
 
