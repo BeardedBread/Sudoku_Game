@@ -7,7 +7,7 @@ import random
 
 from PyQt5.QtCore import (QAbstractAnimation, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal)
-from PyQt5.QtGui import QPen
+from PyQt5.QtGui import QPen, QColor
 from PyQt5.QtWidgets import (QGraphicsObject)
 
 from general import extras
@@ -61,6 +61,18 @@ class AnimBox(QGraphicsObject):
             self.anim.setKeyValueAt(t / 10, self.logistic_func(t / 10))
         self.anim.setEndValue(self.circumference)
         self.animText = AnimatedText(self.text, parent=self)
+        self.transparent = False
+
+    def set_transparent(self, state):
+        self.transparent = state
+        col = self.default_pen.color()
+        if state:
+            col.setAlphaF(0.2)
+        else:
+            col.setAlphaF(1)
+        self.default_pen.setColor(col)
+        self.animText.set_transparent(state)
+        self.update()
 
     def set_freeze(self, freeze):
         if freeze:
@@ -94,7 +106,10 @@ class AnimBox(QGraphicsObject):
             if line.length() > 1:
                 painter.drawLine(line)
         painter.setPen(self.default_pen)
-        painter.fillRect(self.btn_rect, Qt.black)
+        if self.transparent:
+            painter.fillRect(self.btn_rect, QColor(255, 255, 255, 0.1))
+        else:
+            painter.fillRect(self.btn_rect, Qt.black)
         painter.drawRect(self.btn_rect)
 
     # Defining the length to be drawn as a pyqtProperty
@@ -180,6 +195,15 @@ class AnimatedText(QGraphicsObject):
             self.anim.setKeyValueAt(t / 10, (len(self.actual_text) + self.delay) * t/10)
         self.anim.setEndValue(len(self.actual_text) + self.delay)
         self.visibleChanged.connect(self.show_text)
+
+    def set_transparent(self, state):
+        col = self.default_pen.color()
+        if state:
+            col.setAlphaF(0.2)
+        else:
+            col.setAlphaF(1)
+        self.default_pen.setColor(col)
+        self.update()
 
     def show_text(self):
         if self.isVisible():

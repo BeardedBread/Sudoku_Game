@@ -299,6 +299,7 @@ class NumberRing(BaseSudokuItem):
         self.anim.finished.connect(self.finish_animation)
 
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
+        self.setAcceptHoverEvents(True)
 
         self.freeze_buttons(True)
         self.scribbling = False
@@ -373,6 +374,14 @@ class NumberRing(BaseSudokuItem):
         if not event.isAutoRepeat():
             if event.key() == SCRIBBLE_KEY and self.scribbling:
                 self.scribbling = False
+
+    def hoverEnterEvent(self, event):
+        for btn in self.cell_buttons:
+            btn.set_transparent(False)
+
+    def hoverLeaveEvent(self, event):
+        for btn in self.cell_buttons:
+            btn.set_transparent(True)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
