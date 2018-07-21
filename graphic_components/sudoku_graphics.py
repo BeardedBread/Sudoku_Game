@@ -328,15 +328,30 @@ class NumberRing(BaseSudokuItem):
             self.toggle_anim(False)
 
     def keyPressEvent(self, event):
-        if (Qt.ShiftModifier & event.modifiers()) and not self.scribbling:
+        if not event.isAutoRepeat():
+            print('Pressed:', event.key())
+            if (event.key() == Qt.Key_M) and not self.scribbling:
+                print('Scribbling On')
+                self.scribbling = True
+            if event.key() == 88:
+                txt = 'X'
+            elif 49 <= event.key() <= 57:
+                txt = str(event.key()-48)
+            else:
+                txt = ''
 
-            print('Scribbling On')
-            self.scribbling = True
+            if txt:
+                print('keypress:', txt)
+                self.keyPressed.emit(txt)
+                if not self.scribbling:
+                    self.clearFocus()
 
     def keyReleaseEvent(self, event):
-        if not (Qt.ShiftModifier & event.modifiers()) and self.scribbling:
-            print('Scribbling Off')
-            self.scribbling = False
+        if not event.isAutoRepeat():
+            print('Released:', event.key())
+            if event.key() == Qt.Key_M and self.scribbling:
+                print('Scribbling Off')
+                self.scribbling = False
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
@@ -356,15 +371,6 @@ class NumberRing(BaseSudokuItem):
             btn.setY(cell_y)
 
         self.update()
-
-    def keyPressEvent(self, event):
-        txt = event.text()
-        if not txt == '' and txt in 'x123456789':
-            if txt == 'x':
-                txt = 'X'
-            print('keypress:', txt)
-            self.keyPressed.emit(txt)
-            self.clearFocus()
 
 
 class PlayMenu(BaseSudokuItem):
