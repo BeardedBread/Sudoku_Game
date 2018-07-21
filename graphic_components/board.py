@@ -109,7 +109,7 @@ class GameBoard(BoxBoard):
         self.show_playmenu(False)
 
         self.gamegrid.buttonClicked.connect(self.show_number_ring)
-        self.numring.connect_button_signals(self.select_ring_number)
+        #self.numring.connect_button_signals(self.select_ring_number)
         self.numring.keyPressed.connect(self.select_ring_number)
 
         self.gamegrid.setFocus(Qt.MouseFocusReason)
@@ -129,10 +129,14 @@ class GameBoard(BoxBoard):
             self.numring.toggle_anim(True)
             self.numring.scribbling = scribbling
 
-    def select_ring_number(self, val):
-        if val == 'X':
-            val = 0
-        self.gamegrid.replace_cell_number(int(val))
+    def select_ring_number(self, val, scribbling):
+        if scribbling:
+            if not val == 'X':
+                self.gamegrid.change_cell_scribbles(val)
+        else:
+            if val == 'X':
+                val = 0
+            self.gamegrid.replace_cell_number(int(val))
 
     def game_refocus(self):
         self.gamegrid.set_disabled(False)

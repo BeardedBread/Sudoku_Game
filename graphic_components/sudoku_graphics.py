@@ -173,6 +173,10 @@ class SudokuGrid(BaseSudokuItem):
         #self.sudoku_grid.generate_test_board(difficulty)   # Uncomment for testing
         self.update()
 
+    def change_cell_scribbles(self, val):
+        self.sudoku_grid.toggle_scribble(self.mouse_h, self.mouse_w, val)
+        self.grid_painter.update()
+
     def replace_cell_number(self, val):
         self.sudoku_grid.replace_cell_number(self.mouse_h, self.mouse_w, val)
         self.grid_painter.update()
@@ -262,7 +266,7 @@ class NumberRing(BaseSudokuItem):
     # TODO: Adjust the positioning of each element
     # TODO: Make it transparent when mouse is out of range
     loseFocus = pyqtSignal()
-    keyPressed = pyqtSignal(str)
+    keyPressed = pyqtSignal(str, bool)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -272,6 +276,8 @@ class NumberRing(BaseSudokuItem):
         self.cell_height = 24
 
         self.cell_buttons = []
+        for btn in self.cell_buttons:
+            btn.buttonClicked.connect(func)
         for i in range(10):
             if i == 0:
                 cell_string = 'X'
@@ -279,6 +285,8 @@ class NumberRing(BaseSudokuItem):
                 cell_string = str(i)
             btn = buttons.AnimBox(0, 0, self.cell_width,
                                   self.cell_height, cell_string, parent=self)
+            btn.buttonClicked.connect(self.send_button_press)
+            #btn.buttonClicked.connect(self.close_menu)
             self.cell_buttons.append(btn)
 
         self.radius = 54
@@ -322,10 +330,9 @@ class NumberRing(BaseSudokuItem):
     def paint(self, painter, style, widget=None):
         pass
 
-    def connect_button_signals(self, func):
-        for btn in self.cell_buttons:
-            btn.buttonClicked.connect(func)
-            btn.buttonClicked.connect(self.close_menu)
+    def send_button_press(self, val):
+        self.keyPressed.emit(val, self.scribbling)
+        self.close_menu()
             
     def freeze_buttons(self, freeze):
         for btn in self.cell_buttons:
@@ -356,7 +363,7 @@ class NumberRing(BaseSudokuItem):
 
             if txt:
                 print('keypress:', txt)
-                self.keyPressed.emit(txt)
+                self.keyPressed.emit(txt, self.scribbling)
                 if not self.scribbling:
                     self.clearFocus()
 

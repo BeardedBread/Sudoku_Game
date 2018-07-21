@@ -45,6 +45,12 @@ class SudokuSystem:
         if val == 0:
             self.change_cell_status(row, col, EMPTY)
 
+    def toggle_scribble(self, row, col, val):
+        if val in self.scribbles[row, col]:
+            self.scribbles[row, col] = self.scribbles[row, col].replace(val, '')
+        else:
+            self.scribbles[row, col] += val
+
     def get_cell_number(self, row, col):
         return self.number_grid[row, col]
 
