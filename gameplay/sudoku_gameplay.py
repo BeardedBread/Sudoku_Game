@@ -19,7 +19,6 @@ class SudokuSystem:
         self.number_grid = np.zeros((9, 9), dtype=np.uint8)
         self.cell_status = np.zeros((9, 9), dtype=np.uint8)
         self.scribbles = np.zeros((9, 9), dtype='<U9')
-        self.scribbles[0, 0] = '234579'
         self.offending_cells = []
         for i in range(9):
             row = []

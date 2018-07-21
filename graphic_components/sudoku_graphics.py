@@ -37,13 +37,13 @@ class NumberPainter(BaseSudokuItem):
 
         self.invalid_pen = QPen()
         self.invalid_pen.setColor(Qt.lightGray)
-        self.invalid_font = QFont("Helvetica", pointSize=12, italic=True)
+        self.invalid_font = QFont("Helvetica", pointSize=11, italic=True)
 
         self.fixed_pen = QPen()
         self.fixed_pen.setColor(Qt.white)
-        self.fixed_font = QFont("Helvetica", pointSize=14, weight=QFont.Bold)
+        self.fixed_font = QFont("Helvetica", pointSize=18, weight=QFont.Bold)
 
-        self.scribble_font = QFont("Helvetica", pointSize=5)
+        self.scribble_font = QFont("Helvetica", pointSize=8)
 
     def paint(self, painter, style, widget=None):
         for i in range(9):
@@ -364,7 +364,7 @@ class NumberRing(BaseSudokuItem):
             if txt:
                 print('keypress:', txt)
                 self.keyPressed.emit(txt, self.scribbling)
-                if not self.scribbling:
+                if not self.scribbling or txt == 'X':
                     self.clearFocus()
 
     def keyReleaseEvent(self, event):
