@@ -117,26 +117,24 @@ class GameBoard(BoxBoard):
         self.playmenu.buttonClicked.connect(self.new_game)
         self.gamegrid.finishDrawing.connect(self.gridDrawn.emit)
         self.gamegrid.puzzleFinished.connect(self.sudokuDone.emit)
+        self.numring.loseFocus.connect(self.game_refocus)
         self.toggle_anim(True)
 
     def show_number_ring(self, x=0, y=0):
-        if not self.gamegrid.freeze:
+        if not self.numring.isVisible():
             self.numring.setPos(x, y)
             self.numring.setVisible(True)
             self.numring.setFocus()
             self.numring.toggle_anim(True)
-        else:
-            self.gamegrid.freeze = False
-            self.gamegrid.setFocus()
 
     def select_ring_number(self, val):
         if val == 'X':
             val = 0
         self.gamegrid.replace_cell_number(int(val))
-        self.show_number_ring()
+        self.game_refocus()
 
     def game_refocus(self):
-        self.gamegrid.freeze = False
+        self.gamegrid.set_disabled(False)
         self.gamegrid.setFocus()
 
     def show_grid(self, state):

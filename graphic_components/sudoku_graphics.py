@@ -126,9 +126,8 @@ class SudokuGrid(BaseSudokuItem):
         self.selection_pen.setWidth(self.selection_unit)
         self.selection_box = QRectF(0, 0, self.cell_width, self.cell_height)
 
-        self.setAcceptHoverEvents(True)
-        self.setAcceptedMouseButtons(Qt.LeftButton)
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
+        self.set_disabled(False)
 
         # Length of the box to be drawn
         self.length = 0
@@ -142,6 +141,13 @@ class SudokuGrid(BaseSudokuItem):
 
         self.drawn = False
         self.anim.finished.connect(self.finish_drawing)
+
+    def set_disabled(self, state):
+        if state:
+            self.setAcceptedMouseButtons(Qt.NoButton)
+        else:
+            self.setAcceptedMouseButtons(Qt.LeftButton)
+        self.setAcceptHoverEvents(not state)
 
     def finish_drawing(self):
         if self.length == self.width:
@@ -186,7 +192,7 @@ class SudokuGrid(BaseSudokuItem):
             painter.drawRect(self.selection_box)
 
     def hoverMoveEvent(self, event):
-        if not (self.freeze and self.drawn):
+        if self.drawn:
             box_w = bound_value(0, int(event.pos().x()/self.cell_width), 8)
             box_h = bound_value(0, int(event.pos().y() / self.cell_height), 8)
             if box_w != self.mouse_w or box_h != self.mouse_h:
@@ -196,7 +202,7 @@ class SudokuGrid(BaseSudokuItem):
                 self.update()
 
     def mousePressEvent(self, event):
-        if not (self.freeze and self.drawn):
+        if self.drawn:
             w = (self.mouse_w + 0.5) * self.cell_width
             h = (self.mouse_h + 0.5) * self.cell_height
 
@@ -204,9 +210,10 @@ class SudokuGrid(BaseSudokuItem):
                 self.buttonClicked.emit(w, h)
         else:
             self.buttonClicked.emit(0, 0)
-
+    def focusInEvent(self, event):
+        self.set_disabled(False)
     def focusOutEvent(self, event):
-        self.freeze = True
+        self.set_disabled(True)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
@@ -237,6 +244,7 @@ class NumberRing(BaseSudokuItem):
     # TODO: Add functions to animated the ring appearing
     # TODO: Adjust the positioning of each element
     # TODO: Make it transparent when mouse is out of range
+    loseFocus = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -273,6 +281,7 @@ class NumberRing(BaseSudokuItem):
         if self.radius == 0:
             self.setVisible(False)
             self.freeze_buttons(True)
+            self.loseFocus.emit()
         else:
             self.freeze_buttons(False)
 
@@ -297,6 +306,7 @@ class NumberRing(BaseSudokuItem):
     def connect_button_signals(self, func):
         for btn in self.cell_buttons:
             btn.buttonClicked.connect(func)
+            btn.buttonClicked.connect(self.close_menu)
         print('Buttons Connected')
             
     def freeze_buttons(self, freeze):
@@ -304,6 +314,12 @@ class NumberRing(BaseSudokuItem):
             btn.set_freeze(freeze)
 
     def focusOutEvent(self, event):
+        if not any(btn.isUnderMouse() for btn in self.cell_buttons):
+            self.close_menu()
+        else:
+            self.setFocus()
+
+    def close_menu(self):
         self.toggle_anim(False)
 
     # Defining the length to be drawn as a pyqtProperty
