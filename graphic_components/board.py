@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QPen
 from PyQt5.QtWidgets import QSizePolicy, QGraphicsWidget
 from PyQt5.QtCore import (QAbstractAnimation, Qt, QLineF, QPropertyAnimation, pyqtProperty,
-                          pyqtSignal, QSizeF)
+                          pyqtSignal, QSizeF, QRectF)
 
 from . import sudoku_graphics as sdk_grap
 from . import menu_graphics as menu_grap
@@ -157,6 +157,12 @@ class GameBoard(BoxBoard):
         self.gamegrid.generate_new_grid(menu_grap.DIFFICULTIES.index(string))
         self.show_grid(True)
         self.newGameSelected.emit(string)
+
+    def paint(self, painter, style, widget=None):
+        super().paint(painter, style, widget)
+
+        painter.drawText(QRectF(0, self.height+15,self.width,15), Qt.AlignCenter,
+                         "Hold M to mark numbers in a cell")
 
 
 class MenuBoard(BoxBoard):
