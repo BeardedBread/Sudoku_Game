@@ -43,6 +43,8 @@ class NumberPainter(BaseSudokuItem):
         self.fixed_pen.setColor(Qt.white)
         self.fixed_font = QFont("Helvetica", pointSize=14, weight=QFont.Bold)
 
+        self.scribble_font = QFont("Helvetica", pointSize=5)
+
     def paint(self, painter, style, widget=None):
         for i in range(9):
             for j in range(9):
@@ -70,6 +72,15 @@ class NumberPainter(BaseSudokuItem):
         painter.drawText(QRectF(w*self.parent.cell_width, h*self.parent.cell_height,
                                 self.parent.cell_width, self.parent.cell_height), Qt.AlignCenter, str(val))
 
+        painter.setPen(self.default_pen)
+        painter.setFont(self.scribble_font)
+        radius = 15
+        for scrib in self.sudoku_grid.scribbles[h, w]:
+            num = int(scrib)
+            num_x = radius * np.sin(np.deg2rad(360/10*num)) + w * self.parent.cell_width
+            num_y = - radius * np.cos(np.deg2rad(360 / 10 * num)) + h * self.parent.cell_height
+            painter.drawText(QRectF(num_x, num_y, self.parent.cell_width, self.parent.cell_height),
+                             Qt.AlignCenter, scrib)
 
 class SudokuGrid(BaseSudokuItem):
     # TODO: Add functions to animated the grid lines
