@@ -110,6 +110,7 @@ class GameBoard(BoxBoard):
 
         self.gamegrid.buttonClicked.connect(self.show_number_ring)
         self.numring.connect_button_signals(self.select_ring_number)
+        self.numring.keyPressed.connect(self.select_ring_number)
 
         self.gamegrid.setFocus(Qt.MouseFocusReason)
 

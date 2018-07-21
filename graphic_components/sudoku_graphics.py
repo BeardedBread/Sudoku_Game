@@ -226,6 +226,7 @@ class NumberRing(BaseSudokuItem):
     # TODO: Add functions to animated the ring appearing
     # TODO: Adjust the positioning of each element
     # TODO: Make it transparent when mouse is out of range
+    keyPressed = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -313,6 +314,15 @@ class NumberRing(BaseSudokuItem):
             btn.setY(cell_y)
 
         self.update()
+
+    def keyPressEvent(self, event):
+        txt = event.text()
+        if not txt == '' and txt in 'x123456789':
+            if txt == 'x':
+                txt = 'X'
+            print('keypress:', txt)
+            self.keyPressed.emit(txt)
+            self.clearFocus()
 
 
 class PlayMenu(BaseSudokuItem):
