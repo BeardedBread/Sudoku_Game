@@ -19,16 +19,15 @@ class AnimBox(QGraphicsObject):
     # Prepare the signal
     hoverEnter = pyqtSignal()
     hoverExit = pyqtSignal()
-    buttonClicked = pyqtSignal(str)
 
     # Initialisation
-    def __init__(self, x, y, width, height, text, parent=None):
+    def __init__(self, x, y, width, height, parent=None):
         super().__init__(parent=parent)
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.text = text
+        #self.text = text
         self.circumference = 2*(width+height)
 
         # Set up pens for drawing
@@ -60,19 +59,6 @@ class AnimBox(QGraphicsObject):
         for t in range(1, 10):
             self.anim.setKeyValueAt(t / 10, self.logistic_func(t / 10))
         self.anim.setEndValue(self.circumference)
-        self.animText = AnimatedText(self.text, parent=self)
-        self.transparent = False
-
-    def set_transparent(self, state):
-        self.transparent = state
-        col = self.default_pen.color()
-        if state:
-            col.setAlphaF(0.2)
-        else:
-            col.setAlphaF(1)
-        self.default_pen.setColor(col)
-        self.animText.set_transparent(state)
-        self.update()
 
     def set_freeze(self, freeze):
         if freeze:
@@ -106,10 +92,6 @@ class AnimBox(QGraphicsObject):
             if line.length() > 1:
                 painter.drawLine(line)
         painter.setPen(self.default_pen)
-        if self.transparent:
-            painter.fillRect(self.btn_rect, QColor(255, 255, 255, 0.1))
-        else:
-            painter.fillRect(self.btn_rect, Qt.black)
         painter.drawRect(self.btn_rect)
 
     # Defining the length to be drawn as a pyqtProperty
@@ -166,6 +148,56 @@ class AnimBox(QGraphicsObject):
             self.toggle_anim(False)
         super().hoverLeaveEvent(event)
 
+
+class RingButton(AnimBox):
+    # Prepare the signal
+    buttonClicked = pyqtSignal(str)
+
+    # Initialisation
+    def __init__(self, x, y, width, height, text, parent=None):
+        super().__init__(x, y, width, height, parent=parent)
+        self.text = text
+        self.transparent = False
+
+    def set_transparent(self, state):
+        self.transparent = state
+        col = self.default_pen.color()
+        if state:
+            col.setAlphaF(0.2)
+        else:
+            col.setAlphaF(1)
+        self.default_pen.setColor(col)
+        self.update()
+
+    # Reimplemented paint
+    def paint(self, painter, style, widget=None):
+        super().paint(painter, style, widget)
+        painter.setPen(self.default_pen)
+        if self.transparent:
+            painter.fillRect(self.btn_rect, QColor(255, 255, 255, 0.1))
+        else:
+            painter.fillRect(self.btn_rect, Qt.black)
+        painter.drawText(self.boundingRect(), Qt.AlignCenter, self.text)
+
+    def mousePressEvent(self, event):
+        self.toggle_anim(False)
+        self.buttonClicked.emit(self.text)
+
+
+class MenuButton(AnimBox):
+    # Prepare the signal
+    buttonClicked = pyqtSignal(str)
+
+    # Initialisation
+    def __init__(self, x, y, width, height, text, parent=None):
+        super().__init__(x, y, width, height, parent=parent)
+        self.text = text
+        self.animText = AnimatedText(text, parent=self)
+
+    def paint(self, painter, style, widget=None):
+        super().paint(painter, style, widget)
+        painter.fillRect(self.btn_rect, Qt.black)
+
     def mousePressEvent(self, event):
         self.toggle_anim(False)
         self.buttonClicked.emit(self.text)
@@ -195,15 +227,6 @@ class AnimatedText(QGraphicsObject):
             self.anim.setKeyValueAt(t / 10, (len(self.actual_text) + self.delay) * t/10)
         self.anim.setEndValue(len(self.actual_text) + self.delay)
         self.visibleChanged.connect(self.show_text)
-
-    def set_transparent(self, state):
-        col = self.default_pen.color()
-        if state:
-            col.setAlphaF(0.2)
-        else:
-            col.setAlphaF(1)
-        self.default_pen.setColor(col)
-        self.update()
 
     def show_text(self):
         if self.isVisible():

@@ -283,8 +283,8 @@ class NumberRing(BaseSudokuItem):
                 cell_string = 'X'
             else:
                 cell_string = str(i)
-            btn = buttons.AnimBox(0, 0, self.cell_width,
-                                  self.cell_height, cell_string, parent=self)
+            btn = buttons.RingButton(0, 0, self.cell_width, self.cell_height,
+                                     cell_string, parent=self)
             btn.buttonClicked.connect(self.send_button_press)
             self.cell_buttons.append(btn)
 
@@ -376,12 +376,14 @@ class NumberRing(BaseSudokuItem):
                 self.scribbling = False
 
     def hoverEnterEvent(self, event):
-        for btn in self.cell_buttons:
-            btn.set_transparent(False)
+        self.set_buttons_transparent(False)
 
     def hoverLeaveEvent(self, event):
+        self.set_buttons_transparent(True)
+
+    def set_buttons_transparent(self, state):
         for btn in self.cell_buttons:
-            btn.set_transparent(True)
+            btn.set_transparent(state)
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
