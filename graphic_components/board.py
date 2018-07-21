@@ -131,7 +131,7 @@ class GameBoard(BoxBoard):
         if val == 'X':
             val = 0
         self.gamegrid.replace_cell_number(int(val))
-        self.game_refocus()
+        #self.game_refocus()
 
     def game_refocus(self):
         self.gamegrid.set_disabled(False)

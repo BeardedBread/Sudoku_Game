@@ -82,6 +82,7 @@ class NumberPainter(BaseSudokuItem):
             painter.drawText(QRectF(num_x, num_y, self.parent.cell_width, self.parent.cell_height),
                              Qt.AlignCenter, scrib)
 
+
 class SudokuGrid(BaseSudokuItem):
     # TODO: Add functions to animated the grid lines
     buttonClicked = pyqtSignal(float, float)
@@ -241,8 +242,6 @@ class SudokuGrid(BaseSudokuItem):
 
 
 class NumberRing(BaseSudokuItem):
-    # TODO: Add functions to animated the ring appearing
-    # TODO: Adjust the positioning of each element
     # TODO: Make it transparent when mouse is out of range
     loseFocus = pyqtSignal()
 
@@ -276,6 +275,7 @@ class NumberRing(BaseSudokuItem):
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
 
         self.freeze_buttons(True)
+        self.scribbling = False
 
     def finish_animation(self):
         if self.radius == 0:
@@ -307,7 +307,6 @@ class NumberRing(BaseSudokuItem):
         for btn in self.cell_buttons:
             btn.buttonClicked.connect(func)
             btn.buttonClicked.connect(self.close_menu)
-        print('Buttons Connected')
             
     def freeze_buttons(self, freeze):
         for btn in self.cell_buttons:
@@ -315,12 +314,24 @@ class NumberRing(BaseSudokuItem):
 
     def focusOutEvent(self, event):
         if not any(btn.isUnderMouse() for btn in self.cell_buttons):
-            self.close_menu()
+            self.toggle_anim(False)
         else:
             self.setFocus()
 
     def close_menu(self):
-        self.toggle_anim(False)
+        if not self.scribbling:
+            self.toggle_anim(False)
+
+    def keyPressEvent(self, event):
+        if (Qt.ShiftModifier & event.modifiers()) and not self.scribbling:
+
+            print('Scribbling On')
+            self.scribbling = True
+
+    def keyReleaseEvent(self, event):
+        if not (Qt.ShiftModifier & event.modifiers()) and self.scribbling:
+            print('Scribbling Off')
+            self.scribbling = False
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
