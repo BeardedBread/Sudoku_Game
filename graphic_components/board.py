@@ -121,22 +121,23 @@ class GameBoard(BoxBoard):
         self.numring.loseFocus.connect(self.game_refocus)
         self.toggle_anim(True)
 
-    def show_number_ring(self, x=0, y=0):
+    def show_number_ring(self, x=0, y=0, scribbling=False):
         if not self.numring.isVisible():
             self.numring.setPos(x, y)
             self.numring.setVisible(True)
             self.numring.setFocus()
             self.numring.toggle_anim(True)
+            self.numring.scribbling = scribbling
 
     def select_ring_number(self, val):
         if val == 'X':
             val = 0
         self.gamegrid.replace_cell_number(int(val))
-        #self.game_refocus()
 
     def game_refocus(self):
         self.gamegrid.set_disabled(False)
         self.gamegrid.setFocus()
+        self.gamegrid.scribbling = self.numring.scribbling
 
     def show_grid(self, state):
         if state ^ self.gamegrid.isVisible():

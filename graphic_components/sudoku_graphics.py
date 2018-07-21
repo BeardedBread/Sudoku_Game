@@ -5,7 +5,7 @@ This module contains the components that make up the Sudoku Board
 import numpy as np
 from PyQt5.QtCore import (QAbstractAnimation, QPointF, Qt, QRectF, QLineF,
                           QPropertyAnimation, pyqtProperty, pyqtSignal)
-from PyQt5.QtGui import QPen, QFont
+from PyQt5.QtGui import QPen, QFont, QKeyEvent
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
 
 from gameplay import sudoku_gameplay as sdk
@@ -85,7 +85,7 @@ class NumberPainter(BaseSudokuItem):
 
 class SudokuGrid(BaseSudokuItem):
     # TODO: Add functions to animated the grid lines
-    buttonClicked = pyqtSignal(float, float)
+    buttonClicked = pyqtSignal(float, float, bool)
     finishDrawing = pyqtSignal()
     puzzleFinished = pyqtSignal()
 
@@ -141,6 +141,8 @@ class SudokuGrid(BaseSudokuItem):
         for t in range(1, 10):
             self.anim.setKeyValueAt(t / 10, self.width * t/10)
         self.anim.setEndValue(self.width)
+
+        self.scribbling = False
 
         self.drawn = False
         self.anim.finished.connect(self.finish_drawing)
@@ -210,13 +212,25 @@ class SudokuGrid(BaseSudokuItem):
             h = (self.mouse_h + 0.5) * self.cell_height
 
             if not self.sudoku_grid.get_cell_status(self.mouse_h, self.mouse_w) == sdk.FIXED:
-                self.buttonClicked.emit(w, h)
+                self.buttonClicked.emit(w, h, self.scribbling)
         else:
-            self.buttonClicked.emit(0, 0)
+            self.buttonClicked.emit(0, 0, self.scribbling)
+
     def focusInEvent(self, event):
         self.set_disabled(False)
+
     def focusOutEvent(self, event):
         self.set_disabled(True)
+
+    def keyPressEvent(self, event):
+        if not event.isAutoRepeat():
+            if (event.key() == Qt.Key_M) and not self.scribbling:
+                self.scribbling = True
+
+    def keyReleaseEvent(self, event):
+        if not event.isAutoRepeat():
+            if event.key() == Qt.Key_M and self.scribbling:
+                self.scribbling = False
 
     # Defining the length to be drawn as a pyqtProperty
     @pyqtProperty(float)
