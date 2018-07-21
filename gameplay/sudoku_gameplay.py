@@ -44,6 +44,9 @@ class SudokuSystem:
         if val == 0:
             self.change_cell_status(row, col, EMPTY)
 
+    def clear_scribble(self, row, col):
+        self.scribbles[row, col] = ''
+
     def toggle_scribble(self, row, col, val):
         if val in self.scribbles[row, col]:
             self.scribbles[row, col] = self.scribbles[row, col].replace(val, '')

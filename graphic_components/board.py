@@ -130,12 +130,11 @@ class GameBoard(BoxBoard):
             self.numring.scribbling = scribbling
 
     def select_ring_number(self, val, scribbling):
+        if val == 'X':
+            val = 0
         if scribbling:
-            if not val == 'X':
-                self.gamegrid.change_cell_scribbles(val)
+            self.gamegrid.change_cell_scribbles(val)
         else:
-            if val == 'X':
-                val = 0
             self.gamegrid.replace_cell_number(int(val))
 
     def game_refocus(self):

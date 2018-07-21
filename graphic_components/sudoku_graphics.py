@@ -174,7 +174,10 @@ class SudokuGrid(BaseSudokuItem):
         self.update()
 
     def change_cell_scribbles(self, val):
-        self.sudoku_grid.toggle_scribble(self.mouse_h, self.mouse_w, val)
+        if val == 0:
+            self.sudoku_grid.clear_scribble(self.mouse_h, self.mouse_w)
+        else:
+            self.sudoku_grid.toggle_scribble(self.mouse_h, self.mouse_w, val)
         self.grid_painter.update()
 
     def replace_cell_number(self, val):
@@ -276,8 +279,6 @@ class NumberRing(BaseSudokuItem):
         self.cell_height = 24
 
         self.cell_buttons = []
-        for btn in self.cell_buttons:
-            btn.buttonClicked.connect(func)
         for i in range(10):
             if i == 0:
                 cell_string = 'X'
@@ -344,6 +345,12 @@ class NumberRing(BaseSudokuItem):
         else:
             self.setFocus()
 
+    def mousePressEvent(self, event):
+        if not any(btn.isUnderMouse() for btn in self.cell_buttons):
+            self.toggle_anim(False)
+        else:
+            self.setFocus()
+
     def close_menu(self):
         if not self.scribbling:
             self.toggle_anim(False)
@@ -364,7 +371,7 @@ class NumberRing(BaseSudokuItem):
             if txt:
                 print('keypress:', txt)
                 self.keyPressed.emit(txt, self.scribbling)
-                if not self.scribbling or txt == 'X':
+                if not self.scribbling:
                     self.clearFocus()
 
     def keyReleaseEvent(self, event):
