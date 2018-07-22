@@ -29,6 +29,7 @@ class SudokuSystem:
     def clear_grid(self):
         self.number_grid[:] = 0
         self.cell_status[:] = FIXED
+        self.scribbles[:] = ''
         for i in range(9):
             for j in range(9):
                 while self.offending_cells[i][j]:
@@ -116,6 +117,7 @@ class SudokuSystem:
                 self.offending_cells[row][col] = bad_cells
 
     def generate_test_board(self, difficulty):
+        self.clear_grid()
         try:
             with open(test_dir, 'r') as f:
                 lines = f.readlines()
