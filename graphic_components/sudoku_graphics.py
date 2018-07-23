@@ -215,6 +215,18 @@ class SudokuGrid(BaseSudokuItem):
                 self.update()
 
     def mousePressEvent(self, event):
+        event.accept()
+        #if self.drawn:
+        #    w = (self.mouse_w + 0.5) * self.cell_width
+        #    h = (self.mouse_h + 0.5) * self.cell_height
+
+        #    if not self.sudoku_grid.get_cell_status(self.mouse_h, self.mouse_w) == sdk.FIXED:
+        #        self.buttonClicked.emit(w, h, self.scribbling)
+        #else:
+        #    self.buttonClicked.emit(0, 0, self.scribbling)
+
+    def mouseReleaseEvent(self, event):
+        print('lol')
         if self.drawn:
             w = (self.mouse_w + 0.5) * self.cell_width
             h = (self.mouse_h + 0.5) * self.cell_height
@@ -311,6 +323,10 @@ class NumberRing(BaseSudokuItem):
             self.loseFocus.emit()
         else:
             self.freeze_buttons(False)
+            if self.isUnderMouse():
+                self.set_buttons_transparent(False)
+            else:
+                self.set_buttons_transparent(True)
 
     # Toggle the animation to be play forward or backward
     def toggle_anim(self, toggling):

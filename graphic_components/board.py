@@ -182,7 +182,7 @@ class GameBoard(BoxBoard):
             self.numring.setFocus()
             self.numring.toggle_anim(True)
             self.numring.scribbling = scribbling
-            self.numring.set_buttons_transparent(False)
+
 
     def select_ring_number(self, val, scribbling):
         """Get the selected number from the Ring and pass into the grid
