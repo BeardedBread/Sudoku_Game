@@ -10,6 +10,7 @@ from PyQt5.QtGui import QPainter, QBrush, QPen
 from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
                              QGraphicsObject, QGraphicsProxyWidget,
                              QGraphicsScene, QGraphicsView, )
+from general.highscore import DIFFICULTIES
 
 if __name__ == "__main__":
     import buttons
@@ -18,8 +19,6 @@ else:
     from . import buttons
     from . import scoreboard as scb
 
-
-DIFFICULTIES = ['Very Easy', 'Easy', 'Normal', 'Hard', 'Insane']
 
 
 class TimerDisplayer(QGraphicsWidget):
@@ -78,7 +77,6 @@ class DifficultyDisplayer(QGraphicsWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        #self.setParent(parent)
 
         self.width = 100
         self.height = 50

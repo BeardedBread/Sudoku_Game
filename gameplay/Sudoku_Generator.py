@@ -118,7 +118,7 @@ def propagate_array(sudoku_array, N):
     prev_bigcol = -1
     prev_rot = -1
     swap_choice = ((0, 1), (0, 2), (1, 2))
-    print(prop_seq)
+    #print(prop_seq)
     for num in prop_seq:
         if num == 0:
             rot = random.randint(0, 2)
@@ -152,7 +152,7 @@ def propagate_array(sudoku_array, N):
 
         prev_num = num
 
-    print('Propagate Complete')
+    #print('Propagate Complete')
 
 
 def generate_sudoku_grid(difficulty):
@@ -188,10 +188,11 @@ def generate_sudoku_grid(difficulty):
 
 def generate_sudoku_puzzle(difficulty):
     grid = generate_sudoku_grid(difficulty)
-    print('Givens: ', check_for_givens(grid))
+    print('Difficulty level: ', difficulty, 'Givens: ', check_for_givens(grid))
     sudoku_array = grid_to_array(grid)
     propagate_array(sudoku_array, 18)
-
+    print("Warning: the solution to the puzzle may be non-unique.")
+    print('Puzzle: ', array_to_grid(sudoku_array))
     return sudoku_array
 
 

@@ -226,7 +226,6 @@ class SudokuGrid(BaseSudokuItem):
         #    self.buttonClicked.emit(0, 0, self.scribbling)
 
     def mouseReleaseEvent(self, event):
-        print('lol')
         if self.drawn:
             w = (self.mouse_w + 0.5) * self.cell_width
             h = (self.mouse_h + 0.5) * self.cell_height

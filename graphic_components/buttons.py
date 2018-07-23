@@ -288,6 +288,7 @@ class MenuButton(AnimBox):
         """Reimplemented from QGraphicsObject. Receive the click event,
         then reverse its animation and emit buttonClicked signal
         """
+        event.accept()
         self.toggle_anim(False)
         self.buttonClicked.emit(self.text)
 
