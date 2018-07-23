@@ -278,7 +278,6 @@ class SudokuGrid(BaseSudokuItem):
 
 
 class NumberRing(BaseSudokuItem):
-    # TODO: Make it transparent when mouse is out of range
     loseFocus = pyqtSignal()
     keyPressed = pyqtSignal(str, bool)
 
@@ -384,6 +383,7 @@ class NumberRing(BaseSudokuItem):
             if txt:
                 self.keyPressed.emit(txt, self.scribbling)
                 if not self.scribbling:
+                    self.toggle_anim(False)
                     self.clearFocus()
 
     def keyReleaseEvent(self, event):
