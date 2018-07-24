@@ -20,7 +20,6 @@ else:
     from . import scoreboard as scb
 
 
-
 class TimerDisplayer(QGraphicsWidget):
 
     def __init__(self, parent=None):
