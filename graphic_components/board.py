@@ -182,7 +182,6 @@ class GameBoard(BoxBoard):
             self.numring.toggle_anim(True)
             self.numring.scribbling = scribbling
 
-
     def select_ring_number(self, val, scribbling):
         """Get the selected number from the Ring and pass into the grid
 
@@ -310,6 +309,7 @@ class MenuBoard(BoxBoard):
             self.score_display.show_board(True)
 
     def return_to_normal(self):
-        """Reenable the difficulty and high score buttons. Used after setting the high scores"""
+        """Re-enable the difficulty and high score buttons. Used after setting the high scores
+        """
         self.diff_display.set_disabled(False)
         self.score_display.set_disabled(False)
