@@ -143,6 +143,16 @@ class SudokuGrid(BaseSudokuItem):
     puzzleFinished = Signal()
 
     def __init__(self, width, height, parent=None):
+        """Initialise the lines and animation to draw the grid, as well as initialising the
+        graphics components. The parent argument is passed into BaseSudokuItem init method.
+
+        Parameters
+        ----------
+        width: float
+            Width of the grid
+        height: float
+            Height of the grid
+        """
         super().__init__(parent)
         self.width = width
         self.height = height
@@ -185,9 +195,8 @@ class SudokuGrid(BaseSudokuItem):
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
         self.set_disabled(False)
 
-        # Length of the box to be drawn
+        # Set up the animation
         self.length = 0
-        # Set up the length to be animated
         self.anim = QPropertyAnimation(self, b'length')
         self.anim.setDuration(500)  # Animation speed
         self.anim.setStartValue(0)
@@ -201,6 +210,13 @@ class SudokuGrid(BaseSudokuItem):
         self.anim.finished.connect(self.finish_drawing)
 
     def set_disabled(self, state):
+        """Disable or Enable the grid to accept inputs
+
+        Parameters
+        ----------
+        state: bool
+            If true, enable the grid. Disable otherwise.
+        """
         if state:
             self.setAcceptedMouseButtons(Qt.NoButton)
         else:
@@ -208,12 +224,15 @@ class SudokuGrid(BaseSudokuItem):
         self.setAcceptHoverEvents(not state)
 
     def finish_drawing(self):
+        """Function to be called once the animaion finishes. Emits the finishDrawing signal
+        """
         if self.length == self.width:
             self.drawn = True
             self.finishDrawing.emit()
 
-    # Toggle the animation to be play forward or backward
     def toggle_anim(self, toggling):
+        """Toggle the animation to be play forward or backward
+        """
         if toggling:
             self.anim.setDirection(QAbstractAnimation.Forward)
         else:
@@ -222,11 +241,25 @@ class SudokuGrid(BaseSudokuItem):
         self.anim.start()
 
     def generate_new_grid(self, difficulty):
+        """Generate a new puzzle and update the grid
+
+        Parameters
+        ----------
+        difficulty: int
+            The difficulty level
+        """
         self.sudoku_grid.generate_random_board(difficulty)
         #self.sudoku_grid.generate_test_board(difficulty)   # Uncomment for testing
         self.update()
 
     def change_cell_scribbles(self, val):
+        """Change the scribble of a digit of a given cell at the mouse position
+
+        Parameters
+        ----------
+        val: int
+            The scribbled digit to toggle. 0 to clear all
+        """
         if val == 0:
             self.sudoku_grid.clear_scribble(self.mouse_h, self.mouse_w)
         else:
@@ -234,15 +267,26 @@ class SudokuGrid(BaseSudokuItem):
         self.grid_painter.update()
 
     def replace_cell_number(self, val):
+        """Replaces the digit in a given cell at the mouse position
+
+        Parameters
+        ----------
+        val: int
+            The digit for replacing
+        """
         self.sudoku_grid.replace_cell_number(self.mouse_h, self.mouse_w, val)
         self.grid_painter.update()
         if self.sudoku_grid.completion_check():
             self.puzzleFinished.emit()
 
     def boundingRect(self):
+        """Reimplemented from QGraphicsObject
+        """
         return QRectF(-5, -5, self.width+10, self.height+10)
 
     def paint(self, painter, style, widget=None):
+        """Reimplemented from QGraphicsObject. Draws the grid lines and the selection box, which follows the mouse.
+        """
         painter.setPen(self.default_pen)
         for line in self.thinlines:
             painter.drawLine(line)
@@ -256,7 +300,10 @@ class SudokuGrid(BaseSudokuItem):
             painter.drawRect(self.selection_box)
 
     def hoverMoveEvent(self, event):
-        if not (self.freeze and self.drawn):
+        """Reimplemented from QGraphicsObject. Updates the mouse grid coordinates as long as the grid is drawn
+        is not frozen.
+        """
+        if (not self.freeze) and self.drawn:
             box_w = bound_value(0, int(event.pos().x()/self.cell_width), 8)
             box_h = bound_value(0, int(event.pos().y() / self.cell_height), 8)
             if box_w != self.mouse_w or box_h != self.mouse_h:
@@ -266,9 +313,13 @@ class SudokuGrid(BaseSudokuItem):
                 self.update()
 
     def mousePressEvent(self, event):
+        """Reimplemented from QGraphicsObject. May be useless
+        """
         event.accept()
 
     def mouseReleaseEvent(self, event):
+        """Reimplemented from QGraphicsObject. Emits buttonCLicked signal once the player releases the mouse button.
+        """
         if self.drawn:
             w = (self.mouse_w + 0.5) * self.cell_width
             h = (self.mouse_h + 0.5) * self.cell_height
@@ -279,17 +330,25 @@ class SudokuGrid(BaseSudokuItem):
             self.buttonClicked.emit(0, 0, self.scribbling)
 
     def focusInEvent(self, event):
+        """Reimplemented from QGraphicsObject. Unfreeze the grid on focus
+        """
         self.set_disabled(False)
 
     def focusOutEvent(self, event):
+        """Reimplemented from QGraphicsObject. Freeze the grid when out of focus
+        """
         self.set_disabled(True)
 
     def keyPressEvent(self, event):
+        """Reimplemented from QGraphicsObject. Check if scribble key is held, toggling on scribbling mode.
+        """
         if not event.isAutoRepeat():
             if (event.key() == SCRIBBLE_KEY) and not self.scribbling:
                 self.scribbling = True
 
     def keyReleaseEvent(self, event):
+        """Reimplemented from QGraphicsObject. Check if scribble key is released, toggling off scribbling mode.
+        """
         if not event.isAutoRepeat():
             if event.key() == SCRIBBLE_KEY and self.scribbling:
                 self.scribbling = False
@@ -297,6 +356,9 @@ class SudokuGrid(BaseSudokuItem):
     # Defining the length to be drawn as a Property
     @Property(float)
     def length(self):
+        """float: The length of the grid lines to be drawn.
+        When set, the grid lines points are set.
+        """
         return self._length
 
     @length.setter
@@ -319,10 +381,21 @@ class SudokuGrid(BaseSudokuItem):
 
 
 class NumberRing(BaseSudokuItem):
+    """The number ring which consists of the ringButtons for player input.
+
+    Attributes
+    ----------
+    loseFocus : Signal
+        An explicit signal for when the ring loses focus.
+    keyPressed : Signal(str, bool)
+        Emit when a digit is pressed, and whether scribbling mode is on
+    """
     loseFocus = Signal()
     keyPressed = Signal(str, bool)
 
     def __init__(self, parent=None):
+        """Create the ring buttons and layout. The parent argument is passed into BaseSudokuItem init method.
+        """
         super().__init__(parent=parent)
 
         self.setVisible(False)
@@ -357,6 +430,8 @@ class NumberRing(BaseSudokuItem):
         self.scribbling = False
 
     def finish_animation(self):
+        """When the animation is finished, hide away and freeze the buttons and loses the focus if it closes, or
+        unfreeze it and set the transparency depending on mouse position if it opens"""
         if self.radius == 0:
             self.setVisible(False)
             self.freeze_buttons(True)
@@ -368,8 +443,9 @@ class NumberRing(BaseSudokuItem):
             else:
                 self.set_buttons_transparent(True)
 
-    # Toggle the animation to be play forward or backward
     def toggle_anim(self, toggling):
+        """Toggle the animation to be play forward or backward
+        """
         self.freeze_buttons(True)
         if toggling:
             self.anim.setDirection(QAbstractAnimation.Forward)
@@ -379,38 +455,64 @@ class NumberRing(BaseSudokuItem):
         self.anim.start()
 
     def boundingRect(self):
+        """Reimplemented from QGraphicsObject
+        """
         return QRectF(-5-self.radius-self.cell_width/2, -5-self.radius-self.cell_height/2,
                       self.cell_width+self.radius*2+10, self.cell_height + self.radius * 2 + 10)
 
-    # Reimplemented paint
     def paint(self, painter, style, widget=None):
+        """Reimplemented from QGraphicsObject. Does nothing but is needed. May be used for fancy effects?
+        """
         pass
 
     def send_button_press(self, val):
+        """Emits the keyPressed signal if any of the buttons is pressed, and attempts to close the ring
+
+        Parameters
+        ----------
+        val : str
+            The digit to be emitted
+        """
         self.keyPressed.emit(val, self.scribbling)
         self.close_menu()
             
     def freeze_buttons(self, freeze):
+        """Freezes the button
+
+        Parameters
+        ----------
+        freeze: bool
+            If true, freezes the button. Unfreezes otherwise.
+        """
         for btn in self.cell_buttons:
             btn.set_freeze(freeze)
 
     def focusOutEvent(self, event):
+        """Reimplemented from QGraphicsObject. Checks whether the mouse if over any of the buttons and refocus of so.
+        This is here because clicking the button can cause the ring to focus out for some reason.
+        """
         if not any(btn.isUnderMouse() for btn in self.cell_buttons):
             self.toggle_anim(False)
         else:
             self.setFocus()
 
     def mousePressEvent(self, event):
+        """Reimplemented from QGraphicsObject. Similar reason to reimplementing focusOutEvent.
+        """
         if not any(btn.isUnderMouse() for btn in self.cell_buttons):
             self.toggle_anim(False)
         else:
             self.setFocus()
 
     def close_menu(self):
+        """Closes the ring if scribbling mode is off.
+        """
         if not self.scribbling:
             self.toggle_anim(False)
 
     def keyPressEvent(self, event):
+        """Get the digit pressed and emits the keyPressed signal. Check also if scribbling mode is on
+        """
         if not event.isAutoRepeat():
             if (event.key() == SCRIBBLE_KEY) and not self.scribbling:
                 self.scribbling = True
