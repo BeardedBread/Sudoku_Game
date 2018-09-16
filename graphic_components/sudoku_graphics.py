@@ -12,12 +12,24 @@ from general.extras import bound_value
 from . import buttons
 from . import menu_graphics as menu_grap
 
+# This key allows player to scribble on the board
 SCRIBBLE_KEY = Qt.Key_M
 
 
 class BaseSudokuItem(QGraphicsObject):
 
     def __init__(self, parent):
+        """The base class to all Sudoku objects. Provides the default pen and font.
+        The parent argument is passed into QGraphicsObject init method.
+        Parameters
+        ----------
+        default_pen: QPen
+            The default pen used for drawing. White with line width of 1.
+        default_font: QFont
+            Default font to use when drawing text. Helvetica, size 14
+        freeze: bool
+            Whether the object is frozen, i.e. stop responding to user input
+        """
         super().__init__(parent=parent)
         self.setParent(parent)
         self.parent = parent
@@ -30,31 +42,61 @@ class BaseSudokuItem(QGraphicsObject):
 
 
 class NumberPainter(BaseSudokuItem):
-    # TODO: Use different font to differentiate the status of a cell
+    """The object to print the digits present in the grid. Does not draw the actual grids.
+    Used as the component for SudokuGrid
+    """
 
     def __init__(self, parent, grid):
+        """Initialise different pens to represent the status of a digit.
+        The parent argument is passed into BaseSudokuItem init method.
+
+        Parameters
+        ----------
+        grid: SudokuSystem class
+            The class which can be found in gameplay/sudoku_gameplay.py. As objects are passed by reference
+            in python, any changes to the SudokuSystem are reflected when this object is repainted.
+        """
         super().__init__(parent=parent)
         self.sudoku_grid = grid
 
+        # Used for invalid digits due to the rules
         self.invalid_pen = QPen()
         self.invalid_pen.setColor(Qt.lightGray)
         self.invalid_font = QFont("Helvetica", pointSize=11, italic=True)
 
+        # Used for fixed digits set by the game
         self.fixed_pen = QPen()
         self.fixed_pen.setColor(Qt.white)
         self.fixed_font = QFont("Helvetica", pointSize=18, weight=QFont.Bold)
 
+        # Used for scribbled digits by the player
         self.scribble_font = QFont("Helvetica", pointSize=8)
 
     def paint(self, painter, style, widget=None):
+        """Reimplemented from QGraphicsObject to paint the digits
+        """
         for i in range(9):
             for j in range(9):
                 self._draw_number_cell(i, j, painter)
 
     def boundingRect(self):
+        """Reimplemented from QGraphicsObject
+        """
         return QRectF(-5, -5, self.parent.width+10, self.parent.height+10)
 
     def _draw_number_cell(self, w, h, painter):
+        """Draw the digits(including scribbles) in a given cell, applying the correct pen depending
+        on the status of the cell
+
+        Parameters
+        ----------
+        w: int
+            horizontal cell number
+        h: int
+            vertical cell number
+        painter: QPainter
+            Used to actually draw the digits
+        """
         val = self.sudoku_grid.get_cell_number(h, w)
         if val == 0:
             val = ''
@@ -73,6 +115,7 @@ class NumberPainter(BaseSudokuItem):
         painter.drawText(QRectF(w*self.parent.cell_width, h*self.parent.cell_height,
                                 self.parent.cell_width, self.parent.cell_height), Qt.AlignCenter, str(val))
 
+        # Scribbles are drawn as a circle, surrounding the cell digit
         painter.setPen(self.default_pen)
         painter.setFont(self.scribble_font)
         radius = 15
@@ -85,6 +128,16 @@ class NumberPainter(BaseSudokuItem):
 
 
 class SudokuGrid(BaseSudokuItem):
+    """The actual grid itself. Handles user input and interfaces the different graphics components.
+    Attributes
+    ----------
+    buttonClicked : Signal(float, float, bool)
+        Emitted when click on the grid. Emits the click position and whether the player is scribbling
+    finishDrawing : Signal()
+        Emitted when the drawing animation ends
+    puzzleFinished : Signal()
+        Emitted when the puzzle is completed
+    """
     buttonClicked = Signal(float, float, bool)
     finishDrawing = Signal()
     puzzleFinished = Signal()
@@ -189,7 +242,6 @@ class SudokuGrid(BaseSudokuItem):
     def boundingRect(self):
         return QRectF(-5, -5, self.width+10, self.height+10)
 
-    # Reimplemented paint
     def paint(self, painter, style, widget=None):
         painter.setPen(self.default_pen)
         for line in self.thinlines:
@@ -215,14 +267,6 @@ class SudokuGrid(BaseSudokuItem):
 
     def mousePressEvent(self, event):
         event.accept()
-        #if self.drawn:
-        #    w = (self.mouse_w + 0.5) * self.cell_width
-        #    h = (self.mouse_h + 0.5) * self.cell_height
-
-        #    if not self.sudoku_grid.get_cell_status(self.mouse_h, self.mouse_w) == sdk.FIXED:
-        #        self.buttonClicked.emit(w, h, self.scribbling)
-        #else:
-        #    self.buttonClicked.emit(0, 0, self.scribbling)
 
     def mouseReleaseEvent(self, event):
         if self.drawn:
@@ -255,7 +299,6 @@ class SudokuGrid(BaseSudokuItem):
     def length(self):
         return self._length
 
-    # Determine the length of the four lines to be drawn
     @length.setter
     def length(self, value):
         self._length = value

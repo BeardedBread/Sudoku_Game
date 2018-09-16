@@ -111,8 +111,6 @@ class BoxBoard(QGraphicsWidget):
                 painter.drawLine(line)
 
 
-
-
 class GameBoard(BoxBoard):
     """The Board in which the main game takes place.
     It is intended to swap the interface depending on whether the game is ongoing
