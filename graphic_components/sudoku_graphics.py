@@ -511,7 +511,8 @@ class NumberRing(BaseSudokuItem):
             self.toggle_anim(False)
 
     def keyPressEvent(self, event):
-        """Get the digit pressed and emits the keyPressed signal. Check also if scribbling mode is on
+        """Reimplemented from QGraphicsObject.Get the digit pressed and emits the keyPressed signal.
+        Check also if scribbling mode is on
         """
         if not event.isAutoRepeat():
             if (event.key() == SCRIBBLE_KEY) and not self.scribbling:
@@ -530,26 +531,41 @@ class NumberRing(BaseSudokuItem):
                     self.clearFocus()
 
     def keyReleaseEvent(self, event):
+        """Reimplemented from QGraphicsObject. Toggle off scribbling mode if the scribble key is released.
+        """
         if not event.isAutoRepeat():
             if event.key() == SCRIBBLE_KEY and self.scribbling:
                 self.scribbling = False
 
     def hoverEnterEvent(self, event):
+        """Reimplemented from QGraphicsObject. Make the ring opaque when the mouse enters the ring
+        """
         self.set_buttons_transparent(False)
 
     def hoverLeaveEvent(self, event):
+        """Reimplemented from QGraphicsObject. Make the ring transparent when the mouse enters the ring
+        """
         self.set_buttons_transparent(True)
 
     def set_buttons_transparent(self, state):
+        """Set the ring buttons transparent or opaque
+
+        Parameters
+        ----------
+        state: bool
+            If true, set the ring transparent, opaque otherwise.
+        """
         for btn in self.cell_buttons:
             btn.set_transparent(state)
 
     # Defining the length to be drawn as a Property
     @Property(float)
     def radius(self):
+        """float: The radius of the ring.
+        When set, the buttons' position are set.
+        """
         return self._radius
 
-    # Determine the length of the four lines to be drawn
     @radius.setter
     def radius(self, value):
         self._radius = value
@@ -565,6 +581,13 @@ class NumberRing(BaseSudokuItem):
 
 
 class PlayMenu(BaseSudokuItem):
+    """The menu which displays the difficulies before starting a game.
+
+    Attributes
+    ----------
+    buttonClicked : Signal(str)
+
+    """
     buttonClicked = Signal(str)
 
     def __init__(self, parent):
