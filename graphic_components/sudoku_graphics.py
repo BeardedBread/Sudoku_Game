@@ -465,7 +465,7 @@ class NumberRing(BaseSudokuItem):
         """
         pass
 
-    def send_button_press(self, val):
+    def send_button_press(self, val, btn):
         """Emits the keyPressed signal if any of the buttons is pressed, and attempts to close the ring
 
         Parameters
@@ -473,8 +473,10 @@ class NumberRing(BaseSudokuItem):
         val : str
             The digit to be emitted
         """
-        self.keyPressed.emit(val, self.scribbling)
-        self.close_menu()
+        scribble = btn == 2
+        self.keyPressed.emit(val, scribble)
+        if not scribble:
+            self.close_menu()
             
     def freeze_buttons(self, freeze):
         """Freezes the button
