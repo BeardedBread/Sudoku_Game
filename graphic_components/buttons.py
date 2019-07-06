@@ -64,6 +64,7 @@ class AnimBox(QGraphicsObject):
 
         self.line_order = [self.up, self.right, self.down, self.left]
 
+        self.accepted_buttons = Qt.LeftButton
         self.set_freeze(False)
 
         self.length = 0
@@ -85,7 +86,7 @@ class AnimBox(QGraphicsObject):
             self.setAcceptedMouseButtons(Qt.NoButton)
             self.setAcceptHoverEvents(False)
         else:
-            self.setAcceptedMouseButtons(Qt.LeftButton)
+            self.setAcceptedMouseButtons(self.accepted_buttons)
             self.setAcceptHoverEvents(True)
 
     def toggle_anim(self, toggling):
@@ -216,6 +217,7 @@ class RingButton(AnimBox):
         super().__init__(x, y, width, height, parent=parent)
         self.text = text
         self.transparent = False
+        self.accepted_buttons = self.accepted_buttons | Qt.RightButton
 
     def set_transparent(self, state):
         """Make the button transparent
@@ -252,7 +254,7 @@ class RingButton(AnimBox):
         """
         event.accept()
         self.toggle_anim(False)
-        self.buttonClicked.emit(self.text)
+        self.buttonClicked.emit(self.text, event.button())
 
 
 class MenuButton(AnimBox):
