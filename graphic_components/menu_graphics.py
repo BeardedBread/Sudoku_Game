@@ -99,6 +99,7 @@ class DifficultyDisplayer(QGraphicsWidget):
     """
     notFocus = pyqtSignal()
     difficultySelected = pyqtSignal(str)
+    clicked = pyqtSignal()
 
     def __init__(self, parent=None):
         """Create the box and the text.
@@ -165,6 +166,7 @@ class DifficultyDisplayer(QGraphicsWidget):
         if not self.diff_menu.isVisible():
             self.diff_menu.setFocus()
             self.diff_menu.setVisible(True)
+            self.clicked.emit()
         else:
             self.diff_menu.setVisible(False)
             self.notFocus.emit()
@@ -245,7 +247,7 @@ class DifficultyMenu(QGraphicsWidget):
         return QRectF(0, 0, self.width, self.height)
 
     def clicked_on(self, string):
-        """Emits the menuCLicked signal with the selected difficulty, when one of the buttons is pressed.
+        """Emits the menuClicked signal with the selected difficulty, when one of the buttons is pressed.
 
         Parameters
         ----------
