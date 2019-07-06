@@ -43,10 +43,12 @@ def generate_completed_grid(n):
 
 def generate_dig_sequence(difficulty):
     if difficulty <= 1:
+        # Random Digging
         random_number = list(range(81))
         while len(random_number) > 0:
             yield random_number.pop(random.randint(0, len(random_number)-1))
     elif difficulty == 2:
+        # Skip one cell
         current = 0
         while current < 162:
             actual = current % 81
@@ -57,6 +59,7 @@ def generate_dig_sequence(difficulty):
                 yield (row+1) * 9 - 1 - (actual % 9) % 81
             current += 2
     elif difficulty == 3:
+        # S wandering
         current = 0
         while current < 81:
             row = int(current / 9)
@@ -66,6 +69,7 @@ def generate_dig_sequence(difficulty):
                 yield (row+1) * 9 - 1 - (current % 9)
             current += 1
     elif difficulty == 4:
+        # Left-to-right, top-to-bottom
         current = 0
         while current < 81:
             yield current
