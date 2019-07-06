@@ -147,7 +147,7 @@ class GameBoard(BoxBoard):
         self.numring = sdk_grap.NumberRing(parent=self)
         self.playmenu = sdk_grap.PlayMenu(parent=self)
 
-        self.gamegrid.setFocus(Qt.MouseFocusReason)
+        #self.gamegrid.setFocus(Qt.MouseFocusReason)
         self.show_grid(False)
         self.show_playmenu(False)
 
@@ -160,6 +160,10 @@ class GameBoard(BoxBoard):
 
         self.anim.finished.connect(lambda: self.show_playmenu(True))
         self.toggle_anim(True)
+
+        self.refocus_timer = QTimer()
+        self.refocus_timer.timeout.connect(self.game_refocus)
+        self.refocus_timer.setSingleShot(True)
 
     def show_number_ring(self, x=0, y=0, scribbling=False):
         """Display the Number Ring if it is not visible, while setting the focus to it
@@ -174,6 +178,7 @@ class GameBoard(BoxBoard):
             True to set Scribble mode, False otherwise
         """
         if not self.numring.isVisible():
+            self.game_unfocus()
             self.numring.setPos(x, y)
             self.numring.setVisible(True)
             self.numring.setFocus()
@@ -201,8 +206,16 @@ class GameBoard(BoxBoard):
         """Enable the grid and give it grid focus
         """
         self.gamegrid.set_disabled(False)
-        self.gamegrid.setFocus()
+        #self.gamegrid.setFocus()
         self.gamegrid.scribbling = self.numring.scribbling  # To update the grid scribbling mode
+
+    def game_unfocus(self):
+        """Enable the grid and give it grid focus
+        """
+        self.gamegrid.set_disabled(True)
+        #self.gamegrid.setFocus()
+        #self.gamegrid.scribbling = self.numring.scribbling  # To update the grid scribbling mode
+
 
     def show_grid(self, state):
         """Show the grid, if it is not; Hide the grid, if it is.

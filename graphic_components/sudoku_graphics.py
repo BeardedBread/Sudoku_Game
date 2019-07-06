@@ -192,7 +192,7 @@ class SudokuGrid(BaseSudokuItem):
 
         self.setAcceptHoverEvents(True)
         self.setAcceptedMouseButtons(Qt.LeftButton)
-        self.setFlag(QGraphicsItem.ItemIsFocusable, True)
+        #self.setFlag(QGraphicsItem.ItemIsFocusable, True)
         self.set_disabled(False)
 
         # Set up the animation
@@ -326,18 +326,19 @@ class SudokuGrid(BaseSudokuItem):
 
             if not self.sudoku_grid.get_cell_status(self.mouse_h, self.mouse_w) == sdk.FIXED:
                 self.buttonClicked.emit(w, h, self.scribbling)
+                self.set_disabled(True)
         else:
             self.buttonClicked.emit(0, 0, self.scribbling)
 
-    def focusInEvent(self, event):
+    #def focusInEvent(self, event):
         """Reimplemented from QGraphicsObject. Unfreeze the grid on focus
         """
-        self.set_disabled(False)
+        #self.set_disabled(False)
 
-    def focusOutEvent(self, event):
+    #def focusOutEvent(self, event):
         """Reimplemented from QGraphicsObject. Freeze the grid when out of focus
         """
-        self.set_disabled(True)
+        #self.set_disabled(True)
 
     def keyPressEvent(self, event):
         """Reimplemented from QGraphicsObject. Check if scribble key is held, toggling on scribbling mode.
