@@ -2,9 +2,8 @@ import random
 import sys
 import os
 
-from PyQt5.Qt import QApplication
-from PyQt5.QtCore import (QAbstractAnimation, Qt, QPropertyAnimation, pyqtProperty, pyqtSignal, QTimer)
-from PyQt5.QtWidgets import (QWidget, QLineEdit, QHBoxLayout, QGridLayout, QVBoxLayout, QPushButton, QLabel)
+from PySide2.QtCore import (QAbstractAnimation, Qt, QPropertyAnimation, Property, Signal, QTimer)
+from PySide2.QtWidgets import (QWidget, QLineEdit, QHBoxLayout, QGridLayout, QVBoxLayout, QPushButton, QLabel, QApplication)
 
 if not __name__ == "__main__":
     current_dir = os.getcwd()
@@ -25,7 +24,7 @@ FORWARD = -1
 
 
 class HighScoreBoard(QWidget):
-    highScoreSet = pyqtSignal()
+    highScoreSet = Signal()
 
     def __init__(self, width, height):
         super().__init__()
@@ -82,7 +81,7 @@ class HighScoreBoard(QWidget):
 
 
 class DifficultySwitch(QHBoxLayout):
-    difficultySelected = pyqtSignal(str)
+    difficultySelected = Signal(str)
 
     def __init__(self):
         super().__init__()
@@ -113,7 +112,7 @@ class DifficultySwitch(QHBoxLayout):
         left_btn.clicked.connect(lambda: self.shift_difficulty(BACKWARD))
         right_btn.clicked.connect(lambda: self.shift_difficulty(FORWARD))
 
-    @pyqtProperty(int)
+    @Property(int)
     def show_pos(self):
         """
         int : The value for the animation
@@ -153,7 +152,7 @@ class DifficultySwitch(QHBoxLayout):
 
 
 class ScoreGrid(QGridLayout):
-    scoreUpdate = pyqtSignal(str)
+    scoreUpdate = Signal(str)
 
     def __init__(self):
         super().__init__()
@@ -200,7 +199,7 @@ class ScoreGrid(QGridLayout):
 
 
 class NameInput(QWidget):
-    nameReceived = pyqtSignal(str)
+    nameReceived = Signal(str)
 
     def __init__(self):
         super().__init__()

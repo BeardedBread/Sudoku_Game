@@ -1,10 +1,9 @@
 """This module contains the two boards shown in the program. A base BoxBoard class provides the drawing and animation
 of the boards."""
 
-from PyQt5.QtGui import QPen
-from PyQt5.QtWidgets import QSizePolicy, QGraphicsWidget
-from PyQt5.QtCore import (QAbstractAnimation, Qt, QLineF, QPropertyAnimation, pyqtProperty,
-                          pyqtSignal, QSizeF, QRectF)
+from PySide2.QtGui import QPen
+from PySide2.QtWidgets import QSizePolicy, QGraphicsWidget
+from PySide2.QtCore import (QAbstractAnimation, Qt, QLineF, QPropertyAnimation, Property, Signal, QSizeF, QRectF)
 
 from . import sudoku_graphics as sdk_grap
 from . import menu_graphics as menu_grap
@@ -61,8 +60,8 @@ class BoxBoard(QGraphicsWidget):
             self.anim.setKeyValueAt(t / 10, self.half_circumference * t/10)
         self.anim.setEndValue(self.half_circumference)
 
-    # Defining the length to be drawn as a pyqtProperty
-    @pyqtProperty(float)
+    # Defining the length to be drawn as a Property
+    @Property(float)
     def length(self):
         """float: The length of the box to be drawn
 
@@ -120,16 +119,16 @@ class GameBoard(BoxBoard):
 
     Attributes
     ----------
-    newGameSelected: pyqtSignal(str)
+    newGameSelected: Signal(str)
         Emitted when the difficulty is selected from here. Emits the difficulty string
-    gridDrawn: pyqtSignal
+    gridDrawn: Signal
         Emitted when the Sudoku grid has been drawn
-    sudokuDone: pyqtSignal
+    sudokuDone: Signal
         Emitted when the Sudoku puzzle is finished
     """
-    newGameSelected = pyqtSignal(str)
-    gridDrawn = pyqtSignal()
-    sudokuDone = pyqtSignal()
+    newGameSelected = Signal(str)
+    gridDrawn = Signal()
+    sudokuDone = Signal()
 
     def __init__(self, width, height, parent=None):
         """Create the game area consisting of a Sudoku Grid and a Number Ring,

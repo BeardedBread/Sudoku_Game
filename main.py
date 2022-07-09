@@ -1,10 +1,9 @@
 """This is the main module to be run. Contains the program itself.
 """
 
-from PyQt5.QtGui import QPainter, QBrush
-from PyQt5.Qt import QApplication
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsWidget, QGraphicsLinearLayout
-from PyQt5.QtCore import Qt
+from PySide2.QtGui import QPainter, QBrush
+from PySide2.QtWidgets import QApplication, QGraphicsScene, QGraphicsView, QGraphicsWidget, QGraphicsLinearLayout
+from PySide2.QtCore import Qt
 import sys
 
 from graphic_components import board

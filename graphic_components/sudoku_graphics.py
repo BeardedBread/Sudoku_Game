@@ -3,10 +3,9 @@ This module contains the components that make up the Sudoku Board
 """
 
 import numpy as np
-from PyQt5.QtCore import (QAbstractAnimation, QPointF, Qt, QRectF, QLineF,
-                          QPropertyAnimation, pyqtProperty, pyqtSignal)
-from PyQt5.QtGui import QPen, QFont
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
+from PySide2.QtCore import (QAbstractAnimation, QPointF, Qt, QRectF, QLineF, QPropertyAnimation, Property, Signal)
+from PySide2.QtGui import QPen, QFont
+from PySide2.QtWidgets import QGraphicsItem, QGraphicsObject
 
 from gameplay import sudoku_gameplay as sdk
 from general.extras import bound_value
@@ -86,9 +85,9 @@ class NumberPainter(BaseSudokuItem):
 
 
 class SudokuGrid(BaseSudokuItem):
-    buttonClicked = pyqtSignal(float, float, bool)
-    finishDrawing = pyqtSignal()
-    puzzleFinished = pyqtSignal()
+    buttonClicked = Signal(float, float, bool)
+    finishDrawing = Signal()
+    puzzleFinished = Signal()
 
     def __init__(self, width, height, parent=None):
         super().__init__(parent)
@@ -251,8 +250,8 @@ class SudokuGrid(BaseSudokuItem):
             if event.key() == SCRIBBLE_KEY and self.scribbling:
                 self.scribbling = False
 
-    # Defining the length to be drawn as a pyqtProperty
-    @pyqtProperty(float)
+    # Defining the length to be drawn as a Property
+    @Property(float)
     def length(self):
         return self._length
 
@@ -277,8 +276,8 @@ class SudokuGrid(BaseSudokuItem):
 
 
 class NumberRing(BaseSudokuItem):
-    loseFocus = pyqtSignal()
-    keyPressed = pyqtSignal(str, bool)
+    loseFocus = Signal()
+    keyPressed = Signal(str, bool)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -400,8 +399,8 @@ class NumberRing(BaseSudokuItem):
         for btn in self.cell_buttons:
             btn.set_transparent(state)
 
-    # Defining the length to be drawn as a pyqtProperty
-    @pyqtProperty(float)
+    # Defining the length to be drawn as a Property
+    @Property(float)
     def radius(self):
         return self._radius
 
@@ -421,7 +420,7 @@ class NumberRing(BaseSudokuItem):
 
 
 class PlayMenu(BaseSudokuItem):
-    buttonClicked = pyqtSignal(str)
+    buttonClicked = Signal(str)
 
     def __init__(self, parent):
         super().__init__(parent=parent)

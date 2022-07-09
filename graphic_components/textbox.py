@@ -1,8 +1,8 @@
 import random
 
-from PyQt5.QtCore import (QAbstractAnimation, Qt, QPropertyAnimation, pyqtProperty)
-from PyQt5.QtGui import QPen
-from PyQt5.QtWidgets import QGraphicsObject, QLabel
+from PySide2.QtCore import (QAbstractAnimation, Qt, QPropertyAnimation, Property)
+from PySide2.QtGui import QPen
+from PySide2.QtWidgets import QGraphicsObject, QLabel
 
 
 class AnimatedText(QGraphicsObject):
@@ -51,8 +51,8 @@ class AnimatedText(QGraphicsObject):
         painter.setPen(self.default_pen)
         painter.drawText(self.parent.boundingRect(), Qt.AlignCenter, self.shown_text)
 
-    # Defining the length to be drawn as a pyqtProperty
-    @pyqtProperty(int)
+    # Defining the length to be drawn as a Property
+    @Property(int)
     def shown_length(self):
         return self._shown_length
 
@@ -132,7 +132,7 @@ class AnimatedLabel(QLabel):
         #        """)
         self.toggle_anim(True)
 
-    @pyqtProperty(int)
+    @Property(int)
     def shown_length(self):
         """
         int : The value for the animation

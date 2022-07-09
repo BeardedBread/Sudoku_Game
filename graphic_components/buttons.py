@@ -4,10 +4,10 @@ by all the buttons.
 
 import math
 
-from PyQt5.QtCore import (QAbstractAnimation, Qt, QRectF, QLineF,
-                          QPropertyAnimation, pyqtProperty, pyqtSignal)
-from PyQt5.QtGui import QPen, QColor
-from PyQt5.QtWidgets import (QGraphicsObject)
+from PySide2.QtCore import (QAbstractAnimation, Qt, QRectF, QLineF,
+                          QPropertyAnimation, Property, Signal)
+from PySide2.QtGui import QPen, QColor
+from PySide2.QtWidgets import (QGraphicsObject)
 
 from .textbox import AnimatedText
 
@@ -17,13 +17,13 @@ class AnimBox(QGraphicsObject):
 
     Attributes
     ----------
-    hoverEnter: pyqtSignal
+    hoverEnter: Signal
         Emitted when the mouse hover into the box
-    hoverExit: pyqtSignal
+    hoverExit: Signal
         Emitted when the mouse hover out of the box
     """
-    hoverEnter = pyqtSignal()
-    hoverExit = pyqtSignal()
+    hoverEnter = Signal()
+    hoverExit = Signal()
 
     def __init__(self, x, y, width, height, parent=None):
         """Prepares the box and animation
@@ -134,7 +134,7 @@ class AnimBox(QGraphicsObject):
         painter.setPen(self.default_pen)
         painter.drawRect(self.btn_rect)
 
-    @pyqtProperty(float)
+    @Property(float)
     def length(self):
         """float: The length of the highlight to be drawn.
         When set, the length of the outlines are determined
@@ -198,10 +198,10 @@ class RingButton(AnimBox):
 
     Attributes
     ----------
-    buttonClicked: pyqtSignal(str)
+    buttonClicked: Signal(str)
         Emitted when it is clicked. Sends the text of the button
     """
-    buttonClicked = pyqtSignal(str)
+    buttonClicked = Signal(str)
 
     # Initialisation
     def __init__(self, x, y, width, height, text, parent=None):
@@ -260,10 +260,10 @@ class MenuButton(AnimBox):
 
     Attributes
     ----------
-    buttonClicked: pyqtSignal(str)
+    buttonClicked: Signal(str)
         Emitted when it is clicked. Sends the text of the button
     """
-    buttonClicked = pyqtSignal(str)
+    buttonClicked = Signal(str)
 
     def __init__(self, x, y, width, height, text, parent=None):
         """Set the text and create AnimatedText

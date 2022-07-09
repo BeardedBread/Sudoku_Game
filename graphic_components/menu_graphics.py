@@ -4,12 +4,9 @@ This module contains the components that make up the menu Board
 
 import sys
 
-from PyQt5.Qt import QApplication
-from PyQt5.QtCore import (Qt, QRectF, pyqtSignal, QSizeF, QTimer)
-from PyQt5.QtGui import QPainter, QBrush, QPen
-from PyQt5.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem,
-                             QGraphicsObject, QGraphicsProxyWidget,
-                             QGraphicsScene, QGraphicsView, )
+from PySide2.QtCore import (Qt, QRectF, Signal, QSizeF, QTimer)
+from PySide2.QtGui import QPainter, QBrush, QPen
+from PySide2.QtWidgets import (QSizePolicy, QGraphicsWidget, QGraphicsItem, QGraphicsObject, QGraphicsProxyWidget, QGraphicsScene, QGraphicsView, QApplication)
 from general.highscore import DIFFICULTIES
 
 if __name__ == "__main__":
@@ -72,8 +69,8 @@ class TimerDisplayer(QGraphicsWidget):
 
 
 class DifficultyDisplayer(QGraphicsWidget):
-    notFocus = pyqtSignal()
-    difficultySelected = pyqtSignal(str)
+    notFocus = Signal()
+    difficultySelected = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -142,8 +139,8 @@ class DifficultyDisplayer(QGraphicsWidget):
 
 class DifficultyMenu(QGraphicsWidget):
 
-    menuClicked = pyqtSignal(str)
-    loseFocus = pyqtSignal()
+    menuClicked = Signal(str)
+    loseFocus = Signal()
 
     def __init__(self, width, height, parent=None):
         super().__init__(parent=parent)
