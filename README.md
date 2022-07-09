@@ -1,9 +1,9 @@
 # About
-This is just a Sudoku program written in python using the PyQt5 library. It's supposed to be a learning experience
-about the graphics system of PyQt. The goal(?) is to make it as animated as possible.
+This is just a Sudoku program written in python using the PySide2 library. It's supposed to be a learning experience
+about the graphics system of PyQt.
 
 ## Requirements
-Requires `Python 3`, `PyQt5`, and `Numpy`.
+Requires `Python 3`, `PySide2`, and `Numpy`.
 
 Use the requirements.txt to install the dependencies.
 
