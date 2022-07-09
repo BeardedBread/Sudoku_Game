@@ -88,14 +88,15 @@ class DifficultyDisplayer(QGraphicsWidget):
 
     Attributes
     ----------
-    notFocus: pyqtSignal
+    notFocus: Signal
         Emitted when it loses focus
 
-    difficultySelected = pyqtSignal(str)
+    difficultySelected = Signal(str)
         Emitted when a difficulty is selected. Emits the selected difficulty
     """
     notFocus = Signal()
     difficultySelected = Signal(str)
+    menuClicked = Signal(str)
 
     def __init__(self, parent=None):
         """Create the box and the text.
@@ -114,6 +115,7 @@ class DifficultyDisplayer(QGraphicsWidget):
         self.diff_menu = DifficultyMenu(self.width, self.height, self)
         self.diff_menu.setY(-self.diff_menu.height)
         self.diff_menu.setVisible(False)
+        self.diff_menu.menuClicked.connect(self.menuClicked.emit)
 
         self.box_pen = QPen()
         self.box_pen.setColor(Qt.white)
@@ -162,7 +164,7 @@ class DifficultyDisplayer(QGraphicsWidget):
         if not self.diff_menu.isVisible():
             self.diff_menu.setFocus()
             self.diff_menu.setVisible(True)
-            self.clicked.emit()
+            #self.clicked.emit()
         else:
             self.diff_menu.setVisible(False)
             self.notFocus.emit()

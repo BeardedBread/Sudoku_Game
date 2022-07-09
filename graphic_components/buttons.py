@@ -202,7 +202,7 @@ class RingButton(AnimBox):
     buttonClicked: Signal(str)
         Emitted when it is clicked. Sends the text of the button
     """
-    buttonClicked = Signal(str)
+    buttonClicked = Signal(str, int)
 
     # Initialisation
     def __init__(self, x, y, width, height, text, parent=None):

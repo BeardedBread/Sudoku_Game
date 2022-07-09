@@ -3,7 +3,7 @@ of the boards."""
 
 from PySide2.QtGui import QPen
 from PySide2.QtWidgets import QSizePolicy, QGraphicsWidget
-from PySide2.QtCore import (QAbstractAnimation, Qt, QLineF, QPropertyAnimation, Property, Signal, QSizeF, QRectF)
+from PySide2.QtCore import (QAbstractAnimation, Qt, QLineF, QPropertyAnimation, Property, Signal, QSizeF, QRectF, QTimer)
 
 from . import sudoku_graphics as sdk_grap
 from . import menu_graphics as menu_grap
